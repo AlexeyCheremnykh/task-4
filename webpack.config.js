@@ -13,32 +13,32 @@ module.exports = {
             {
                 test: /\.styl$/,
                 use: [
-                    'style-loader',
-                    'css-loader',
-                    'stylus-loader'
+                    "style-loader",
+                    "css-loader",
+                    "stylus-loader"
                 ]
             },
             {
                 test: /\.css$/,
                 use: [
-                    'style-loader',
-                    'css-loader'
+                    "style-loader",
+                    "css-loader"
                 ]
             },           
             {
                 test: /\.(eot|svg|ttf|woff|woff2|otf)$/,
                 use: [
                     {
-                        loader: 'file-loader',
+                        loader: "file-loader",
                         options: {
-                            name: 'fonts/[name].[ext]'
+                            name: "fonts/[name].[ext]"
                         }
                     }
                 ]
             },
             {
                 test: /\.pug$/,
-                use: ['html-loader', 'pug-html-loader']
+                use: ["html-loader", "pug-html-loader"]
             }
         ]
     },
