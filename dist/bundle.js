@@ -35266,7 +35266,9 @@ class View {
 
     drawGrid(canvas, cellsX, cellsY) {
         try {
-            canvas = new fabric.Canvas(canvas.id);
+            canvas = new fabric.Canvas(canvas.id, {
+                selection: false
+            });
         } catch(err) {
             return new fabric.Canvas();
         }
@@ -35282,22 +35284,36 @@ class View {
                     strokeWidth: 1,
                     stroke: "#000",
                     fill: "transparent",
-                    selectable: false
-                }); 
-                console.log("x: ", x, " y: ", y);         
+                    hasControls: false,
+                    hasBorders: false,
+                    lockMovementX: true,
+                    lockMovementY: true,
+                    hoverCursor: "pointer"               
+                });    
                 canvas.add(rect);           
             }                      
         }
 
         return canvas;
     }
+
+    getCell(canvas, cellIndex) {
+        try {
+            return canvas.item(cellIndex);
+        } catch(err) {
+            return
+        }
+    }
 }
 
 // testing
 const view = new View();
-const canvas = view.createCanvas(200, 200);
+let canvas = view.createCanvas(200, 200);
 document.body.querySelector(".game__grid-container").appendChild(canvas);
-view.drawGrid(canvas, 8, 8);
+canvas = view.drawGrid(canvas, 8, 8);
+
+let handler = () => console.log("aaa");
+canvas.on("object:selected", handler);
 
 module.exports = View;
 

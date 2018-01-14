@@ -40,7 +40,7 @@ describe("Draw a grid", () => {
 });
 
 
-describe("Get a cell (fabric.Rect obj) from canvas", () => {
+/*describe("Get a cell (fabric.Rect obj) from canvas", () => {
     let canvas = view.createCanvas(100, 100);
     canvas = view.drawGrid(canvas, 20, 20);
     let cell = view.getCell(canvas, 1); // canvas.item[1]
@@ -60,7 +60,7 @@ describe("Get a cell (fabric.Rect obj) from canvas", () => {
         cell= view.getCell(123, 1);
         expect(cell).toBe(undefined);
     });
-});
+});*/
 
 /*describe("Change a cell status (dead/alive)", () => {
 
