@@ -35,20 +35,27 @@ class View {
                     stroke: "#000",
                     fill: "transparent",
                     selectable: false
-                }); 
-                console.log("x: ", x, " y: ", y);         
+                });    
                 canvas.add(rect);           
             }                      
         }
 
         return canvas;
     }
+
+    getCell(canvas, cellIndex) {
+        try {
+            return canvas.item(cellIndex);
+        } catch(err) {
+            return
+        }
+    }
 }
 
 // testing
-const view = new View();
+/*const view = new View();
 const canvas = view.createCanvas(200, 200);
 document.body.querySelector(".game__grid-container").appendChild(canvas);
 view.drawGrid(canvas, 8, 8);
-
+*/
 module.exports = View;
