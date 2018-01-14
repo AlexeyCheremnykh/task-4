@@ -74,41 +74,30 @@ class View {
         this._cellSize = 12;
     }
    
-    // width, height - в клетках
-    createGrid(container, width, height) {
+    createGrid(container, cellsX, cellsY) {
         let grid = document.createElement("div");
         grid.className = "game__grid"
-        grid.style.width = width * this._cellSize + "px";
-        container.appendChild(grid);     
-        for (let i = 0; i < width * height; i++) {
-            let div = document.createElement("div");
-            div.className = "game__grid-cell";
-            div.style.width = div.style.height = this._cellSize + "px";
-            grid.appendChild(div);
+        grid.style.width = cellsX * this._cellSize + "px";
+        container.appendChild(grid);
+        let i = 0;
+        let j = 0; 
+        for (let k = 0; k < cellsX * cellsY; k++) {
+            let cell = document.createElement("div");
+            cell.className = "game__grid-cell";
+            cell.style.height = cell.style.width = this._cellSize + "px";
+            cell.dataset.j = j;
+            cell.dataset.i = i;
+            if (j + 1 !== cellsX) {                
+                j++;
+            } else {
+                i++;
+                j = 0;
+            }
+
+            grid.appendChild(cell);
         }
     }
-
-    getElementIndexes(elem) {
-        let indexes = {};
-        indexes.i = elem.get("top") / this._cellSize;
-        indexes.j = elem.get("left") / this._cellSize;
-        return indexes;
-    }
 }
-
-// testing
-/*const view = new View();
-let canvas = view.createCanvas(200, 200);
-document.body.querySelector(".game__grid-container").appendChild(canvas);
-canvas = view.drawGrid(canvas, 5, 8);
-
-let handler = (options) => {
-    options.target.set("fill", "#426");
-    console.log(options.target.get("left"), options.target.get("top"));
-    console.log(view.getElementIndexes(options.target));
-};
-canvas.on("object:selected", handler);*/
-
 
 module.exports = View;
 
@@ -770,7 +759,9 @@ class App {
         let model = new Model();
         let controller = new Controller(view, model);
         let container = document.querySelector(".game__grid-container");
-        view.createGrid(container, 5, 5);
+        view.createGrid(container, 100, 100);
+        model.createGridMatrix(10, 10);
+        //controller.setListeners();
     }
 }
 
@@ -793,12 +784,7 @@ class Controller {
     }
 
     setListeners() {
-        const gridClickHandler = (options) => {
-            let indexes = this.view.getElementIndexes(options.target);
-            this.model.changeElement(indexes.i, indexes.j);
-        };
-
-        this.view.grid.on("object:selected", gridClickHandler);
+        
     }
 }
 

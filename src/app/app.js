@@ -9,7 +9,9 @@ class App {
         let model = new Model();
         let controller = new Controller(view, model);
         let container = document.querySelector(".game__grid-container");
-        view.createGrid(container, 5, 5);
+        view.createGrid(container, 100, 100);
+        model.createGridMatrix(10, 10);
+        //controller.setListeners();
     }
 }
 

@@ -8,12 +8,7 @@ class Controller {
     }
 
     setListeners() {
-        const gridClickHandler = (options) => {
-            let indexes = this.view.getElementIndexes(options.target);
-            this.model.changeElement(indexes.i, indexes.j);
-        };
-
-        this.view.grid.on("object:selected", gridClickHandler);
+        
     }
 }
 

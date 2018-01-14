@@ -2,27 +2,25 @@ const View = require("../view");
 const view = new View();
 
 describe("View tests", () => {
-    describe("Create grid", () => {
-        const container = document.createElement("div");        
+    const container = document.createElement("div");  
+    view.createGrid(container, 5, 5);
+    let cells = container.querySelectorAll(".game__grid-cell");
+    
+    describe("Create grid", () => {  
         test("Grid has been created", () => {
-            view.createGrid(container, 100, 100);
-            expect(container.querySelectorAll("div").length).toBe(10000 + 1);
+            expect(cells.length).toBe(25);
         });
     });
 
 
-
-    /*describe("Get element indexes", () => {
-        let canvas = view.createCanvas(100, 100);
-        let grid = view.drawGrid(canvas, 3, 3);
-        let elem = grid.item(7);
+    describe("Get element indexes", () => {
         test("Correct i index", () => {
-            expect(view.getElementIndexes(elem).i).toBe(2);
+            expect(view.getElementIndexes(cells[5]).i).toBe(1);
         });
 
         test("Correct j index", () => {
-            expect(view.getElementIndexes(elem).j).toBe(1);
+            expect(view.getElementIndexes(cells[7]).j).toBe(2);
         });
-    });*/
+    });
 });
 
