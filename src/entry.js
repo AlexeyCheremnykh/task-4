@@ -1,2 +1,2 @@
-import "fabric";
-import "./view/view.js";
+import "./index.styl";
+import "./app/app.js";
