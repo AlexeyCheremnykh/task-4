@@ -29,7 +29,7 @@
   },
   "jest": {
     "setupFiles": [
-      "fabric"
+      "./src/jest-config.js"
     ]
   },
   "dependencies": {}

@@ -5,8 +5,20 @@ const view = new View();
 const model = new Model();
 const controller = new Controller(model, view);
 
-describe("Events listening", () => {
-   
+
+describe("Events listening", () => {   
+    const grid = document.createElement("div");
+    const cell = document.createElement("div");
+    grid.className = "game__grid";
+    cell.className = "game__grid-cell";
+    grid.appendChild(cell);
+    document.body.appendChild(grid);
+    
+    test("Cell click event", () => {
+        let spy = jest.spyOn(model, "changeElement");
+        controller.setListeners();
+        $(".game__grid-cell").trigger("mousedown");
+        expect(spy).toHaveBeenCalled();
     });
 
     /*test("New game event click event listening", () => {

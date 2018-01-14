@@ -18,10 +18,11 @@ class Model {
     changeElement(i, j) {
         try {
             if (this._gridMatrix[i][j] === 0) {
-                return this._gridMatrix[i][j] = 1;
+                this._gridMatrix[i][j] = 1;
             } else if (this._gridMatrix[i][j] === 1) {
-                return this._gridMatrix[i][j] = 0;
-            }
+                this._gridMatrix[i][j] = 0;
+            }            
+            return this._gridMatrix[i][j];            
         } catch(err) {
             return
         }

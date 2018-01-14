@@ -38,6 +38,10 @@ class View {
         }
         return indexes;
     }
+
+    changeCell(i, j) {
+        
+    }
 }
 
 module.exports = View;

@@ -1,6 +1,3 @@
-const View = require("../view/view");
-const Model = require("../model/model");
-
 class Controller {
     constructor(model, view) {
         this.view = view;
@@ -8,7 +5,15 @@ class Controller {
     }
 
     setListeners() {
-        
+        const that = this;
+
+        $(".game__grid").mousedown((event) => {
+            if (event.target.className === "game__grid-cell") {
+                event.target.classList.add("game__grid-cell_selected");
+                let indexes = that.view.getElementIndexes(event.target);
+                that.model.changeElement(indexes.i, indexes.j);
+            }
+        });
     }
 }
 

@@ -7,11 +7,11 @@ class App {
     init() {
         let view = new View();
         let model = new Model();
-        let controller = new Controller(view, model);
+        let controller = new Controller(model, view);
         let container = document.querySelector(".game__grid-container");
         view.createGrid(container, 100, 100);
-        model.createGridMatrix(10, 10);
-        //controller.setListeners();
+        model.createGridMatrix(100, 100);
+        controller.setListeners();
     }
 }
 
