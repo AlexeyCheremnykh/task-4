@@ -35297,13 +35297,13 @@ class View {
         return canvas;
     }
 
-    getCell(canvas, cellIndex) {
+    /*getCell(canvas, cellIndex) {
         try {
             return canvas.item(cellIndex);
         } catch(err) {
             return
         }
-    }
+    }*/
 }
 
 // testing
@@ -35312,8 +35312,12 @@ let canvas = view.createCanvas(200, 200);
 document.body.querySelector(".game__grid-container").appendChild(canvas);
 canvas = view.drawGrid(canvas, 8, 8);
 
-let handler = () => console.log("aaa");
+let handler = (options) => {
+    options.target.set("fill", "#426");
+    console.dir(options.target);
+};
 canvas.on("object:selected", handler);
+
 
 module.exports = View;
 

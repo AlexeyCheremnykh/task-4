@@ -59,12 +59,16 @@ class View {
 }
 
 // testing
-/*const view = new View();
+const view = new View();
 let canvas = view.createCanvas(200, 200);
 document.body.querySelector(".game__grid-container").appendChild(canvas);
 canvas = view.drawGrid(canvas, 8, 8);
 
-let handler = () => console.log("aaa");
-canvas.on("object:selected", handler);*/
+let handler = (options) => {
+    options.target.set("fill", "#426");
+    console.dir(options.target);
+};
+canvas.on("object:selected", handler);
+
 
 module.exports = View;
