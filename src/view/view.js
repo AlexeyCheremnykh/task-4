@@ -1,6 +1,5 @@
 class View {
-    constructor() {}
-    
+   
     createCanvas(width, height) {
         if (width < 1 || height < 1 || isNaN(width) || isNaN(height)) {
             throw new Error("Wrong input");
