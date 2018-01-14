@@ -39,30 +39,19 @@ describe("View tests", () => {
             expect(view.drawGrid().isEmpty()).toEqual(true);
         });
     });
+
+
+    describe("Get element indexes", () => {
+        let canvas = view.createCanvas(100, 100);
+        canvas = view.drawGrid(canvas, 3, 3);
+        let elem = canvas.item(5);
+        test("Correct i index", () => {
+            expect(view.getElementIndexes(elem).i).toBe(1);
+        });
+
+        test("Correct j index", () => {
+            expect(view.getElementIndexes(elem).j).toBe(2);
+        });
+    });
 });
 
-/*describe("Get a cell (fabric.Rect obj) from canvas", () => {
-    let canvas = view.createCanvas(100, 100);
-    canvas = view.drawGrid(canvas, 20, 20);
-    let cell = view.getCell(canvas, 1); // canvas.item[1]
-    test("getCell returns fabric.Rect", () => {
-        expect(cell instanceof fabric.Rect).toBe(true);
-    });
-
-    test("getCell returns undefined (wrong cellIndex)", () => {
-        cell = view.getCell(canvas, 400);
-        expect(cell).toBe(undefined);
-    });
-
-
-    test("getCell return undefined (wrong canvas)", () => {
-        cell = view.getCell("canvas", 1);
-        expect(cell).toBe(undefined);
-        cell= view.getCell(123, 1);
-        expect(cell).toBe(undefined);
-    });
-});*/
-
-/*describe("Change a cell status (dead/alive)", () => {
-
-});*/

@@ -1,4 +1,8 @@
 class View {
+
+    constructor() {
+        this._cellSize = 10;
+    }
    
     createCanvas(width, height) {
         if (width < 1 || height < 1 || isNaN(width) || isNaN(height)) {
@@ -24,14 +28,13 @@ class View {
             return new fabric.Canvas();
         }
 
-        const cellSize = 10;
         for (let x = 0; x < cellsX; x++) {
             for (let y = 0; y < cellsY; y++) {
                 let rect = new fabric.Rect({                    
-                    width: cellSize,
-                    height: cellSize,
-                    left: x * cellSize,
-                    top: y * cellSize,
+                    width: this._cellSize,
+                    height: this._cellSize,
+                    left: x * this._cellSize,
+                    top: y * this._cellSize,
                     strokeWidth: 1,
                     stroke: "#000",
                     fill: "transparent",
@@ -48,17 +51,18 @@ class View {
         return canvas;
     }
 
-    /*getCell(canvas, cellIndex) {
-        try {
-            return canvas.item(cellIndex);
-        } catch(err) {
-            return
-        }
-    }*/
+    getElementIndexes(elem) {
+        let indexes = {};
+        indexes.i = elem.get("left") / this._cellSize;
+        indexes.j = elem.get("top") / this._cellSize;
+        return indexes;
+    }
+
+
 }
 
 // testing
-const view = new View();
+/*const view = new View();
 let canvas = view.createCanvas(200, 200);
 document.body.querySelector(".game__grid-container").appendChild(canvas);
 canvas = view.drawGrid(canvas, 8, 8);
@@ -67,7 +71,7 @@ let handler = (options) => {
     options.target.set("fill", "#426");
     console.dir(options.target);
 };
-canvas.on("object:selected", handler);
+canvas.on("object:selected", handler);*/
 
 
 module.exports = View;
