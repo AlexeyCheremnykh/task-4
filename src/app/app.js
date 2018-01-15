@@ -10,7 +10,7 @@ class App {
         let controller = new Controller(model, view);        
         view.observeModel();
         model.createGridMatrix(50, 50);
-        controller.setListeners();
+        controller.setGridListeners();
     }
 }
 

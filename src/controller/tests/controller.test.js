@@ -15,8 +15,8 @@ describe("Events listening", () => {
     document.body.appendChild(grid);
     
     test("Cell click event", () => {
-        let spy = jest.spyOn(model, "changeElement");
-        controller.setListeners();
+        let spy = jest.spyOn(model, "updateCell");
+        controller.setGridListeners();
         $(".game__grid-cell").trigger("mousedown");
         expect(spy).toHaveBeenCalled();
     });

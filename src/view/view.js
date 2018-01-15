@@ -46,7 +46,6 @@ class View {
     }
 
     updateCell(i, j) {
-        console.log("view.upd", i, j);
         const setAlive = function (cell) {
             cell.className = "game__grid-cell game__grid-cell_alive";
         }
