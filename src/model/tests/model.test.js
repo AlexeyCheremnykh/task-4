@@ -1,14 +1,7 @@
 const Model = require("../model");
+const model = new Model();
 
 describe("Model tests", () => {
-    const model = new Model();
-
-    describe("Constructor", () => {
-        test("Model has been created", () => {
-            expect(model.createGridMatrixEvent).not.toBeUndefined();
-        });
-    });
-
     describe("Create grid matrix", () => {
         test("Grid matrix has been created", () => {
             const cellsX = 10;
