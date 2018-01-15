@@ -2,9 +2,10 @@ const EventDispatcher = require("../event-dispatcher/event-dispatcher");
 
 class Model {
     constructor() {
-        this.cellsX = 0;
-        this.cellsY = 0;
+        this.cellsX = null;
+        this.cellsY = null;
         this.createGridMatrixEvent = new EventDispatcher(this);
+        this.updateCellEvent = new EventDispatcher(this);
     }
     
     createGridMatrix(cellsX, cellsY) {        
@@ -21,13 +22,14 @@ class Model {
         this.createGridMatrixEvent.notify();
     }
 
-    changeElement(i, j) {
-        try {
+    updateCell(i, j) {
+        try {            
             if (this._gridMatrix[i][j] === 0) {
                 this._gridMatrix[i][j] = 1;
             } else if (this._gridMatrix[i][j] === 1) {
                 this._gridMatrix[i][j] = 0;
-            }            
+            }
+            this.updateCellEvent.notify(i, j);      
             return this._gridMatrix[i][j];            
         } catch(err) {
             return

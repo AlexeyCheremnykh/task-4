@@ -18,21 +18,21 @@ describe("Model tests", () => {
         const gridMatrix = model.createGridMatrix(cellsX, cellsY);
         let i = 1, j = 2;
         test("0 -> 1", () => {           
-            var changedElement = model.changeElement(i, j);
+            var changedElement = model.updateCell(i, j);
             expect(changedElement).toEqual(1);
         });
 
         test("1 -> 0", () => {
-            changedElement = model.changeElement(i, j);
+            changedElement = model.updateCell(i, j);
             expect(changedElement).toEqual(0);
         });
 
         test("Nothing changes if wrong index", () => {
-            changedElement = model.changeElement(666, "a string");
+            changedElement = model.updateCell(666, "a string");
             expect(changedElement).toBe(undefined);
-            changedElement = model.changeElement(10, "a string");
+            changedElement = model.updateCell(10, "a string");
             expect(changedElement).toBe(undefined);
-            changedElement = model.changeElement("wat");
+            changedElement = model.updateCell("wat");
             expect(changedElement).toBe(undefined);
         });
     });

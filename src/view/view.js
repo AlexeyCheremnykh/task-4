@@ -8,6 +8,7 @@ class View {
 
     observeModel() {
         this.model.createGridMatrixEvent.attach(this.createGrid.bind(this));
+        this.model.updateCellEvent.attach(this.updateCell.bind(this));
     }
    
     createGrid() {  
@@ -36,7 +37,7 @@ class View {
         }
     }
 
-    getElementIndexes(elem) {
+    getCellIndexes(elem) {
         let indexes = {
             i: parseInt(elem.dataset.i),
             j: parseInt(elem.dataset.j)
@@ -44,8 +45,24 @@ class View {
         return indexes;
     }
 
-    changeCell(i, j) {
-        
+    updateCell(i, j) {
+        console.log("view.upd", i, j);
+        const setAlive = function (cell) {
+            cell.className = "game__grid-cell game__grid-cell_alive";
+        }
+
+        const setDead = function (cell) {
+            cell.className = "game__grid-cell";
+        }
+
+        let selector = "div[data-i='" + i + "'][data-j='" + j + "']";
+        let cell = document.querySelector(selector);
+
+        if (cell.className == "game__grid-cell") {
+            setAlive(cell);
+        } else {
+            setDead(cell);
+        }           
     }
 }
 

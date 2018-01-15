@@ -19,11 +19,23 @@ describe("View tests", () => {
 
     describe("Get element indexes", () => {
         test("Correct i index", () => {
-            expect(view.getElementIndexes(cells[5]).i).toBe(1);
+            expect(view.getCellIndexes(cells[5]).i).toBe(1);
         });
 
         test("Correct j index", () => {
-            expect(view.getElementIndexes(cells[7]).j).toBe(2);
+            expect(view.getCellIndexes(cells[7]).j).toBe(2);
+        });
+    });
+
+    describe("Update cell", () => {
+        test("Set alive", () => {
+            view.updateCell(0, 0);            
+            expect(cells[0].className == "game__grid-cell game__grid-cell_alive").toBe(true);
+        });
+
+        test("Set dead", () => {
+            view.updateCell(0, 0);
+            expect(cells[0].className == "game__grid-cell").toBe(true);
         });
     });
 });

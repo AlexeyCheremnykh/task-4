@@ -1,6 +1,6 @@
 class EventDispatcher {
     constructor(sender) {
-        this._sender = sender;
+        // this._sender = sender;
         this._handlers = [];
     }
 
@@ -8,9 +8,10 @@ class EventDispatcher {
         this._handlers.push(handler);
     }
 
-    notify(args) {
+    notify(...args) {
         for (let i = 0; i < this._handlers.length; i++) {
-            this._handlers[i](this._sender, args);            
+            // this._handlers[i](this._sender, args);    
+            this._handlers[i](...args);        
         }
     }
 }
