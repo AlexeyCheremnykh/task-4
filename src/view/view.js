@@ -7,19 +7,17 @@ class View {
     }
 
     observeModel() {
-        let cellsX = this.model.cellsX;
-        let cellsY = this.model.cellsY;
-        this.model.createGridMatrixEvent.attach(this.createGrid.bind(this, cellsX, cellsY));
+        this.model.createGridMatrixEvent.attach(this.createGrid.bind(this));
     }
    
-    createGrid(cellsX, cellsY) {
+    createGrid() {  
         let grid = document.createElement("div");
         grid.className = "game__grid"
-        grid.style.width = cellsX * this._cellSize + "px";
+        grid.style.width = this.model.cellsX * this._cellSize + "px";
         document.querySelector(".game__grid-container").appendChild(grid);
         let i = 0;
         let j = 0; 
-        for (let k = 0; k < cellsX * cellsY; k++) {
+        for (let k = 0; k < this.model.cellsX * this.model.cellsY; k++) {
             let cell = document.createElement("div");
             cell.className = "game__grid-cell";
             cell.style.height = cell.style.width = this._cellSize + "px";
@@ -27,7 +25,7 @@ class View {
             // for coords in model array
             cell.dataset.i = i;
             cell.dataset.j = j;            
-            if (j + 1 !== cellsX) {                
+            if (j + 1 !== this.model.cellsX) {                
                 j++;
             } else {
                 i++;

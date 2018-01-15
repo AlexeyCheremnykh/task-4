@@ -7,7 +7,7 @@ class Model {
         this.createGridMatrixEvent = new EventDispatcher(this);
     }
     
-    createGridMatrix(cellsX, cellsY) {
+    createGridMatrix(cellsX, cellsY) {        
         this._gridMatrix = [];        
         for(let i = 0; i < cellsY; i++) {            
             let gridMatrixRow = [];

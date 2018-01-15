@@ -1,17 +1,14 @@
 const View = require("../view/view");
 const Model = require("../model/model");
-const Controller = require("../controller/controller");
+//const Controller = require("../controller/controller");
 
 class App {
 
-    init() {
-        let view = new View();
+    init() {        
         let model = new Model();
-        let controller = new Controller(model, view);
-        let container = document.querySelector(".game__grid-container");
-        view.createGrid(container, 100, 100);
-        model.createGridMatrix(100, 100);
-        controller.setListeners();
+        let view = new View(model);
+        view.observeModel();
+        model.createGridMatrix(10, 10);
     }
 }
 
