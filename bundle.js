@@ -747,7 +747,6 @@ class View {
     }
 
     updateCell(i, j) {
-        console.log("view.upd", i, j);
         const setAlive = function (cell) {
             cell.className = "game__grid-cell game__grid-cell_alive";
         }
@@ -851,9 +850,22 @@ module.exports = EventDispatcher;
     setListeners() {
         const that = this;
 
-        $(".game__grid").mousedown((event) => {            
-            let indexes = that.view.getCellIndexes(event.target);            
-            that.model.updateCell(indexes.i, indexes.j);            
+        $(".game__grid").mousedown((event) => {
+            let indexes = that.view.getCellIndexes(event.target);
+            that.model.updateCell(indexes.i, indexes.j);
+            
+            $(".game__grid").bind("mouseover", (event) => {
+                indexes = that.view.getCellIndexes(event.target);
+                that.model.updateCell(indexes.i, indexes.j);    
+            });
+            return false; 
+        });
+        $(".game__grid").mouseup(() => {
+            $(".game__grid").unbind("mouseover");
+        });
+
+        $(".game__grid").mouseleave(() => {
+            $(".game__grid").unbind("mouseover");
         });
     }
 }
