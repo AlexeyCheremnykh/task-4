@@ -1,14 +1,21 @@
 const Model = require("../model");
-const model = new Model();
 
 describe("Model tests", () => {
+    const model = new Model();
+
+    describe("Constructor", () => {
+        test("Model has been created", () => {
+            expect(model.createGridMatrixEvent).not.toBeUndefined();
+        });
+    });
+
     describe("Create grid matrix", () => {
         test("Grid matrix has been created", () => {
             const cellsX = 10;
             const cellsY = 15;
             const matrixSize = model.createGridMatrix(cellsX, cellsY);        
-            expect(matrixSize.matrixHeight === cellsY).toBe(true);
-            expect(matrixSize.matrixWidth === cellsX).toBe(true);
+            expect(model.cellsY === cellsY).toBe(true);
+            expect(model.cellsX === cellsX).toBe(true);
         });
     });
 

@@ -1,4 +1,11 @@
+const EventDispatcher = require("../event-dispatcher/event-dispatcher");
+
 class Model {
+    constructor() {
+        this.cellsX = 0;
+        this.cellsY = 0;
+        this.createGridMatrixEvent = new EventDispatcher(this);
+    }
     
     createGridMatrix(cellsX, cellsY) {
         this._gridMatrix = [];        
@@ -9,10 +16,9 @@ class Model {
             }
             this._gridMatrix.push(gridMatrixRow);
         }
-        return {
-            "matrixHeight": this._gridMatrix.length,
-            "matrixWidth": this._gridMatrix[0].length
-        }
+        this.cellsY = this._gridMatrix.length;
+        this.cellsX = this._gridMatrix[0].length;
+        this.createGridMatrixEvent.notify();
     }
 
     changeElement(i, j) {
