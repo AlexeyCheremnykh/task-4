@@ -1,12 +1,12 @@
 const View = require("../view");
 const Model = require("../../model/model");
 const model = new Model();
-model.createGridMatrix(5, 5);
 const view = new View(model);
 
 describe("View tests", () => {
+    model.createGridMatrix(5, 5);
     const container = document.createElement("div"); 
-    container.className = "game__grid-container";
+    container.className = "game__grid";
     document.body.appendChild(container);
     view.createGrid();
     let cells = container.querySelectorAll(".game__grid-cell");

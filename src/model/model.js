@@ -8,7 +8,7 @@ class Model {
         this.updateCellEvent = new ObservedEvent(this);
     }
     
-    createGridMatrix(cellsX, cellsY) {        
+    createGridMatrix(cellsX, cellsY) {  
         this._gridMatrix = [];        
         for(let i = 0; i < cellsY; i++) {            
             let gridMatrixRow = [];

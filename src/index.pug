@@ -3,5 +3,13 @@ html(lang="ru")
     head
     body
         .game
-            .game__title
-            .game__grid-container
+            h1.game__title The Game of Life            
+            .game__grid
+            .game__buttons
+                button.game__start Start
+                button.game__pause Pause
+                button.game__clear Clear grid
+            .game__size-settings
+                label.game__grid-size Grid size
+                input(type="text" class="game__width" value="60")
+                input(type="text" class="game__height" value="40")
