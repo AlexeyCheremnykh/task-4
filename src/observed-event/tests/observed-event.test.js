@@ -1,8 +1,8 @@
-const EventDispatcher = require("../event-dispatcher");
+const ObservedEvent = require("../observed-event");
 
 class Sender {
     constructor() {
-        this.observedEvent = new EventDispatcher(this);
+        this.observedEvent = new ObservedEvent(this);
     }
 
     notify() {

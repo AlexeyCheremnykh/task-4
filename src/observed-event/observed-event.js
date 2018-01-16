@@ -1,4 +1,4 @@
-class EventDispatcher {
+class ObservedEvent {
     constructor(sender) {
         // this._sender = sender;
         this._handlers = [];
@@ -16,4 +16,4 @@ class EventDispatcher {
     }
 }
 
-module.exports = EventDispatcher;
+module.exports = ObservedEvent;

@@ -1,11 +1,11 @@
-const EventDispatcher = require("../event-dispatcher/event-dispatcher");
+const ObservedEvent = require("../observed-event/observed-event");
 
 class Model {
     constructor() {
         this.cellsX = null;
         this.cellsY = null;
-        this.createGridMatrixEvent = new EventDispatcher(this);
-        this.updateCellEvent = new EventDispatcher(this);
+        this.createGridMatrixEvent = new ObservedEvent(this);
+        this.updateCellEvent = new ObservedEvent(this);
     }
     
     createGridMatrix(cellsX, cellsY) {        
