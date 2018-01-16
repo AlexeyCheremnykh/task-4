@@ -116,7 +116,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, ".game__grid-container {\n  display: inline-block;\n}\n.game__grid {\n  display: flex;\n  flex-wrap: wrap;\n}\n.game__grid-cell {\n  box-sizing: border-box;\n  border: 1px solid #777;\n}\n.game__grid-cell_alive {\n  background-color: #115;\n}\n", ""]);
+exports.push([module.i, ".game {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n.game__grid-container {\n  display: inline-block;\n}\n.game__grid {\n  display: flex;\n  flex-wrap: wrap;\n}\n.game__grid-cell {\n  box-sizing: border-box;\n  border: 1px solid #777;\n}\n.game__grid-cell_alive {\n  background-color: #115;\n}\n.game__buttons {\n  margin: 15px;\n}\n.game__grid-size {\n  display: block;\n}\n", ""]);
 
 // exports
 
@@ -685,7 +685,7 @@ class App {
         let view = new View(model);
         let controller = new Controller(model, view);        
         view.observeModel();
-        model.createGridMatrix(50, 50);
+        model.createGridMatrix(60, 40);
         controller.setListeners();
     }
 }
@@ -712,11 +712,11 @@ class View {
         this.model.updateCellEvent.attach(this.updateCell.bind(this));
     }
    
-    createGrid() {  
-        let grid = document.createElement("div");
-        grid.className = "game__grid"
+    createGrid() {        
+        let grid = document.querySelector(".game__grid");
         grid.style.width = this.model.cellsX * this._cellSize + "px";
-        document.querySelector(".game__grid-container").appendChild(grid);
+        grid.innerHTML = "";
+
         let i = 0;
         let j = 0; 
         for (let k = 0; k < this.model.cellsX * this.model.cellsY; k++) {
@@ -724,7 +724,7 @@ class View {
             cell.className = "game__grid-cell";
             cell.style.height = cell.style.width = this._cellSize + "px";
             
-            // for coords in model array
+            // Дата-аттрибуты содержат индексы для матрицы в модели
             cell.dataset.i = i;
             cell.dataset.j = j;            
             if (j + 1 !== this.model.cellsX) {                
@@ -772,17 +772,17 @@ module.exports = View;
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const EventDispatcher = __webpack_require__(9);
+const ObservedEvent = __webpack_require__(9);
 
 class Model {
     constructor() {
         this.cellsX = null;
         this.cellsY = null;
-        this.createGridMatrixEvent = new EventDispatcher(this);
-        this.updateCellEvent = new EventDispatcher(this);
+        this.createGridMatrixEvent = new ObservedEvent(this);
+        this.updateCellEvent = new ObservedEvent(this);
     }
     
-    createGridMatrix(cellsX, cellsY) {        
+    createGridMatrix(cellsX, cellsY) {  
         this._gridMatrix = [];        
         for(let i = 0; i < cellsY; i++) {            
             let gridMatrixRow = [];
@@ -817,7 +817,7 @@ module.exports = Model;
 /* 9 */
 /***/ (function(module, exports) {
 
-class EventDispatcher {
+class ObservedEvent {
     constructor(sender) {
         // this._sender = sender;
         this._handlers = [];
@@ -835,7 +835,7 @@ class EventDispatcher {
     }
 }
 
-module.exports = EventDispatcher;
+module.exports = ObservedEvent;
 
 /***/ }),
 /* 10 */
@@ -848,24 +848,47 @@ module.exports = EventDispatcher;
     }
 
     setListeners() {
-        const that = this;
+        this.setGridListeners();
+        this.setButtonsListeners();
+        this.setGridSizeListeners();
+    }
 
-        $(".game__grid").mousedown((event) => {
-            let indexes = that.view.getCellIndexes(event.target);
-            that.model.updateCell(indexes.i, indexes.j);
-            
-            $(".game__grid").bind("mouseover", (event) => {
-                indexes = that.view.getCellIndexes(event.target);
-                that.model.updateCell(indexes.i, indexes.j);    
+    setGridListeners() {
+        const self = this;
+        $(".game__grid")
+            .mousedown(function(event) {
+                let indexes = self.view.getCellIndexes(event.target);
+                self.model.updateCell(indexes.i, indexes.j);
+                
+                $(".game__grid").bind("mouseover", (event) => {
+                    indexes = self.view.getCellIndexes(event.target);
+                    self.model.updateCell(indexes.i, indexes.j);    
+                });
+                return false; 
+            })
+            .mouseup(() => {
+                $(".game__grid").unbind("mouseover");
+            })
+            .mouseleave(() => {
+                $(".game__grid").unbind("mouseover");
             });
-            return false; 
+    }
+
+    setButtonsListeners() {
+        const self = this;
+        $(".game__clear").click(function() {
+            self.model.createGridMatrix(self.model.cellsX, self.model.cellsY);
         });
-        $(".game__grid").mouseup(() => {
-            $(".game__grid").unbind("mouseover");
+    }
+
+    setGridSizeListeners() {     
+        const self = this;   
+        $(".game__width").blur(function() {
+            self.model.createGridMatrix($(this).val(), self.model.cellsY);
         });
 
-        $(".game__grid").mouseleave(() => {
-            $(".game__grid").unbind("mouseover");
+        $(".game__height").blur(function () {
+            self.model.createGridMatrix(self.model.cellsX, $(this).val());
         });
     }
 }
