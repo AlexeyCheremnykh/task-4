@@ -953,12 +953,19 @@ module.exports = ObservedEvent;
         });
 
         // Куда-то передвинуть надо будет
+        let initialDelay;
+        $(".game__delay-input").focus(function () {
+            initialDelay = parseInt($(this).val());
+        });
+
         $(".game__delay-input").blur(function() {
             let delay = parseInt($(".game__delay-input").val());
             if (running) {
-                clearInterval(timerId);
-                let calculate = self.model.calculateNextGeneration.bind(self.model);
-                timerId = setInterval(calculate, delay);
+                if (delay != initialDelay) {
+                    clearInterval(timerId);
+                    let calculate = self.model.calculateNextGeneration.bind(self.model);
+                    timerId = setInterval(calculate, delay);
+                }
             }
         });
 
