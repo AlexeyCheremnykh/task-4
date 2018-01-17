@@ -53,7 +53,7 @@ class Controller {
 
         function stop() {
             clearInterval(timerId);
-            self.view.replacePauseButton();
+            self.view.replaceStopButton();
         }
     }    
 

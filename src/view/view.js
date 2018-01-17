@@ -70,7 +70,7 @@ class View {
 
     }
 
-    replacePauseButton() {
+    replaceStopButton() {
         const replacable = document.querySelector(".game__start-stop");
         replacable.innerHTML = "Start";
     }

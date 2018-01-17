@@ -40,18 +40,18 @@ describe("View tests", () => {
     });
 
     describe("Replace buttons", () => {
-        const startPauseButton = document.createElement("div");
-        startPauseButton.className = "game__start-stop";
-        document.body.appendChild(startPauseButton);
+        const startStopButton = document.createElement("div");
+        startStopButton.className = "game__start-stop";
+        document.body.appendChild(startStopButton);
 
         test("Replace start button", () => {
             view.replaceStartButton();
-            expect(startPauseButton.innerHTML).toBe("Stop");
+            expect(startStopButton.innerHTML).toBe("Stop");
         });
 
         test("Replace stop button", () => {
-            view.replacePauseButton();
-            expect(startPauseButton.innerHTML).toBe("Start");
+            view.replaceStopButton();
+            expect(startStopButton.innerHTML).toBe("Start");
         });
     });
 });

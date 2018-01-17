@@ -771,7 +771,7 @@ class View {
 
     }
 
-    replacePauseButton() {
+    replaceStopButton() {
         const replacable = document.querySelector(".game__start-stop");
         replacable.innerHTML = "Start";
     }
@@ -947,7 +947,7 @@ module.exports = ObservedEvent;
 
         function stop() {
             clearInterval(timerId);
-            self.view.replacePauseButton();
+            self.view.replaceStopButton();
         }
     }    
 
