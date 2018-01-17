@@ -902,10 +902,11 @@ module.exports = ObservedEvent;
         this.setGridListeners();
         this.setButtonsListeners();
         this.setGridSizeListeners();
+        this.setDelayListener();
     }
 
     setGridListeners() {
-        const self = this;
+        const self = this;        
         $(".game__grid")
             .mousedown(function(event) {
                 let indexes = self.view.getCellIndexes(event.target);
@@ -918,19 +919,25 @@ module.exports = ObservedEvent;
                 return false; 
             })
             .mouseup(() => {
-                $(".game__grid").unbind("mouseover");
+                $(".game__grid").unbind("mouseover");                
             })
+            .mouseleave(() => {
+                $(".game__grid").unbind("mouseover");
+            });
     }
 
     setButtonsListeners() {
         const self = this;
         let timerId;
+        let running = false;
 
         $(".game__start-stop").click(function () {
+            running = true;
+            let delay = parseInt($(".game__delay-input").val());
             self.model.allCellsDiedEvent.attach(stop.bind(self));
             if ($(this).text() == "Start") {
                 let calculate = self.model.calculateNextGeneration.bind(self.model);
-                timerId = setInterval(calculate, 500);
+                timerId = setInterval(calculate, delay);
                 self.view.replaceStartButton();  
             } else {
                 stop();
@@ -945,8 +952,19 @@ module.exports = ObservedEvent;
             self.model.calculateNextGeneration();
         });
 
+        // Куда-то передвинуть надо будет
+        $(".game__delay-input").blur(function() {
+            let delay = parseInt($(".game__delay-input").val());
+            if (running) {
+                clearInterval(timerId);
+                let calculate = self.model.calculateNextGeneration.bind(self.model);
+                timerId = setInterval(calculate, delay);
+            }
+        });
+
         function stop() {
             clearInterval(timerId);
+            running = false;
             self.view.replaceStopButton();
         }
     }    
@@ -954,11 +972,21 @@ module.exports = ObservedEvent;
     setGridSizeListeners() {     
         const self = this;   
         $(".game__width").blur(function() {
-            self.model.createGridMatrix(parseInt($(this).val()), self.model.cellsY);
+            let width = parseInt($(this).val());
+            if (isNaN(width) || width <= 0) {
+                $(".game__width").addClass("game__wrong-input");
+            } else {
+                self.model.createGridMatrix(width, self.model.cellsY);
+            }
         });
 
         $(".game__height").blur(function () {
-            self.model.createGridMatrix(self.model.cellsX, parseInt($(this).val()));
+            let height = parseInt($(this).val());
+            if (isNaN(height) || height <= 0) {
+                $(".game__width").addClass("game__wrong-input");
+            } else {
+                self.model.createGridMatrix(self.model.cellsX, height);
+            }
         });
     }
 }
