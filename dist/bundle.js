@@ -970,13 +970,25 @@ module.exports = ObservedEvent;
     }    
 
     setGridSizeListeners() {     
-        const self = this;   
+        const self = this;
+        let initialWidth, initialHeight;
+
+        $(".game__width").focus(function () {
+            initialWidth = parseInt($(this).val());
+        });
+
+        $(".game__height").focus(function () {
+            initialHeight = parseInt($(this).val());
+        });
+
         $(".game__width").blur(function() {
             let width = parseInt($(this).val());
             if (isNaN(width) || width <= 0) {
                 $(".game__width").addClass("game__wrong-input");
             } else {
-                self.model.createGridMatrix(width, self.model.cellsY);
+                if (initialWidth != width) {
+                    self.model.createGridMatrix(width, self.model.cellsY);
+                }
             }
         });
 
@@ -985,7 +997,9 @@ module.exports = ObservedEvent;
             if (isNaN(height) || height <= 0) {
                 $(".game__width").addClass("game__wrong-input");
             } else {
-                self.model.createGridMatrix(self.model.cellsX, height);
+                if (initialHeight != height) {
+                    self.model.createGridMatrix(self.model.cellsX, height);
+                }
             }
         });
     }
