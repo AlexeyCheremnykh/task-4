@@ -32,14 +32,14 @@ class Controller {
         const self = this;
         let timerId;
 
-        $(".game__start-pause").click(function () {
+        $(".game__start-stop").click(function () {
+            self.model.allCellsDiedEvent.attach(stop.bind(self));
             if ($(this).text() == "Start") {
                 let calculate = self.model.calculateNextGeneration.bind(self.model);
                 timerId = setInterval(calculate, 500);
                 self.view.replaceStartButton();  
             } else {
-                clearInterval(timerId);
-                self.view.replacePauseButton();
+                stop();
             }
         });
 
@@ -50,7 +50,12 @@ class Controller {
         $(".game__one-step").click(function () {
             self.model.calculateNextGeneration();
         });
-    }
+
+        function stop() {
+            clearInterval(timerId);
+            self.view.replacePauseButton();
+        }
+    }    
 
     setGridSizeListeners() {     
         const self = this;   

@@ -21,7 +21,7 @@ describe("Events listening", () => {
 
     describe("Button click events", () => {
         let newButton = document.createElement("button");
-        newButton.className = "game__start-pause";
+        newButton.className = "game__start-stop";
         newButton.innerHTML = "Start";
         document.body.appendChild(newButton);
 
@@ -35,12 +35,12 @@ describe("Events listening", () => {
         
         controller.setButtonsListeners();
 
-        test("Button-start-pause click event", () => {
-            $(".game__start-pause").trigger("click");
-            expect($(".game__start-pause").text()).toBe("Pause");
+        test("Button-start-stop click event", () => {
+            $(".game__start-stop").trigger("click");
+            expect($(".game__start-stop").text()).toBe("Stop");
             
-            $(".game__start-pause").trigger("click");
-            expect($(".game__start-pause").text()).toBe("Start");
+            $(".game__start-stop").trigger("click");
+            expect($(".game__start-stop").text()).toBe("Start");
         });        
         
         test("Button-one-step click event", () => {

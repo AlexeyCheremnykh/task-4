@@ -6,6 +6,7 @@ class Model {
         this.cellsY = null;
         this.createGridMatrixEvent = new ObservedEvent(this);
         this.updateCellEvent = new ObservedEvent(this);
+        this.allCellsDiedEvent = new ObservedEvent(this);
     }
     
     createGridMatrix(cellsX, cellsY) {  
@@ -66,6 +67,9 @@ class Model {
                     } 
                 }
             }
+        }
+        if (!indexesToUpdate.length) {
+            this.allCellsDiedEvent.notify();
         }
         for (let pair of indexesToUpdate) {
             this.updateCell(pair[0], pair[1]);

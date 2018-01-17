@@ -41,15 +41,15 @@ describe("View tests", () => {
 
     describe("Replace buttons", () => {
         const startPauseButton = document.createElement("div");
-        startPauseButton.className = "game__start-pause";
+        startPauseButton.className = "game__start-stop";
         document.body.appendChild(startPauseButton);
 
         test("Replace start button", () => {
             view.replaceStartButton();
-            expect(startPauseButton.innerHTML).toBe("Pause");
+            expect(startPauseButton.innerHTML).toBe("Stop");
         });
 
-        test("Replace pause button", () => {
+        test("Replace stop button", () => {
             view.replacePauseButton();
             expect(startPauseButton.innerHTML).toBe("Start");
         });
