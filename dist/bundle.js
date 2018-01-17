@@ -766,15 +766,13 @@ class View {
     }
 
     replaceStartButton() {
-        const replacable = document.querySelector(".game__start");
-        replacable.className = "game__pause";
+        const replacable = document.querySelector(".game__start-pause");
         replacable.innerHTML = "Pause";
 
     }
 
     replacePauseButton() {
-        const replacable = document.querySelector(".game__pause");
-        replacable.className = "game__start";
+        const replacable = document.querySelector(".game__start-pause");
         replacable.innerHTML = "Start";
     }
 }
@@ -924,15 +922,15 @@ module.exports = ObservedEvent;
         const self = this;
         let timerId;
 
-        $(".game__start").click(function () {
-            let calculate = self.model.calculateNextGeneration.bind(self.model);
-            timerId = setInterval(calculate, 500);
-            self.view.replaceStartButton();
-        });
-
-        $(".game__pause").click(function () {
-            clearInterval(timerId);
-            self.view.replacePauseButton();
+        $(".game__start-pause").click(function () {
+            if ($(this).text() == "Start") {
+                let calculate = self.model.calculateNextGeneration.bind(self.model);
+                timerId = setInterval(calculate, 500);
+                self.view.replaceStartButton();  
+            } else {
+                clearInterval(timerId);
+                self.view.replacePauseButton();
+            }
         });
 
         $(".game__clear").click(function() {

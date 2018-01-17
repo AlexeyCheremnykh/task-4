@@ -32,15 +32,15 @@ class Controller {
         const self = this;
         let timerId;
 
-        $(".game__start").click(function () {
-            let calculate = self.model.calculateNextGeneration.bind(self.model);
-            timerId = setInterval(calculate, 500);
-            self.view.replaceStartButton();
-        });
-
-        $(".game__pause").click(function () {
-            clearInterval(timerId);
-            self.view.replacePauseButton();
+        $(".game__start-pause").click(function () {
+            if ($(this).text() == "Start") {
+                let calculate = self.model.calculateNextGeneration.bind(self.model);
+                timerId = setInterval(calculate, 500);
+                self.view.replaceStartButton();  
+            } else {
+                clearInterval(timerId);
+                self.view.replacePauseButton();
+            }
         });
 
         $(".game__clear").click(function() {
