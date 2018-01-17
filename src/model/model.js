@@ -38,8 +38,8 @@ class Model {
 
     countAliveNeighbours(i, j) {
         let aliveNeighbours = 0;
-        for (let k = Math.max(0, i - 1); k < Math.min(this.cellsX, i + 2); k++) {
-            for (let m = Math.max(0, j - 1); m < Math.min(this.cellsY, j + 2); m++) {                
+        for (let k = Math.max(0, i - 1); k < Math.min(this.cellsY, i + 2); k++) {
+            for (let m = Math.max(0, j - 1); m < Math.min(this.cellsX, j + 2); m++) {                  
                 if (k === i && m === j) {
                     continue;
                 }
@@ -53,8 +53,8 @@ class Model {
 
     calculateNextGeneration() {
         let indexesToUpdate = []; // запоминает индексы клеток чтобы обновить их в дальнейшем
-        for (let i = 0; i < this.cellsX; i++) {
-            for (let j = 0; j < this.cellsY; j++) {
+        for (let i = 0; i < this.cellsY; i++) {
+            for (let j = 0; j < this.cellsX; j++) {
                 let neighbours = this.countAliveNeighbours(i, j);
                 if (this._gridMatrix[i][j] === 0) {
                     if (neighbours === 3) {

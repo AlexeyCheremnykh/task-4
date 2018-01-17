@@ -36,6 +36,10 @@ class Controller {
         $(".game__clear").click(function() {
             self.model.createGridMatrix(self.model.cellsX, self.model.cellsY);
         });
+
+        $(".game__one-step").click(function () {
+            self.model.calculateNextGeneration();
+        });
     }
 
     setGridSizeListeners() {     
