@@ -766,13 +766,13 @@ class View {
     }
 
     replaceStartButton() {
-        const replacable = document.querySelector(".game__start-pause");
-        replacable.innerHTML = "Pause";
+        const replacable = document.querySelector(".game__start-stop");
+        replacable.innerHTML = "Stop";
 
     }
 
     replacePauseButton() {
-        const replacable = document.querySelector(".game__start-pause");
+        const replacable = document.querySelector(".game__start-stop");
         replacable.innerHTML = "Start";
     }
 }
@@ -791,6 +791,7 @@ class Model {
         this.cellsY = null;
         this.createGridMatrixEvent = new ObservedEvent(this);
         this.updateCellEvent = new ObservedEvent(this);
+        this.allCellsDiedEvent = new ObservedEvent(this);
     }
     
     createGridMatrix(cellsX, cellsY) {  
@@ -851,6 +852,9 @@ class Model {
                     } 
                 }
             }
+        }
+        if (!indexesToUpdate.length) {
+            this.allCellsDiedEvent.notify();
         }
         for (let pair of indexesToUpdate) {
             this.updateCell(pair[0], pair[1]);
@@ -922,14 +926,14 @@ module.exports = ObservedEvent;
         const self = this;
         let timerId;
 
-        $(".game__start-pause").click(function () {
+        $(".game__start-stop").click(function () {
+            self.model.allCellsDiedEvent.attach(stop.bind(self));
             if ($(this).text() == "Start") {
                 let calculate = self.model.calculateNextGeneration.bind(self.model);
                 timerId = setInterval(calculate, 500);
                 self.view.replaceStartButton();  
             } else {
-                clearInterval(timerId);
-                self.view.replacePauseButton();
+                stop();
             }
         });
 
@@ -940,7 +944,12 @@ module.exports = ObservedEvent;
         $(".game__one-step").click(function () {
             self.model.calculateNextGeneration();
         });
-    }
+
+        function stop() {
+            clearInterval(timerId);
+            self.view.replacePauseButton();
+        }
+    }    
 
     setGridSizeListeners() {     
         const self = this;   
