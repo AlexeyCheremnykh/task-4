@@ -65,11 +65,14 @@ class View {
     }
 
     replaceStartButton() {
-        document.querySelector(".game__start").className = "game__pause";
+        const replacable = document.querySelector(".game__start-pause");
+        replacable.innerHTML = "Pause";
+
     }
 
     replacePauseButton() {
-        document.querySelector(".game__pause").className = "game__start";
+        const replacable = document.querySelector(".game__start-pause");
+        replacable.innerHTML = "Start";
     }
 }
 

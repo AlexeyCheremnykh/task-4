@@ -41,17 +41,17 @@ describe("View tests", () => {
 
     describe("Replace buttons", () => {
         const startPauseButton = document.createElement("div");
-        startPauseButton.className = "game__start";
+        startPauseButton.className = "game__start-pause";
         document.body.appendChild(startPauseButton);
 
         test("Replace start button", () => {
             view.replaceStartButton();
-            expect(startPauseButton.className).toBe("game__pause");
+            expect(startPauseButton.innerHTML).toBe("Pause");
         });
 
         test("Replace pause button", () => {
             view.replacePauseButton();
-            expect(startPauseButton.className).toBe("game__start");
+            expect(startPauseButton.innerHTML).toBe("Start");
         });
     });
 });

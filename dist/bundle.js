@@ -764,6 +764,19 @@ class View {
             setDead(cell);
         }           
     }
+
+    replaceStartButton() {
+        const replacable = document.querySelector(".game__start");
+        replacable.className = "game__pause";
+        replacable.innerHTML = "Pause";
+
+    }
+
+    replacePauseButton() {
+        const replacable = document.querySelector(".game__pause");
+        replacable.className = "game__start";
+        replacable.innerHTML = "Start";
+    }
 }
 
 module.exports = View;
@@ -913,11 +926,13 @@ module.exports = ObservedEvent;
 
         $(".game__start").click(function () {
             let calculate = self.model.calculateNextGeneration.bind(self.model);
-            timerId = setInterval(calculate, 1000);
+            timerId = setInterval(calculate, 500);
+            self.view.replaceStartButton();
         });
 
         $(".game__pause").click(function () {
             clearInterval(timerId);
+            self.view.replacePauseButton();
         });
 
         $(".game__clear").click(function() {
