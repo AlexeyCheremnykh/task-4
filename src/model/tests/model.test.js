@@ -46,6 +46,14 @@ describe("Model tests", () => {
             model.updateCell(0, 1);
             expect(model.countAliveNeighbours(0, 0)).toBe(2);
             expect(model.countAliveNeighbours(0, 1)).toBe(5);
+            expect(model.countAliveNeighbours(1, 2)).toBe(4);
+        });
+
+        test("Calculate next generation", () => {
+            model.calculateNextGeneration();
+            expect(model.countAliveNeighbours(0, 0)).toBe(0);
+            expect(model.countAliveNeighbours(0, 1)).toBe(2);
+            expect(model.countAliveNeighbours(0, 2)).toBe(0);
         });
     });
 });

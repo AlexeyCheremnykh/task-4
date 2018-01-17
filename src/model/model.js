@@ -50,6 +50,27 @@ class Model {
         }
         return aliveNeighbours;
     }
+
+    calculateNextGeneration() {
+        let indexesToUpdate = []; // запоминает индексы клеток чтобы обновить их в дальнейшем
+        for (let i = 0; i < this.cellsX; i++) {
+            for (let j = 0; j < this.cellsY; j++) {
+                let neighbours = this.countAliveNeighbours(i, j);
+                if (this._gridMatrix[i][j] === 0) {
+                    if (neighbours === 3) {
+                        indexesToUpdate.push([i, j]);
+                    }
+                } else {
+                    if (neighbours < 2 || neighbours > 3) {
+                        indexesToUpdate.push([i, j]);
+                    } 
+                }
+            }
+        }
+        for (let pair of indexesToUpdate) {
+            this.updateCell(pair[0], pair[1]);
+        }
+    }
 }
 
 module.exports = Model;
