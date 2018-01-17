@@ -116,7 +116,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, ".game {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n.game__grid-container {\n  display: inline-block;\n}\n.game__grid {\n  display: flex;\n  flex-wrap: wrap;\n}\n.game__grid-cell {\n  box-sizing: border-box;\n  border: 1px solid #777;\n}\n.game__grid-cell_alive {\n  background-color: #115;\n}\n.game__buttons {\n  margin: 15px;\n}\n.game__grid-size {\n  display: block;\n}\n", ""]);
+exports.push([module.i, ".game {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n.game__grid-container {\n  display: inline-block;\n}\n.game__grid {\n  display: flex;\n  flex-wrap: wrap;\n}\n.game__grid-cell {\n  box-sizing: border-box;\n  border: 1px solid #777;\n}\n.game__grid-cell_alive {\n  background-color: #115;\n}\n.game__buttons {\n  margin: 15px 0;\n}\n.game__button {\n  width: 100px;\n  height: 40px;\n  background-color: #e5e5e5;\n  border: 1px solid #888;\n  outline: none;\n}\n.game__button:hover {\n  background-color: #efefef;\n}\n.game__one-step {\n  margin: 0 10px;\n}\n.game__settings {\n  text-align: center;\n}\n.game__grid-size {\n  display: block;\n  margin-bottom: 10px;\n}\n.game__input-field {\n  width: 50px;\n  margin-left: 5px;\n}\n", ""]);
 
 // exports
 
