@@ -809,6 +809,42 @@ class Model {
             return
         }
     }
+
+    countAliveNeighbours(i, j) {
+        let aliveNeighbours = 0;
+        for (let k = Math.max(0, i - 1); k < Math.min(this.cellsY, i + 2); k++) {
+            for (let m = Math.max(0, j - 1); m < Math.min(this.cellsX, j + 2); m++) {                  
+                if (k === i && m === j) {
+                    continue;
+                }
+                if (this._gridMatrix[k][m] === 1) {
+                    aliveNeighbours++;
+                }
+            }
+        }
+        return aliveNeighbours;
+    }
+
+    calculateNextGeneration() {
+        let indexesToUpdate = []; // запоминает индексы клеток чтобы обновить их в дальнейшем
+        for (let i = 0; i < this.cellsY; i++) {
+            for (let j = 0; j < this.cellsX; j++) {
+                let neighbours = this.countAliveNeighbours(i, j);
+                if (this._gridMatrix[i][j] === 0) {
+                    if (neighbours === 3) {
+                        indexesToUpdate.push([i, j]);
+                    }
+                } else {
+                    if (neighbours < 2 || neighbours > 3) {
+                        indexesToUpdate.push([i, j]);
+                    } 
+                }
+            }
+        }
+        for (let pair of indexesToUpdate) {
+            this.updateCell(pair[0], pair[1]);
+        }
+    }
 }
 
 module.exports = Model;
@@ -879,16 +915,20 @@ module.exports = ObservedEvent;
         $(".game__clear").click(function() {
             self.model.createGridMatrix(self.model.cellsX, self.model.cellsY);
         });
+
+        $(".game__one-step").click(function () {
+            self.model.calculateNextGeneration();
+        });
     }
 
     setGridSizeListeners() {     
         const self = this;   
         $(".game__width").blur(function() {
-            self.model.createGridMatrix($(this).val(), self.model.cellsY);
+            self.model.createGridMatrix(parseInt($(this).val()), self.model.cellsY);
         });
 
         $(".game__height").blur(function () {
-            self.model.createGridMatrix(self.model.cellsX, $(this).val());
+            self.model.createGridMatrix(self.model.cellsX, parseInt($(this).val()));
         });
     }
 }
