@@ -19,14 +19,41 @@ describe("Events listening", () => {
         expect(spy).toHaveBeenCalled();
     });
 
-    test("Button-clear click event", () => {
-        const spy = jest.spyOn(model, "createGridMatrix");
-        const clearButton = document.createElement("div");
-        clearButton.className = "game__clear";
-        document.body.appendChild(clearButton);
+    describe("Button click events", () => {
+        let newButton = document.createElement("button");
+        newButton.className = "game__start";
+        document.body.appendChild(newButton);
+
+        newButton = document.createElement("button");
+        newButton.className = "game__clear";
+        document.body.appendChild(newButton);
+
+        newButton = document.createElement("button");
+        newButton.className = "game__one-step";
+        document.body.appendChild(newButton);
+        
         controller.setButtonsListeners();
-        $(".game__clear").trigger("click");
-        expect(spy).toHaveBeenCalledWith(5, 5);
+
+        test("Button-start & button-pause click event", () => {
+            let timerId;
+            $(".game__start").trigger("click");
+            expect(timerId).not.toBeUndefined;
+
+            $(".game__pause").trigger("click");
+            expect(timerId).toBeUndefined;
+        });        
+        
+        test("Button-one-step click event", () => {
+            const spy = jest.spyOn(model, "calculateNextGeneration");
+            $(".game__one-step").trigger("click");
+            expect(spy).toHaveBeenCalled();
+        });
+
+        test("Button-clear click event", () => {
+            const spy = jest.spyOn(model, "createGridMatrix");         
+            $(".game__clear").trigger("click");
+            expect(spy).toHaveBeenCalledWith(5, 5);
+        });
     });
 
     describe("Grid size change event listening", () => {

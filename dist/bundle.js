@@ -905,13 +905,21 @@ module.exports = ObservedEvent;
             .mouseup(() => {
                 $(".game__grid").unbind("mouseover");
             })
-            .mouseleave(() => {
-                $(".game__grid").unbind("mouseover");
-            });
     }
 
     setButtonsListeners() {
         const self = this;
+        let timerId;
+
+        $(".game__start").click(function () {
+            let calculate = self.model.calculateNextGeneration.bind(self.model);
+            timerId = setInterval(calculate, 1000);
+        });
+
+        $(".game__pause").click(function () {
+            clearInterval(timerId);
+        });
+
         $(".game__clear").click(function() {
             self.model.createGridMatrix(self.model.cellsX, self.model.cellsY);
         });

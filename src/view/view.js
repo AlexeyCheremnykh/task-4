@@ -63,6 +63,14 @@ class View {
             setDead(cell);
         }           
     }
+
+    replaceStartButton() {
+        document.querySelector(".game__start").className = "game__pause";
+    }
+
+    replacePauseButton() {
+        document.querySelector(".game__pause").className = "game__start";
+    }
 }
 
 module.exports = View;

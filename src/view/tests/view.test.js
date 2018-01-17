@@ -38,4 +38,20 @@ describe("View tests", () => {
             expect(cells[0].className == "game__grid-cell").toBe(true);
         });
     });
+
+    describe("Replace buttons", () => {
+        const startPauseButton = document.createElement("div");
+        startPauseButton.className = "game__start";
+        document.body.appendChild(startPauseButton);
+
+        test("Replace start button", () => {
+            view.replaceStartButton();
+            expect(startPauseButton.className).toBe("game__pause");
+        });
+
+        test("Replace pause button", () => {
+            view.replacePauseButton();
+            expect(startPauseButton.className).toBe("game__start");
+        });
+    });
 });
