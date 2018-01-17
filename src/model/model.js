@@ -35,6 +35,21 @@ class Model {
             return
         }
     }
+
+    countAliveNeighbours(i, j) {
+        let aliveNeighbours = 0;
+        for (let k = Math.max(0, i - 1); k < Math.min(this.cellsX, i + 2); k++) {
+            for (let m = Math.max(0, j - 1); m < Math.min(this.cellsY, j + 2); m++) {                
+                if (k === i && m === j) {
+                    continue;
+                }
+                if (this._gridMatrix[k][m] === 1) {
+                    aliveNeighbours++;
+                }
+            }
+        }
+        return aliveNeighbours;
+    }
 }
 
 module.exports = Model;
