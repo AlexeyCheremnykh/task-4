@@ -9,7 +9,7 @@ class App {
         let view = new View(model);
         let controller = new Controller(model, view);        
         view.observeModel();
-        model.createGridMatrix(60, 40);
+        model.createGridMatrix(parseInt($(".game__width").val()), parseInt($(".game__height").val()));
         controller.setListeners();
     }
 }

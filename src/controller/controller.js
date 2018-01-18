@@ -98,11 +98,17 @@ class Controller {
         let initialWidth, initialHeight;
 
         $(".game__width").focus(function () {
-            initialWidth = parseInt($(this).val());
+            let width = parseInt($(this).val());
+            if (!isNaN(width) || width > 0) {
+                initialWidth = width;
+            }
         });
 
         $(".game__height").focus(function () {
-            initialHeight = parseInt($(this).val());
+            let height = parseInt($(this).val());
+            if (!isNaN(height) || height > 0) {
+                initialHeight = height;
+            }
         });
 
         $(".game__width").blur(function() {
