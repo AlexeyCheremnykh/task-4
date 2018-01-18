@@ -116,7 +116,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, ".game {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n.game__grid-container {\n  display: inline-block;\n}\n.game__grid {\n  display: flex;\n  flex-wrap: wrap;\n}\n.game__grid-cell {\n  box-sizing: border-box;\n  border: 1px solid #777;\n}\n.game__grid-cell_alive {\n  background-color: #115;\n}\n.game__buttons {\n  margin: 15px 0;\n}\n.game__button {\n  width: 100px;\n  height: 40px;\n  background-color: #e5e5e5;\n  border: 1px solid #888;\n  outline: none;\n}\n.game__button:hover {\n  background-color: #efefef;\n}\n.game__one-step {\n  margin: 0 10px;\n}\n.game__settings {\n  text-align: center;\n}\n.game__grid-size {\n  display: block;\n  margin-bottom: 10px;\n}\n.game__input-field {\n  width: 50px;\n  margin-left: 5px;\n}\n", ""]);
+exports.push([module.i, ".game {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n.game__grid-container {\n  display: inline-block;\n}\n.game__grid {\n  display: flex;\n  flex-wrap: wrap;\n}\n.game__grid-cell {\n  box-sizing: border-box;\n  border: 1px solid #777;\n}\n.game__grid-cell_alive {\n  background-color: #115;\n}\n.game__buttons {\n  margin: 15px 0;\n}\n.game__button {\n  width: 100px;\n  height: 40px;\n  background-color: #e5e5e5;\n  border: 1px solid #888;\n  outline: none;\n}\n.game__button:hover {\n  background-color: #efefef;\n}\n.game__one-step {\n  margin: 0 10px;\n}\n.game__settings {\n  text-align: center;\n}\n.game__grid-size {\n  display: block;\n  margin-bottom: 10px;\n}\n.game__input-field {\n  border: 1px solid #999;\n  width: 50px;\n  margin-left: 5px;\n}\n.game__wrong-input {\n  outline-color: #f00;\n  background-color: rgba(255,0,0,0.1);\n  border: 1px solid #f00;\n}\n", ""]);
 
 // exports
 
@@ -991,18 +991,6 @@ module.exports = ObservedEvent;
         const self = this;
         let initialWidth, initialHeight;
 
-        const gridSizeIsCorrect = function(width, height) {
-            if (isNaN(width) || width <= 0) {
-                $(".game__width").addClass("game__wrong-input");
-                return false;
-            }
-            if (isNaN(height) || height <= 0) {
-                $(".game__height").addClass("game__wrong-input");
-                return false;
-            }
-            return true;           
-        }
-
         $(".game__width").focus(function () {
             initialWidth = parseInt($(this).val());
         });
@@ -1014,21 +1002,29 @@ module.exports = ObservedEvent;
         $(".game__width").blur(function() {
             let width = parseInt($(".game__width").val());
             let height = parseInt($(".game__height").val());
-            if (gridSizeIsCorrect(width, height)) {
+            if (isNaN(width) || width <= 0) {
+                $(this).addClass("game__wrong-input");
+            } else {
                 $(this).removeClass("game__wrong-input");
-                if (initialWidth != width) {
-                    self.model.createGridMatrix(width, height);
-                }
+                if (!(isNaN(height) || height <= 0)) {
+                    if (initialWidth != width) {
+                        self.model.createGridMatrix(width, height);
+                    } 
+                }              
             }
         });
 
         $(".game__height").blur(function() {
             let width = parseInt($(".game__width").val());
             let height = parseInt($(".game__height").val());
-            if (gridSizeIsCorrect(width, height)) {
+            if (isNaN(height) || height <= 0) {
+                $(this).addClass("game__wrong-input");
+            } else {
                 $(this).removeClass("game__wrong-input");
-                if (initialHeight != height) {
-                    self.model.createGridMatrix(width, height);
+                if (!(isNaN(width) || width <= 0)) {
+                    if (initialHeight != height) {
+                        self.model.createGridMatrix(width, height);
+                    }
                 }
             }
         });
