@@ -8,7 +8,6 @@ class Controller {
         this.setGridListeners();
         this.setButtonsListeners();
         this.setGridSizeListeners();
-        this.setDelayListener();
     }
 
     setGridListeners() {
