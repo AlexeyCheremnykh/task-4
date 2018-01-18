@@ -11163,7 +11163,6 @@ module.exports = ObservedEvent;
         this.setGridListeners();
         this.setButtonsListeners();
         this.setGridSizeListeners();
-        this.setDelayListener();
     }
 
     setGridListeners() {
