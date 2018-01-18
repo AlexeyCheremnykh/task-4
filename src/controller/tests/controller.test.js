@@ -68,23 +68,9 @@ describe("Events listening", () => {
         document.body.appendChild(heightElement);
         controller.setGridSizeListeners();
 
-        test("Width change", () => {
+        test("Change grid size", () => {
             $(".game__width").trigger("blur");
-            expect(spy).toHaveBeenCalledWith(4, 5);
-        });
-
-        test("Height change", () => {
-            $(".game__height").trigger("blur");
             expect(spy).toHaveBeenCalledWith(4, 12);
         });
     });
-
-    /*test("New game event click event listening", () => {
-
-    });
-
-    test("Pause click event listening", () => {
-
-    });
-    */
 });
