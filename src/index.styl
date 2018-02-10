@@ -1,57 +1,59 @@
+html
+  background-color: #ffffff
+  color: #4f4f4f
+  font-size: 16px
+  font-family: Arial, Helvetica, sans-serif //????
+
 .game
+  display: flex
+  flex-direction: column
+  align-items: center
+
+  &__title
+    font-weight: 400
+
+  &__grid
     display: flex
-    flex-direction: column
-    align-items: center
+    flex-wrap: wrap
+    box-shadow: 0 0 10px 0px rgba(0,0,0,0.5)
 
-    &__title
-        font-weight: 400
+  &__grid-cell
+    box-sizing: border-box
+    border: 1px solid #bbbbbb
 
-    &__grid-container
-        display: inline-block
+    &_alive
+      background-color: #ed2525
 
-    &__grid
-        display: flex
-        flex-wrap: wrap
-        box-shadow: 0 0 10px 0px rgba(0,0,0,0.5)
-        border: 5px solid #888888
+  &__buttons
+    margin: 15px 0
 
-    &__grid-cell
-        box-sizing: border-box
-        border: 1px solid #bbbbbb
+  &__button
+    width: 100px
+    height: 40px
+    background-color: #e5e5e5
+    border: 1px solid #888888
+    cursor: pointer
 
-        &_alive
-            background-color: #ed2525
-    
-    &__buttons
-        margin: 15px 0
-    
-    &__button
-        width: 100px 
-        height: 40px
-        background-color: #e5e5e5
-        border: 1px solid #888888
-        outline: none
+    &:hover
+      background-color: #efefef
 
-        &:hover
-            background-color: #efefef   
+  &__one-step
+    margin: 0 10px
 
-    &__one-step
-        margin: 0 10px    
+  &__settings
+    text-align: center
 
-    &__settings
-        text-align: center
-   
-    &__grid-size
-        display: block 
-        margin-bottom: 10px   
+  &__grid-size
+    display: block
+    margin-bottom: 10px
 
-    &__input-field
-        border: 1px solid #999999
-        width: 50px 
-        margin-left: 5px
+  &__input-field
+    border: 1px solid #999999
+    width: 50px
+    margin-left: 5px
 
-    &__wrong-input
-        outline-color: red
-        background-color: rgba(255, 0, 0, 0.1);
-        border: 1px solid red
+  &__wrong-input
+    outline-color: red
+    background-color: rgba(255, 0, 0, 0.1);
+    border: 1px solid red
 

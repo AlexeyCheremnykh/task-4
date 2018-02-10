@@ -1,17 +1,19 @@
 doctype html
-html(lang="ru")
+html(lang="en")
     head
-    body
-        .game
-            h1.game__title The Game of Life            
-            .game__grid
-            .game__buttons
-                button.game__button.game__start-stop Start
-                button.game__button.game__one-step One step
-                button.game__button.game__clear Clear grid
-            .game__settings
-                label.game__grid-size Grid size
-                    input(type="text" class="game__input-field game__width" value="30")
-                    input(type="text" class="game__input-field game__height" value="20")
-                label.game__delay-label Delay
-                    input(type="text" class="game__input-field game__delay-input" value="200")
+        meta(charset="utf-8")
+        meta(name="viewport" content="initial-scale=1.0, width=device-width")
+        title The Game of Life
+    body.game
+        h1.game__title The Game of Life
+        .game__grid
+        .game__buttons
+            button.game__button.game__start-stop Start
+            button.game__button.game__one-step One step
+            button.game__button.game__clear Clear grid
+        .game__settings
+            label.game__grid-size Grid size
+                input(type="text" class="game__input-field game__width" value="30")
+                input(type="text" class="game__input-field game__height" value="20")
+            label.game__delay-label Delay
+                input(type="text" class="game__input-field game__delay-input" value="200")
