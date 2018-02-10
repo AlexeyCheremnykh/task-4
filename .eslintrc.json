@@ -16,6 +16,7 @@
             "windows"
         ],
         "no-underscore-dangle": "off",
-        "import/first": "off"
+        "import/first": "off",
+        "class-methods-use-this": "off"
     }
 }
