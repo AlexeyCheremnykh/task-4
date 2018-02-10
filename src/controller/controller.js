@@ -1,145 +1,159 @@
 class Controller {
-    constructor(model, view) {
-        this.view = view;
-        this.model = model;        
-    }
+  constructor(model, view) {
+    this.view = view;
+    this.model = model;
+  }
 
-    setListeners() {
-        this.setGridListeners();
-        this.setButtonsListeners();
-        this.setGridSizeListeners();
-    }
+  setListeners() {
+    this.setGridListeners();
+    this.setButtonsListeners();
+    this.setGridSizeListeners();
+  }
 
-    setGridListeners() {
-        const self = this;        
-        $(".game__grid")
-            .mousedown(function(event) {
-                let indexes = self.view.getCellIndexes(event.target);
-                self.model.updateCell(indexes.i, indexes.j);
-                
-                $(".game__grid").bind("mouseover", (event) => {
-                    indexes = self.view.getCellIndexes(event.target);
-                    self.model.updateCell(indexes.i, indexes.j);    
-                });
-                return false; 
-            })
-            .mouseup(() => {
-                $(".game__grid").unbind("mouseover");                
-            })
-            .mouseleave(() => {
-                $(".game__grid").unbind("mouseover");
-            });
-    }
+  setGridListeners() {
+    const self = this;
+    const $grid = $('.game__grid');
 
-    setButtonsListeners() {
-        const self = this;
-        let timerId;
-        let running = false;
+    const updateCell = function updateCellInModel(event) {
+      const indexes = self.view.getCellIndexes(event.target);
+      self.model.updateCell(indexes.i, indexes.j);
+    };
 
-        $(".game__start-stop").click(function () {
-            running = true;
-            let delay = parseInt($(".game__delay-input").val());
-            self.model.allCellsDiedEvent.attach(stop.bind(self));
-            if ($(this).text() == "Start") {
-                let calculate = self.model.calculateNextGeneration.bind(self.model);
-                timerId = setInterval(calculate, delay);
-                self.view.replaceStartButton();  
-            } else {
-                stop();
-            }
-        });
+    const updateCellAndListenMouseover = function updateCellAndSetMouseoverListener(event) {
+      updateCell(event);
+      $grid.bind('mouseover', updateCell);
+      return false;
+    };
 
-        $(".game__clear").click(function() {
-            self.model.createGridMatrix(self.model.cellsX, self.model.cellsY);
-        });
+    const unbindMouseover = function unbindMouseoverUpdateCellListener() {
+      $grid.unbind('mouseover');
+    };
 
-        $(".game__one-step").click(function () {
-            self.model.calculateNextGeneration();
-        });
+    $grid
+      .mousedown(updateCellAndListenMouseover)
+      .mouseup(unbindMouseover)
+      .mouseleave(unbindMouseover);
+  }
 
-        // Куда-то передвинуть надо будет
-        let initialDelay;
-        $(".game__delay-input").focus(function () {
-            initialDelay = parseInt($(this).val());
-        });
+  setButtonsListeners() {
+    const self = this;
+    const $startStopButton = $('.game__start-stop');
+    const $delayInput = $('.game__delay-input');
+    const $clearButton = $('.game__clear');
+    const $oneStepButton = $('.game__one-step');
+    let timerId;
+    let running = false;
 
-        $(".game__delay-input").blur(function() {
-            let delay = parseInt($(".game__delay-input").val());
-            if (delayIsCorrect(delay)) {
-                $(this).removeClass("game__wrong-input");
-                if (running) {
-                    if (delay != initialDelay) {
-                        clearInterval(timerId);
-                        let calculate = self.model.calculateNextGeneration.bind(self.model);
-                        timerId = setInterval(calculate, delay);
-                    }
+    const stopGame = function pauseGameAndReplaceStopButton() {
+      clearInterval(timerId);
+      running = false;
+      self.view.replaceStopButton();
+    };
+
+    const startGame = function startGameAndReplaceStartButton() {
+      const delay = parseInt($delayInput.val(), 10);
+      const calculateNextGeneration = self.model.calculateNextGeneration.bind(self.model);
+      self.model.endGameEvent.attach(stopGame.bind(self));
+      timerId = setInterval(calculateNextGeneration, delay);
+      running = true;
+      self.view.replaceStartButton();
+    };
+
+    const startOrStopGame = function startOrStopGameRunning(event) {
+      if ($(event.target).text() === 'Start') {
+        startGame();
+      } else {
+        stopGame();
+      }
+    };
+
+    $startStopButton.on('click', startOrStopGame);
+
+    const clearGrid = function createAllZeroGridMatrix() {
+      self.model.createGridMatrix(self.model.cellsX, self.model.cellsY);
+    };
+
+    $clearButton.on('click', clearGrid);
+
+    $oneStepButton.on('click', this.model.calculateNextGeneration.bind(this.model));
+
+    // Куда-то передвинуть надо будет
+    let initialDelay;
+    $delayInput.focus(function () {
+        initialDelay = parseInt($(this).val());
+    });
+
+    $delayInput.blur(function() {
+      let delay = parseInt($delayInput.val());
+        if (delayIsCorrect(delay)) {
+            $(this).removeClass('game__wrong-input');
+            if (running) {
+                if (delay != initialDelay) {
+                    clearInterval(timerId);
+                    let calculate = self.model.calculateNextGeneration.bind(self.model);
+                    timerId = setInterval(calculate, delay);
                 }
             }
-        });
-
-        function delayIsCorrect(delay) {
-            if (isNaN(delay) || delay < 0) {
-                $(".game__delay-input").addClass("game__wrong-input");
-                return false;
-            }
-            return true;
         }
+    });
 
-        function stop() {
-            clearInterval(timerId);
-            running = false;
-            self.view.replaceStopButton();
+    function delayIsCorrect(delay) {
+        if (isNaN(delay) || delay < 0) {
+          $delayInput.addClass('game__wrong-input');
+            return false;
         }
-    }    
-
-    setGridSizeListeners() {     
-        const self = this;
-        let initialWidth, initialHeight;
-
-        $(".game__width").focus(function () {
-            let width = parseInt($(this).val());
-            if (!isNaN(width) || width > 0) {
-                initialWidth = width;
-            }
-        });
-
-        $(".game__height").focus(function () {
-            let height = parseInt($(this).val());
-            if (!isNaN(height) || height > 0) {
-                initialHeight = height;
-            }
-        });
-
-        $(".game__width").blur(function() {
-            let width = parseInt($(".game__width").val());
-            let height = parseInt($(".game__height").val());
-            if (isNaN(width) || width <= 0) {
-                $(this).addClass("game__wrong-input");
-            } else {
-                $(this).removeClass("game__wrong-input");
-                if (!(isNaN(height) || height <= 0)) {
-                    if (initialWidth != width) {
-                        self.model.createGridMatrix(width, height);
-                    } 
-                }              
-            }
-        });
-
-        $(".game__height").blur(function() {
-            let width = parseInt($(".game__width").val());
-            let height = parseInt($(".game__height").val());
-            if (isNaN(height) || height <= 0) {
-                $(this).addClass("game__wrong-input");
-            } else {
-                $(this).removeClass("game__wrong-input");
-                if (!(isNaN(width) || width <= 0)) {
-                    if (initialHeight != height) {
-                        self.model.createGridMatrix(width, height);
-                    }
-                }
-            }
-        });
+        return true;
     }
+  }
+
+  setGridSizeListeners() {
+      const self = this;
+      let initialWidth, initialHeight;
+
+      $('.game__width').focus(function () {
+          let width = parseInt($(this).val());
+          if (!isNaN(width) || width > 0) {
+              initialWidth = width;
+          }
+      });
+
+      $('.game__height').focus(function () {
+          let height = parseInt($(this).val());
+          if (!isNaN(height) || height > 0) {
+              initialHeight = height;
+          }
+      });
+
+      $('.game__width').blur(function() {
+          let width = parseInt($('.game__width').val());
+          let height = parseInt($('.game__height').val());
+          if (isNaN(width) || width <= 0) {
+              $(this).addClass('game__wrong-input');
+          } else {
+              $(this).removeClass('game__wrong-input');
+              if (!(isNaN(height) || height <= 0)) {
+                  if (initialWidth != width) {
+                      self.model.createGridMatrix(width, height);
+                  }
+              }
+          }
+      });
+
+      $('.game__height').blur(function() {
+          let width = parseInt($('.game__width').val());
+          let height = parseInt($('.game__height').val());
+          if (isNaN(height) || height <= 0) {
+              $(this).addClass('game__wrong-input');
+          } else {
+              $(this).removeClass('game__wrong-input');
+              if (!(isNaN(width) || width <= 0)) {
+                  if (initialHeight != height) {
+                      self.model.createGridMatrix(width, height);
+                  }
+              }
+          }
+      });
+  }
 }
 
 module.exports = Controller;
