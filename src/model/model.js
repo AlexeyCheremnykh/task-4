@@ -34,7 +34,8 @@ class Model {
     let aliveNeighbours = 0;
     for (let k = Math.max(0, i - 1); k < Math.min(this.cellsY, i + 2); k += 1) {
       for (let m = Math.max(0, j - 1); m < Math.min(this.cellsX, j + 2); m += 1) {
-        if (k !== i || m !== j) {
+        const notCurrentCell = k !== i || m !== j;
+        if (notCurrentCell) {
           if (this._gridMatrix[k][m] === 1) {
             aliveNeighbours += 1;
           }
@@ -61,9 +62,9 @@ class Model {
     if (!indexesToUpdate.length) {
       this.endGameEvent.notify();
     }
-    for (let i = 0; i < indexesToUpdate.length; i += 1) {
-      this.updateCell(indexesToUpdate[i][0], indexesToUpdate[i][1]);
-    }
+    indexesToUpdate.forEach((indexesPair) => {
+      this.updateCell(indexesPair[0], indexesPair[1]);
+    });
   }
 }
 

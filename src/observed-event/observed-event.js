@@ -8,9 +8,9 @@ class ObservedEvent {
   }
 
   notify(...args) {
-    for (let i = 0; i < this._handlers.length; i += 1) {
-      this._handlers[i](...args);
-    }
+    this._handlers.forEach((handler) => {
+      handler(...args);
+    });
   }
 }
 
