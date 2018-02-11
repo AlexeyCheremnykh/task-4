@@ -1,4 +1,4 @@
-const ObservedEvent = require("../observed-event/observed-event");
+import ObservedEvent from '../observed-event/observed-event';
 
 class Model {
   constructor() {
@@ -68,4 +68,4 @@ class Model {
   }
 }
 
-module.exports = Model;
+export default Model;

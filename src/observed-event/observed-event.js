@@ -14,4 +14,4 @@ class ObservedEvent {
   }
 }
 
-module.exports = ObservedEvent;
+export default ObservedEvent;

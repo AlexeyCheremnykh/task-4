@@ -1,6 +1,6 @@
-const View = require('../view/view');
-const Model = require('../model/model');
-const Controller = require('../controller/controller');
+import View from '../view/view';
+import Model from '../model/model';
+import Controller from '../controller/controller';
 
 class App {
   init() {
@@ -18,4 +18,4 @@ class App {
 const app = new App();
 app.init();
 
-module.exports = App;
+export default App;
