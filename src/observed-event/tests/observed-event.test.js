@@ -1,47 +1,49 @@
-const ObservedEvent = require("../observed-event");
+/* global jest, test, describe, expect */
 
-class Sender {
-    constructor() {
-        this.observedEvent = new ObservedEvent(this);
-    }
+import ObservedEvent from '../observed-event';
 
-    notify() {
-        this.observedEvent.notify();
-    }
+class Observable {
+  constructor() {
+    this.observedEvent = new ObservedEvent();
+  }
+
+  notify() {
+    this.observedEvent.notify();
+  }
 }
 
 class Observer {
-    constructor(sender) {
-        this.sender = sender;
-    }
-    
-    handler() {}
+  constructor(observable) {
+    this.observable = observable;
+  }
 
-    observe() {        
-        this.sender.observedEvent.attach(this.handler.bind(this));
-    }
+  handler() {}
+
+  observe() {
+    this.observable.observedEvent.attach(this.handler.bind(this));
+  }
 }
 
-describe("Event dispatcher", () => {
-    const sender = new Sender();
-    const observer = new Observer(sender);          
+describe('Observed event tests', () => {
+  const observable = new Observable();
+  const observer = new Observer(observable);
 
-    test("Handler hasn't been attached", () => {
-        expect(sender.observedEvent._handlers[0]).toBeUndefined();
-    });   
+  test("Handler hasn't been attached", () => {
+    expect(observable.observedEvent._handlers[0]).toBeUndefined();
+  });
 
-    test("Handler has been attached", () => {   
-        observer.observe();
-        expect(sender.observedEvent._handlers[0]).not.toBeUndefined();
-    });   
+  test('Handler has been attached', () => {
+    observer.observe();
+    expect(observable.observedEvent._handlers[0]).not.toBeUndefined();
+  });
 
-    const spy = jest.spyOn(observer, "handler");
-    test("Observer hasn't been notified", () => {
-        expect(spy).not.toHaveBeenCalled();
-    });
+  const spy = jest.spyOn(observer, 'handler');
+  test("Observer hasn't been notified", () => {
+    expect(spy).not.toHaveBeenCalled();
+  });
 
-    test("Observer has been notified", () => {
-        sender.notify();
-        expect(spy).toHaveBeenCalled();
-    });
+  test('Observer has been notified', () => {
+    observable.notify();
+    expect(spy).toHaveBeenCalled();
+  });
 });
