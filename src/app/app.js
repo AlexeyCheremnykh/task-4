@@ -1,17 +1,18 @@
-const View = require("../view/view");
-const Model = require("../model/model");
-const Controller = require("../controller/controller");
+const View = require('../view/view');
+const Model = require('../model/model');
+const Controller = require('../controller/controller');
 
 class App {
-
-    init() {        
-        let model = new Model();
-        let view = new View(model);
-        let controller = new Controller(model, view);        
-        view.observeModel();
-        model.createGridMatrix(parseInt($(".game__width").val()), parseInt($(".game__height").val()));
-        controller.setListeners();
-    }
+  init() {
+    const model = new Model();
+    const view = new View(model);
+    const controller = new Controller(model, view);
+    const $width = $('.game__width');
+    const $height = $('.game__height');
+    view.observeModel();
+    model.createGridMatrix(parseInt($width.val(), 10), parseInt($height.val(), 10));
+    controller.setListeners();
+  }
 }
 
 const app = new App();
