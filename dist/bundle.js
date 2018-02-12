@@ -10331,8 +10331,8 @@ return jQuery;
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__index_styl__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__index_styl___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__index_styl__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_app_js__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_app_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__app_app_js__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_app__ = __webpack_require__(7);
+
 
 
 
@@ -10376,7 +10376,7 @@ exports = module.exports = __webpack_require__(4)(false);
 
 
 // module
-exports.push([module.i, ".game {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n.game__title {\n  font-weight: 400;\n}\n.game__grid-container {\n  display: inline-block;\n}\n.game__grid {\n  display: flex;\n  flex-wrap: wrap;\n  box-shadow: 0 0 10px 0px rgba(0,0,0,0.5);\n  border: 5px solid #888;\n}\n.game__grid-cell {\n  box-sizing: border-box;\n  border: 1px solid #bbb;\n}\n.game__grid-cell_alive {\n  background-color: #ed2525;\n}\n.game__buttons {\n  margin: 15px 0;\n}\n.game__button {\n  width: 100px;\n  height: 40px;\n  background-color: #e5e5e5;\n  border: 1px solid #888;\n  outline: none;\n}\n.game__button:hover {\n  background-color: #efefef;\n}\n.game__one-step {\n  margin: 0 10px;\n}\n.game__settings {\n  text-align: center;\n}\n.game__grid-size {\n  display: block;\n  margin-bottom: 10px;\n}\n.game__input-field {\n  border: 1px solid #999;\n  width: 50px;\n  margin-left: 5px;\n}\n.game__wrong-input {\n  outline-color: #f00;\n  background-color: rgba(255,0,0,0.1);\n  border: 1px solid #f00;\n}\n", ""]);
+exports.push([module.i, "html {\n  background-color: #fff;\n  color: #4f4f4f;\n  font-size: 16px;\n  font-family: Arial, sans-serif;\n}\n.game {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n.game__title {\n  font-weight: 400;\n}\n.game__grid {\n  display: flex;\n  flex-wrap: wrap;\n  box-shadow: 0 0 10px 0px rgba(0,0,0,0.5);\n  cursor: pointer;\n}\n.game__grid-cell {\n  box-sizing: border-box;\n  height: 12px;\n  width: 12px;\n  border: 1px solid #bbb;\n}\n.game__grid-cell_alive {\n  background-color: #ed2525;\n}\n.game__buttons {\n  margin: 15px 0;\n}\n.game__button {\n  width: 100px;\n  height: 40px;\n  background-color: #e5e5e5;\n  border: 1px solid #888;\n  cursor: pointer;\n}\n.game__button:hover {\n  background-color: #efefef;\n}\n.game__one-step {\n  margin: 0 10px;\n}\n.game__settings {\n  text-align: center;\n}\n.game__grid-size {\n  display: block;\n  margin-bottom: 10px;\n}\n.game__input {\n  border: 1px solid #999;\n  width: 50px;\n  margin-left: 5px;\n}\n.game__wrong-input {\n  outline-color: #f00;\n  background-color: rgba(255,0,0,0.1);\n  border: 1px solid #f00;\n}\n", ""]);
 
 // exports
 
@@ -10932,373 +10932,367 @@ module.exports = function (css) {
 
 /***/ }),
 /* 7 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function($) {const View = __webpack_require__(8);
-const Model = __webpack_require__(9);
-const Controller = __webpack_require__(11);
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view_view__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__model_model__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__controller_controller__ = __webpack_require__(11);
+
+
+
 
 class App {
+  constructor() {
+    this._model = new __WEBPACK_IMPORTED_MODULE_1__model_model__["a" /* default */]();
+    this._view = new __WEBPACK_IMPORTED_MODULE_0__view_view__["a" /* default */](this._model);
+    this._controller = new __WEBPACK_IMPORTED_MODULE_2__controller_controller__["a" /* default */](this._model, this._view);
+  }
 
-    init() {        
-        let model = new Model();
-        let view = new View(model);
-        let controller = new Controller(model, view);        
-        view.observeModel();
-        model.createGridMatrix(parseInt($(".game__width").val()), parseInt($(".game__height").val()));
-        controller.setListeners();
-    }
+  init() {
+    const $width = $('.game__width-input');
+    const $height = $('.game__height-input');
+    this._view.observeModel();
+    this._model.createGridMatrix(parseInt($width.val(), 10), parseInt($height.val(), 10));
+    this._controller.setListeners();
+  }
 }
 
 const app = new App();
 app.init();
 
-module.exports = App;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ }),
 /* 8 */
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 class View {
+  constructor(model) {
+    this._model = model;
+    this._cellSize = 12;
+  }
 
-    constructor(model) {
-        this.model = model;
-        this.grid = null;
-        this._cellSize = 12;
+  observeModel() {
+    this._model.createGridMatrixEvent.attach(this.createGrid.bind(this));
+    this._model.updateCellEvent.attach(this.updateCell.bind(this));
+  }
+
+  createGrid() {
+    const grid = document.querySelector('.game__grid');
+    grid.style.width = `${this._model.cellsX * this._cellSize}px`;
+    grid.innerHTML = '';
+    for (let i = 0; i < this._model.cellsY; i += 1) {
+      for (let j = 0; j < this._model.cellsX; j += 1) {
+        const cell = document.createElement('div');
+        cell.className = 'game__grid-cell';
+        // Дата-аттрибуты содержат индексы для матрицы в модели
+        cell.dataset.i = i;
+        cell.dataset.j = j;
+        grid.appendChild(cell);
+      }
     }
+  }
 
-    observeModel() {
-        this.model.createGridMatrixEvent.attach(this.createGrid.bind(this));
-        this.model.updateCellEvent.attach(this.updateCell.bind(this));
+  getCellIndexes(elem) {
+    return {
+      i: parseInt(elem.dataset.i, 10),
+      j: parseInt(elem.dataset.j, 10),
+    };
+  }
+
+  updateCell(i, j) {
+    const updatedCell = document.querySelector(`div[data-i='${i}'][data-j='${j}']`);
+    if (updatedCell.className === 'game__grid-cell') {
+      updatedCell.className = 'game__grid-cell game__grid-cell_alive';
+    } else {
+      updatedCell.className = 'game__grid-cell';
     }
-   
-    createGrid() {        
-        let grid = document.querySelector(".game__grid");
-        grid.style.width = this.model.cellsX * this._cellSize + "px";
-        grid.innerHTML = "";
+  }
 
-        let i = 0;
-        let j = 0; 
-        for (let k = 0; k < this.model.cellsX * this.model.cellsY; k++) {
-            let cell = document.createElement("div");
-            cell.className = "game__grid-cell";
-            cell.style.height = cell.style.width = this._cellSize + "px";
-            
-            // Дата-аттрибуты содержат индексы для матрицы в модели
-            cell.dataset.i = i;
-            cell.dataset.j = j;            
-            if (j + 1 !== this.model.cellsX) {                
-                j++;
-            } else {
-                i++;
-                j = 0;
-            }
+  replaceStartButton() {
+    document.querySelector('.game__start-stop').innerHTML = 'Stop';
+  }
 
-            grid.appendChild(cell);
-        }
-    }
-
-    getCellIndexes(elem) {
-        let indexes = {
-            i: parseInt(elem.dataset.i),
-            j: parseInt(elem.dataset.j)
-        }
-        return indexes;
-    }
-
-    updateCell(i, j) {
-        const setAlive = function (cell) {
-            cell.className = "game__grid-cell game__grid-cell_alive";
-        }
-
-        const setDead = function (cell) {
-            cell.className = "game__grid-cell";
-        }
-
-        let selector = "div[data-i='" + i + "'][data-j='" + j + "']";
-        let cell = document.querySelector(selector);
-
-        if (cell.className == "game__grid-cell") {
-            setAlive(cell);
-        } else {
-            setDead(cell);
-        }           
-    }
-
-    replaceStartButton() {
-        const replacable = document.querySelector(".game__start-stop");
-        replacable.innerHTML = "Stop";
-
-    }
-
-    replaceStopButton() {
-        const replacable = document.querySelector(".game__start-stop");
-        replacable.innerHTML = "Start";
-    }
+  replaceStopButton() {
+    document.querySelector('.game__start-stop').innerHTML = 'Start';
+  }
 }
 
-module.exports = View;
+/* harmony default export */ __webpack_exports__["a"] = (View);
+
 
 /***/ }),
 /* 9 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-const ObservedEvent = __webpack_require__(10);
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__ = __webpack_require__(10);
+
 
 class Model {
-    constructor() {
-        this.cellsX = null;
-        this.cellsY = null;
-        this.createGridMatrixEvent = new ObservedEvent(this);
-        this.updateCellEvent = new ObservedEvent(this);
-        this.allCellsDiedEvent = new ObservedEvent(this);
-    }
-    
-    createGridMatrix(cellsX, cellsY) {  
-        this._gridMatrix = [];        
-        for(let i = 0; i < cellsY; i++) {            
-            let gridMatrixRow = [];
-            for (let j = 0; j < cellsX; j++) {
-                gridMatrixRow.push(0);
-            }
-            this._gridMatrix.push(gridMatrixRow);
-        }
-        this.cellsY = this._gridMatrix.length;
-        this.cellsX = this._gridMatrix[0].length;
-        this.createGridMatrixEvent.notify();
-    }
+  constructor() {
+    this.createGridMatrixEvent = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */](this);
+    this.updateCellEvent = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */](this);
+    this.endGameEvent = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */](this);
+  }
 
-    updateCell(i, j) {
-        try {            
-            if (this._gridMatrix[i][j] === 0) {
-                this._gridMatrix[i][j] = 1;
-            } else if (this._gridMatrix[i][j] === 1) {
-                this._gridMatrix[i][j] = 0;
-            }
-            this.updateCellEvent.notify(i, j);      
-            return this._gridMatrix[i][j];            
-        } catch(err) {
-            return
-        }
+  createGridMatrix(cellsX, cellsY) {
+    this._gridMatrix = [];
+    for (let i = 0; i < cellsY; i += 1) {
+      const gridMatrixRow = [];
+      for (let j = 0; j < cellsX; j += 1) {
+        gridMatrixRow.push(0);
+      }
+      this._gridMatrix.push(gridMatrixRow);
     }
+    this.cellsY = this._gridMatrix.length;
+    this.cellsX = this._gridMatrix[0].length;
+    this.createGridMatrixEvent.notify();
+  }
 
-    countAliveNeighbours(i, j) {
-        let aliveNeighbours = 0;
-        for (let k = Math.max(0, i - 1); k < Math.min(this.cellsY, i + 2); k++) {
-            for (let m = Math.max(0, j - 1); m < Math.min(this.cellsX, j + 2); m++) {                  
-                if (k === i && m === j) {
-                    continue;
-                }
-                if (this._gridMatrix[k][m] === 1) {
-                    aliveNeighbours++;
-                }
-            }
-        }
-        return aliveNeighbours;
+  updateCell(i, j) {
+    if (this._gridMatrix[i][j] === 0) {
+      this._gridMatrix[i][j] = 1;
+    } else {
+      this._gridMatrix[i][j] = 0;
     }
+    this.updateCellEvent.notify(i, j);
+  }
 
-    calculateNextGeneration() {
-        let indexesToUpdate = []; // запоминает индексы клеток чтобы обновить их в дальнейшем
-        for (let i = 0; i < this.cellsY; i++) {
-            for (let j = 0; j < this.cellsX; j++) {
-                let neighbours = this.countAliveNeighbours(i, j);
-                if (this._gridMatrix[i][j] === 0) {
-                    if (neighbours === 3) {
-                        indexesToUpdate.push([i, j]);
-                    }
-                } else {
-                    if (neighbours < 2 || neighbours > 3) {
-                        indexesToUpdate.push([i, j]);
-                    } 
-                }
-            }
+  countAliveNeighbours(i, j) {
+    let aliveNeighbours = 0;
+    for (let k = Math.max(0, i - 1); k < Math.min(this.cellsY, i + 2); k += 1) {
+      for (let m = Math.max(0, j - 1); m < Math.min(this.cellsX, j + 2); m += 1) {
+        const notCurrentCell = k !== i || m !== j;
+        if (notCurrentCell) {
+          if (this._gridMatrix[k][m] === 1) {
+            aliveNeighbours += 1;
+          }
         }
-        if (!indexesToUpdate.length) {
-            this.allCellsDiedEvent.notify();
-        }
-        for (let pair of indexesToUpdate) {
-            this.updateCell(pair[0], pair[1]);
-        }
+      }
     }
+    return aliveNeighbours;
+  }
+
+  calculateNextGeneration() {
+    const indexesToUpdate = [];
+    for (let i = 0; i < this.cellsY; i += 1) {
+      for (let j = 0; j < this.cellsX; j += 1) {
+        const aliveNeighbours = this.countAliveNeighbours(i, j);
+        if (this._gridMatrix[i][j] === 0) {
+          if (aliveNeighbours === 3) {
+            indexesToUpdate.push([i, j]);
+          }
+        } else if (aliveNeighbours < 2 || aliveNeighbours > 3) {
+          indexesToUpdate.push([i, j]);
+        }
+      }
+    }
+    if (!indexesToUpdate.length) {
+      this.endGameEvent.notify();
+    }
+    indexesToUpdate.forEach((indexesPair) => {
+      this.updateCell(indexesPair[0], indexesPair[1]);
+    });
+  }
 }
 
-module.exports = Model;
+/* harmony default export */ __webpack_exports__["a"] = (Model);
+
 
 /***/ }),
 /* 10 */
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 class ObservedEvent {
-    constructor(sender) {
-        // this._sender = sender;
-        this._handlers = [];
-    }
+  constructor() {
+    this._handlers = [];
+  }
 
-    attach(handler) {
-        this._handlers.push(handler);
-    }
+  attach(handler) {
+    this._handlers.push(handler);
+  }
 
-    notify(...args) {
-        for (let i = 0; i < this._handlers.length; i++) {
-            // this._handlers[i](this._sender, args);    
-            this._handlers[i](...args);        
-        }
-    }
+  notify(...args) {
+    this._handlers.forEach((handler) => {
+      handler(...args);
+    });
+  }
 }
 
-module.exports = ObservedEvent;
+/* harmony default export */ __webpack_exports__["a"] = (ObservedEvent);
+
 
 /***/ }),
 /* 11 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 /* WEBPACK VAR INJECTION */(function($) {class Controller {
-    constructor(model, view) {
-        this.view = view;
-        this.model = model;        
-    }
+  constructor(model, view) {
+    this._view = view;
+    this._model = model;
+  }
 
-    setListeners() {
-        this.setGridListeners();
-        this.setButtonsListeners();
-        this.setGridSizeListeners();
-    }
+  setListeners() {
+    const self = this;
+    const $grid = $('.game__grid');
+    const $startStopButton = $('.game__start-stop');
+    const $oneStepButton = $('.game__one-step');
+    const $clearButton = $('.game__clear');
+    const $delayInput = $('.game__delay-input');
+    let timerId;
+    let gameIsRunning = false;
 
-    setGridListeners() {
-        const self = this;        
-        $(".game__grid")
-            .mousedown(function(event) {
-                let indexes = self.view.getCellIndexes(event.target);
-                self.model.updateCell(indexes.i, indexes.j);
-                
-                $(".game__grid").bind("mouseover", (event) => {
-                    indexes = self.view.getCellIndexes(event.target);
-                    self.model.updateCell(indexes.i, indexes.j);    
-                });
-                return false; 
-            })
-            .mouseup(() => {
-                $(".game__grid").unbind("mouseover");                
-            })
-            .mouseleave(() => {
-                $(".game__grid").unbind("mouseover");
-            });
-    }
+    const setGridListeners = function setListenersRelatedToGridUpdate() {
+      const updateCell = function updateCellInModel(event) {
+        const indexes = self._view.getCellIndexes(event.target);
+        self._model.updateCell(indexes.i, indexes.j);
+      };
 
-    setButtonsListeners() {
-        const self = this;
-        let timerId;
-        let running = false;
+      const updateCellAndListenMouseover = function updateCellAndSetMouseoverListener(event) {
+        updateCell(event);
+        $grid.bind('mouseover', updateCell);
+        return false;
+      };
 
-        $(".game__start-stop").click(function () {
-            running = true;
-            let delay = parseInt($(".game__delay-input").val());
-            self.model.allCellsDiedEvent.attach(stop.bind(self));
-            if ($(this).text() == "Start") {
-                let calculate = self.model.calculateNextGeneration.bind(self.model);
-                timerId = setInterval(calculate, delay);
-                self.view.replaceStartButton();  
-            } else {
-                stop();
-            }
-        });
+      const unbindMouseover = function unbindMouseoverUpdateCellListener() {
+        $grid.unbind('mouseover');
+      };
 
-        $(".game__clear").click(function() {
-            self.model.createGridMatrix(self.model.cellsX, self.model.cellsY);
-        });
+      $grid
+        .mousedown(updateCellAndListenMouseover)
+        .mouseup(unbindMouseover)
+        .mouseleave(unbindMouseover);
+    };
 
-        $(".game__one-step").click(function () {
-            self.model.calculateNextGeneration();
-        });
+    const setButtonsListeners = function setListenersRelatedToAllButtons() {
+      const stopGame = function pauseGameAndReplaceStopButton() {
+        clearInterval(timerId);
+        gameIsRunning = false;
+        self._view.replaceStopButton();
+      };
 
-        // Куда-то передвинуть надо будет
-        let initialDelay;
-        $(".game__delay-input").focus(function () {
-            initialDelay = parseInt($(this).val());
-        });
-
-        $(".game__delay-input").blur(function() {
-            let delay = parseInt($(".game__delay-input").val());
-            if (delayIsCorrect(delay)) {
-                $(this).removeClass("game__wrong-input");
-                if (running) {
-                    if (delay != initialDelay) {
-                        clearInterval(timerId);
-                        let calculate = self.model.calculateNextGeneration.bind(self.model);
-                        timerId = setInterval(calculate, delay);
-                    }
-                }
-            }
-        });
-
-        function delayIsCorrect(delay) {
-            if (isNaN(delay) || delay < 0) {
-                $(".game__delay-input").addClass("game__wrong-input");
-                return false;
-            }
-            return true;
+      const startGame = function startGameAndReplaceStartButton() {
+        const delay = parseInt($delayInput.val(), 10);
+        if (delay > 0) {
+          self._model.endGameEvent.attach(stopGame);
+          timerId = setInterval(self._model.calculateNextGeneration.bind(self._model), delay);
+          gameIsRunning = true;
+          self._view.replaceStartButton();
         }
+      };
 
-        function stop() {
+      const startOrStopGame = function startOrStopGameRunning(event) {
+        if ($(event.target).text() === 'Start') {
+          startGame();
+        } else {
+          stopGame();
+        }
+      };
+
+      $startStopButton.on('click', startOrStopGame);
+
+      const clearGrid = function createAllZeroGridMatrix() {
+        self._model.createGridMatrix(self._model.cellsX, self._model.cellsY);
+      };
+
+      $clearButton.on('click', clearGrid);
+      $oneStepButton.on('click', self._model.calculateNextGeneration.bind(self._model));
+    };
+
+    const setDelayListeners = function setListenersRelatedToDelayField() {
+      let currentDelay;
+
+      const saveDelay = function saveCurrentDelayValue(event) {
+        currentDelay = parseInt($(event.target).val(), 10);
+      };
+
+      $delayInput.on('focus', saveDelay);
+
+      const delayHasBeenChanged = function checkIfDelayHasBeenChanged(newDelay) {
+        return (newDelay !== currentDelay);
+      };
+
+      const changeDelay = function changeGridNextGenerationCalculationDelay(event) {
+        const newDelay = parseInt($(event.target).val(), 10);
+        if (newDelay >= 0) {
+          $(event.target).removeClass('game__wrong-input');
+          if (gameIsRunning && delayHasBeenChanged(newDelay)) {
             clearInterval(timerId);
-            running = false;
-            self.view.replaceStopButton();
+            timerId = setInterval(self._model.calculateNextGeneration.bind(self._model), newDelay);
+          }
+        } else {
+          $(event.target).addClass('game__wrong-input');
         }
-    }    
+      };
 
-    setGridSizeListeners() {     
-        const self = this;
-        let initialWidth, initialHeight;
+      $delayInput.on('blur', changeDelay);
+    };
 
-        $(".game__width").focus(function () {
-            let width = parseInt($(this).val());
-            if (!isNaN(width) || width > 0) {
-                initialWidth = width;
-            }
-        });
+    const setGridSizeListeners = function setListenersRelatedToGridSizeChanging() {
+      let currentWidth;
+      let currentHeight;
+      const $width = $('.game__width-input');
+      const $height = $('.game__height-input');
 
-        $(".game__height").focus(function () {
-            let height = parseInt($(this).val());
-            if (!isNaN(height) || height > 0) {
-                initialHeight = height;
-            }
-        });
+      const saveGridSize = function saveCurrentWidthAndHeightValue() {
+        currentWidth = parseInt($width.val(), 10);
+        currentHeight = parseInt($height.val(), 10);
+      };
 
-        $(".game__width").blur(function() {
-            let width = parseInt($(".game__width").val());
-            let height = parseInt($(".game__height").val());
-            if (isNaN(width) || width <= 0) {
-                $(this).addClass("game__wrong-input");
-            } else {
-                $(this).removeClass("game__wrong-input");
-                if (!(isNaN(height) || height <= 0)) {
-                    if (initialWidth != width) {
-                        self.model.createGridMatrix(width, height);
-                    } 
-                }              
-            }
-        });
+      $('.game__width-input, .game__height-input').on('focus', saveGridSize);
 
-        $(".game__height").blur(function() {
-            let width = parseInt($(".game__width").val());
-            let height = parseInt($(".game__height").val());
-            if (isNaN(height) || height <= 0) {
-                $(this).addClass("game__wrong-input");
-            } else {
-                $(this).removeClass("game__wrong-input");
-                if (!(isNaN(width) || width <= 0)) {
-                    if (initialHeight != height) {
-                        self.model.createGridMatrix(width, height);
-                    }
-                }
-            }
-        });
-    }
+      const widthHasBeenChanged = function checkIfWidthHasBeenChanged(newWidth) {
+        return (newWidth !== currentWidth);
+      };
+
+      const heightHasBeenChanged = function checkIfHeightHasBeenChanged(newHeight) {
+        return (newHeight !== currentHeight);
+      };
+
+      const changeGridWidth = function createNewGridMatrixWidthUpdatedWidth(event) {
+        const newWidth = parseInt($(event.target).val(), 10);
+        if (newWidth > 0) {
+          $(event.target).removeClass('game__wrong-input');
+          if (currentHeight > 0 && widthHasBeenChanged(newWidth)) {
+            self._model.createGridMatrix(newWidth, currentHeight);
+          }
+        } else {
+          $(event.target).addClass('game__wrong-input');
+        }
+      };
+
+      $('.game__width-input').blur(changeGridWidth);
+
+      const changeGridHeight = function createNewGridMatrixWidthUpdatedHeight(event) {
+        const newHeight = parseInt($(event.target).val(), 10);
+        if (newHeight > 0) {
+          $(event.target).removeClass('game__wrong-input');
+          if (currentWidth > 0 && heightHasBeenChanged(newHeight)) {
+            self._model.createGridMatrix(currentWidth, newHeight);
+          }
+        } else {
+          $(event.target).addClass('game__wrong-input');
+        }
+      };
+
+      $('.game__height-input').blur(changeGridHeight);
+    };
+
+    setGridListeners();
+    setButtonsListeners();
+    setDelayListeners();
+    setGridSizeListeners();
+  }
 }
 
-module.exports = Controller;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+/* harmony default export */ __webpack_exports__["a"] = (Controller);
+
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ })
 /******/ ]);
