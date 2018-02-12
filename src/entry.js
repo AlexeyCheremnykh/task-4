@@ -1,2 +1,4 @@
-import './index.styl';
-import './app/app';
+import './favicons/favicons';
+import './pages/index.styl';
+import './blocks/game/game.styl';
+import './blocks/game/app/app';

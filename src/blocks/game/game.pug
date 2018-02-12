@@ -1,0 +1,13 @@
+body.game
+    h1.game__title The Game of Life
+    .game__grid
+    .game__buttons
+        button.game__button.game__start-stop Start
+        button.game__button.game__one-step One step
+        button.game__button.game__clear Clear grid
+    .game__settings
+        label.game__grid-size Grid size
+            input(type="text" class="game__input game__width-input" value="30")
+            input(type="text" class="game__input game__height-input" value="20")
+        label.game__delay-label Delay
+            input(type="text" class="game__input game__delay-input" value="200")
