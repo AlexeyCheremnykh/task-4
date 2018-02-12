@@ -152,8 +152,8 @@ class Controller {
 
     setGridListeners();
     setButtonsListeners();
-    setGridSizeListeners();
     setDelayListeners();
+    setGridSizeListeners();
   }
 }
 
