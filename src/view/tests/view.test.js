@@ -1,23 +1,32 @@
-/* global describe, expect, test */
+/* global describe, expect, test, jest */
 
 import View from '../view';
 import Model from '../../model/model';
+import ObservedEvent from '../../observed-event/observed-event';
 
 const model = new Model();
 const view = new View(model);
 
-describe('View tests', () => {
-  model.createGridMatrix(5, 5);
-  const grid = document.createElement('div');
-  grid.className = 'game__grid';
-  document.body.appendChild(grid);
-  view.createGrid();
-  const cells = grid.querySelectorAll('.game__grid-cell');
+model.createGridMatrix(5, 5);
+const grid = document.createElement('div');
+grid.className = 'game__grid';
+document.body.appendChild(grid);
+view.createGrid();
+const cells = grid.querySelectorAll('.game__grid-cell');
 
-  describe('Create grid', () => {
-    test('Grid has been created', () => {
-      expect(cells.length).toBe(25);
-    });
+describe('View tests', () => {
+  test('Class instance has been created', () => {
+    expect(view._model).not.toBeUndefined();
+  });
+
+  test('Model is observed', () => {
+    const spy = jest.spyOn(ObservedEvent.prototype, 'attach');
+    view.observeModel();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  test('Grid has been created', () => {
+    expect(cells.length).toBe(25);
   });
 
   describe('Get element indexes', () => {

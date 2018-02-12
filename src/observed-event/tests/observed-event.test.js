@@ -28,21 +28,20 @@ describe('Observed event tests', () => {
   const observable = new Observable();
   const observer = new Observer(observable);
 
-  test("Handler hasn't been attached", () => {
-    expect(observable.observedEvent._handlers[0]).toBeUndefined();
+  test('Class instance has been created', () => {
+    expect(observable.observedEvent._handlers).not.toBeUndefined();
   });
 
   test('Handler has been attached', () => {
+    expect(observable.observedEvent._handlers[0]).toBeUndefined();
     observer.observe();
     expect(observable.observedEvent._handlers[0]).not.toBeUndefined();
   });
 
   const spy = jest.spyOn(observer, 'handler');
-  test("Observer hasn't been notified", () => {
-    expect(spy).not.toHaveBeenCalled();
-  });
 
   test('Observer has been notified', () => {
+    expect(spy).not.toHaveBeenCalled();
     observable.notify();
     expect(spy).toHaveBeenCalled();
   });

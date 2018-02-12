@@ -47,96 +47,139 @@ view.observeModel();
 model.createGridMatrix(5, 5);
 controller.setListeners();
 
-describe('Events listening', () => {
-  jest.useFakeTimers();
-
-  test('Cell update on click', () => {
-    const $gridCell = $($('.game__grid-cell')[2]);
-    $gridCell.trigger('mousedown');
-    expect(updateCellSpy).toHaveBeenCalledWith(0, 2);
+describe('Controller tests', () => {
+  test('Class instance has been created', () => {
+    expect(controller._model).not.toBeUndefined();
+    expect(controller._view).not.toBeUndefined();
   });
 
-  describe('Button click events', () => {
-    const $startStopBtn = $('.game__start-stop');
+  describe('Events listening', () => {
+    jest.useFakeTimers();
 
-    test('Game starts on click', () => {
+    test('Cell update on click', () => {
+      const $gridCell = $($('.game__grid-cell')[2]);
+      $gridCell.trigger('mousedown');
+      expect(updateCellSpy).toHaveBeenCalledWith(0, 2);
+    });
+
+    describe('Button click events', () => {
+      const $startStopBtn = $('.game__start-stop');
+
+      test('Game starts on click', () => {
+        $startStopBtn.trigger('click');
+        expect(setInterval).toHaveBeenCalled();
+        expect(replaceStartButtonSpy).toHaveBeenCalled();
+      });
+
+      test('Game stops on click', () => {
+        $startStopBtn.trigger('click');
+        expect(clearInterval).toHaveBeenCalled();
+        expect(replaceStopButtonSpy).toHaveBeenCalled();
+      });
+
+      test('Calculate one step next generation on click', () => {
+        const $oneStepBtn = $('.game__one-step');
+        $oneStepBtn.trigger('click');
+        expect(calculateNextGenerationSpy).toHaveBeenCalled();
+      });
+
+      test('Grid clears on click', () => {
+        const $clear = $('.game__clear');
+        $clear.trigger('click');
+        expect(createGridMatrixSpy).toHaveBeenCalledWith(5, 5);
+      });
+    });
+
+    describe('Grid size change events', () => {
+      const $width = $('.game__width');
+      const $height = $('.game__height');
+      $width.val(4);
+      $height.val(12);
+
+      test('New grid if width changes', () => {
+        $width.trigger('focus');
+        $width.val(5);
+        $width.trigger('blur');
+        expect(createGridMatrixSpy).toHaveBeenLastCalledWith(5, 12);
+        expect(createGridMatrixSpy).toHaveBeenCalledTimes(3);
+      });
+
+      test("The same grid if width doesn't change", () => {
+        $width.trigger('focus');
+        $width.trigger('blur');
+        expect(createGridMatrixSpy).toHaveBeenCalledTimes(3);
+      });
+
+      test('New grid if height changes', () => {
+        $height.trigger('focus');
+        $height.val(6);
+        $height.trigger('blur');
+        expect(createGridMatrixSpy).toHaveBeenLastCalledWith(5, 6);
+        expect(createGridMatrixSpy).toHaveBeenCalledTimes(4);
+      });
+
+      test("The same grid if height doesn't change", () => {
+        $height.trigger('focus');
+        $height.trigger('blur');
+        expect(createGridMatrixSpy).toHaveBeenCalledTimes(4);
+      });
+
+      test('The same grid if width is invalid', () => {
+        $width.val('wrong!');
+        $width.trigger('focus');
+        $width.trigger('blur');
+        expect(createGridMatrixSpy).toHaveBeenCalledTimes(4);
+
+        $width.val('-124');
+        $width.trigger('focus');
+        $width.trigger('blur');
+        expect(createGridMatrixSpy).toHaveBeenCalledTimes(4);
+      });
+
+      test('The same grid if height is invalid', () => {
+        $width.val(5);
+        $height.val('wrong!');
+        $height.trigger('focus');
+        $height.trigger('blur');
+        expect(createGridMatrixSpy).toHaveBeenCalledTimes(4);
+
+        $height.val('-666');
+        $height.trigger('focus');
+        $height.trigger('blur');
+        expect(createGridMatrixSpy).toHaveBeenCalledTimes(4);
+      });
+    });
+
+    describe('Delay change events', () => {
+      const $delay = $('.game__delay-input');
+      const $startStopBtn = $('.game__start-stop');
       $startStopBtn.trigger('click');
-      expect(setInterval).toHaveBeenCalled();
-      expect(replaceStartButtonSpy).toHaveBeenCalled();
-    });
 
-    test('Game stops on click', () => {
-      $startStopBtn.trigger('click');
-      expect(clearInterval).toHaveBeenCalled();
-      expect(replaceStopButtonSpy).toHaveBeenCalled();
-    });
+      test('New timer if delay changes', () => {
+        $delay.trigger('focus');
+        $delay.val(200);
+        $delay.trigger('blur');
+        expect(clearInterval).toHaveBeenCalledTimes(2);
+        expect(setInterval).toHaveBeenCalledWith(expect.any(Function), 200);
+      });
 
-    test('Calculate one step next generation on click', () => {
-      const $oneStepBtn = $('.game__one-step');
-      $oneStepBtn.trigger('click');
-      expect(calculateNextGenerationSpy).toHaveBeenCalled();
-    });
+      test("The same timer if delay doesn't change", () => {
+        $delay.trigger('focus');
+        $delay.trigger('blur');
+        expect(clearInterval).toHaveBeenCalledTimes(2);
+      });
 
-    test('Grid clears on click', () => {
-      const $clear = $('.game__clear');
-      $clear.trigger('click');
-      expect(createGridMatrixSpy).toHaveBeenCalledWith(5, 5);
-    });
-  });
+      test('The same timer if delay is invalid', () => {
+        $delay.val('wrong!');
+        $delay.trigger('focus');
+        $delay.trigger('blur');
+        expect(clearInterval).toHaveBeenCalledTimes(2);
 
-  describe('Grid size change events', () => {
-    const $width = $('.game__width');
-    const $height = $('.game__height');
-    $width.val(4);
-    $height.val(12);
-
-    test('New grid if width changes', () => {
-      $width.trigger('focus');
-      $width.val(5);
-      $width.trigger('blur');
-      expect(createGridMatrixSpy).toHaveBeenLastCalledWith(5, 12);
-      expect(createGridMatrixSpy).toHaveBeenCalledTimes(3);
-    });
-
-    test("The same grid if width doesn't change", () => {
-      $width.trigger('focus');
-      $width.trigger('blur');
-      expect(createGridMatrixSpy).toHaveBeenCalledTimes(3);
-    });
-
-    test('New grid if height changes', () => {
-      $height.trigger('focus');
-      $height.val(6);
-      $height.trigger('blur');
-      expect(createGridMatrixSpy).toHaveBeenLastCalledWith(5, 6);
-      expect(createGridMatrixSpy).toHaveBeenCalledTimes(4);
-    });
-
-    test("The same grid if height doesn't change", () => {
-      $height.trigger('focus');
-      $height.trigger('blur');
-      expect(createGridMatrixSpy).toHaveBeenLastCalledWith(5, 6);
-      expect(createGridMatrixSpy).toHaveBeenCalledTimes(4);
-    });
-  });
-
-  describe('Delay change events', () => {
-    const $delay = $('.game__delay-input');
-    const $startStopBtn = $('.game__start-stop');
-    $startStopBtn.trigger('click');
-
-    test('New timer if delay changes', () => {
-      $delay.trigger('focus');
-      $delay.val(200);
-      $delay.trigger('blur');
-      expect(clearInterval).toHaveBeenCalledTimes(2);
-      expect(setInterval).toHaveBeenCalledWith(expect.any(Function), 200);
-    });
-
-    test("The same timer if delay doesn't change", () => {
-      $delay.trigger('focus');
-      $delay.trigger('blur');
-      expect(clearInterval).toHaveBeenCalledTimes(2);
+        $delay.val('-999');
+        $delay.trigger('focus');
+        $delay.trigger('blur');
+        expect(clearInterval).toHaveBeenCalledTimes(2);
+      });
     });
   });
 });
