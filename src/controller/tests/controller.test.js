@@ -25,11 +25,11 @@ oneStepBtn.className = 'game__one-step';
 document.body.appendChild(oneStepBtn);
 
 const widthInput = document.createElement('input');
-widthInput.className = 'game__width';
+widthInput.className = 'game__width-input';
 document.body.appendChild(widthInput);
 
 const heightInput = document.createElement('input');
-heightInput.className = 'game__height';
+heightInput.className = 'game__height-input';
 document.body.appendChild(heightInput);
 
 const delayInput = document.createElement('input');
@@ -91,8 +91,8 @@ describe('Controller tests', () => {
     });
 
     describe('Grid size change events', () => {
-      const $width = $('.game__width');
-      const $height = $('.game__height');
+      const $width = $('.game__width-input');
+      const $height = $('.game__height-input');
       $width.val(4);
       $height.val(12);
 

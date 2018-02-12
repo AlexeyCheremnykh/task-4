@@ -10,8 +10,8 @@ class App {
   }
 
   init() {
-    const $width = $('.game__width');
-    const $height = $('.game__height');
+    const $width = $('.game__width-input');
+    const $height = $('.game__height-input');
     this._view.observeModel();
     this._model.createGridMatrix(parseInt($width.val(), 10), parseInt($height.val(), 10));
     this._controller.setListeners();
