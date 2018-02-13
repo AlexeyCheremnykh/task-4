@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "webpack": "webpack-dev-server"
+    "server": "webpack-dev-server",
+    "watch": "webpack --watch",
+    "build": "webpack"
   },
   "author": "",
   "license": "ISC",
