@@ -42,11 +42,13 @@ class View {
   }
 
   replaceStartButton() {
-    document.querySelector('.js-game__start-stop').innerHTML = 'Stop';
+    const btnStopText = 'Stop';
+    document.querySelector('.js-game__start-stop').innerHTML = btnStopText;
   }
 
   replaceStopButton() {
-    document.querySelector('.js-game__start-stop').innerHTML = 'Start';
+    const btnStartText = 'Start';
+    document.querySelector('.js-game__start-stop').innerHTML = btnStartText;
   }
 }
 

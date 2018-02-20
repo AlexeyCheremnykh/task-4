@@ -54,7 +54,8 @@ class Controller {
       };
 
       const startOrStopGame = function startOrStopGameRunning(event) {
-        if ($(event.target).text() === 'Start') {
+        const btnStartText = 'Start';
+        if ($(event.target).text() === btnStartText) {
           startGame();
         } else {
           stopGame();
@@ -86,7 +87,7 @@ class Controller {
 
       const changeDelay = function changeGridNextGenerationCalculationDelay(event) {
         const newDelay = parseInt($(event.target).val(), 10);
-        if (newDelay >= 0) {
+        if (newDelay > 0) {
           $(event.target).removeClass('game__wrong-input');
           if (gameIsRunning && delayHasBeenChanged(newDelay)) {
             clearInterval(timerId);
