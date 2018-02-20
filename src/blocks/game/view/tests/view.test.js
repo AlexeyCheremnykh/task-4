@@ -9,10 +9,10 @@ const view = new View(model);
 
 model.createGridMatrix(5, 5);
 const grid = document.createElement('div');
-grid.className = 'game__grid';
+grid.className = 'game__grid js-game__grid';
 document.body.appendChild(grid);
 view.createGrid();
-const cells = grid.querySelectorAll('.game__grid-cell');
+const cells = grid.querySelectorAll('.js-game__grid-cell');
 
 describe('View tests', () => {
   test('Class instance has been created', () => {
@@ -42,18 +42,18 @@ describe('View tests', () => {
   describe('Update cell', () => {
     test('Set alive', () => {
       view.updateCell(0, 0);
-      expect(cells[0].className === 'game__grid-cell game__grid-cell_alive').toBe(true);
+      expect(cells[0].className === 'game__grid-cell js-game__grid-cell game__grid-cell_alive').toBe(true);
     });
 
     test('Set dead', () => {
       view.updateCell(0, 0);
-      expect(cells[0].className === 'game__grid-cell').toBe(true);
+      expect(cells[0].className === 'game__grid-cell js-game__grid-cell').toBe(true);
     });
   });
 
   describe('Replace buttons', () => {
     const startStopButton = document.createElement('div');
-    startStopButton.className = 'game__start-stop';
+    startStopButton.className = 'game__start-stop js-game__start-stop';
     document.body.appendChild(startStopButton);
 
     test('Replace start button', () => {
