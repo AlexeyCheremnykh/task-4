@@ -37,16 +37,16 @@ class Controller {
     };
 
     const setButtonsListeners = function setListenersRelatedToAllButtons() {
-      const stopGame = function pauseGameAndReplaceStopButton() {
+      const stopGame = function stopGameAndReplaceStopButton() {
         clearInterval(timerId);
         gameIsRunning = false;
         self._view.replaceStopButton();
       };
+      self._model.endGameEvent.attach(stopGame);
 
       const startGame = function startGameAndReplaceStartButton() {
         const delay = parseInt($delayInput.val(), 10);
         if (delay > 0) {
-          self._model.endGameEvent.attach(stopGame);
           timerId = setInterval(self._model.calculateNextGeneration.bind(self._model), delay);
           gameIsRunning = true;
           self._view.replaceStartButton();
