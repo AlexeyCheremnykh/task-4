@@ -6,11 +6,11 @@ class Controller {
 
   setListeners() {
     const self = this;
-    const $grid = $('.game__grid');
-    const $startStopButton = $('.game__start-stop');
-    const $oneStepButton = $('.game__one-step');
-    const $clearButton = $('.game__clear');
-    const $delayInput = $('.game__delay-input');
+    const $grid = $('.js-game__grid');
+    const $startStopButton = $('.js-game__start-stop');
+    const $oneStepButton = $('.js-game__one-step');
+    const $clearButton = $('.js-game__clear');
+    const $delayInput = $('.js-game__delay-input');
     let timerId;
     let gameIsRunning = false;
 
@@ -103,15 +103,16 @@ class Controller {
     const setGridSizeListeners = function setListenersRelatedToGridSizeChanging() {
       let currentWidth;
       let currentHeight;
-      const $width = $('.game__width-input');
-      const $height = $('.game__height-input');
+      const $width = $('.js-game__width-input');
+      const $height = $('.js-game__height-input');
+      const $widthAndHeight = $('.js-game__width-input, .js-game__height-input');
 
       const saveGridSize = function saveCurrentWidthAndHeightValue() {
         currentWidth = parseInt($width.val(), 10);
         currentHeight = parseInt($height.val(), 10);
       };
 
-      $('.game__width-input, .game__height-input').on('focus', saveGridSize);
+      $widthAndHeight.on('focus', saveGridSize);
 
       const widthHasBeenChanged = function checkIfWidthHasBeenChanged(newWidth) {
         return (newWidth !== currentWidth);
@@ -133,7 +134,7 @@ class Controller {
         }
       };
 
-      $('.game__width-input').blur(changeGridWidth);
+      $width.blur(changeGridWidth);
 
       const changeGridHeight = function createNewGridMatrixWidthUpdatedHeight(event) {
         const newHeight = parseInt($(event.target).val(), 10);
@@ -147,7 +148,7 @@ class Controller {
         }
       };
 
-      $('.game__height-input').blur(changeGridHeight);
+      $height.blur(changeGridHeight);
     };
 
     setGridListeners();
