@@ -11087,8 +11087,8 @@ class App {
   }
 
   init() {
-    const $width = $('.game__width-input');
-    const $height = $('.game__height-input');
+    const $width = $('.js-game__width-input');
+    const $height = $('.js-game__height-input');
     this._view.observeModel();
     this._model.createGridMatrix(parseInt($width.val(), 10), parseInt($height.val(), 10));
     this._controller.setListeners();
@@ -11108,7 +11108,6 @@ app.init();
 class View {
   constructor(model) {
     this._model = model;
-    this._cellSize = 12;
   }
 
   observeModel() {
@@ -11117,13 +11116,14 @@ class View {
   }
 
   createGrid() {
-    const grid = document.querySelector('.game__grid');
-    grid.style.width = `${this._model.cellsX * this._cellSize}px`;
+    const cellSize = 12;
+    const grid = document.querySelector('.js-game__grid');
+    grid.style.width = `${this._model.cellsX * cellSize}px`;
     grid.innerHTML = '';
     for (let i = 0; i < this._model.cellsY; i += 1) {
       for (let j = 0; j < this._model.cellsX; j += 1) {
         const cell = document.createElement('div');
-        cell.className = 'game__grid-cell';
+        cell.className = 'game__grid-cell js-game__grid-cell';
         // Дата-аттрибуты содержат индексы для матрицы в модели
         cell.dataset.i = i;
         cell.dataset.j = j;
@@ -11140,20 +11140,22 @@ class View {
   }
 
   updateCell(i, j) {
-    const updatedCell = document.querySelector(`div[data-i='${i}'][data-j='${j}']`);
-    if (updatedCell.className === 'game__grid-cell') {
-      updatedCell.className = 'game__grid-cell game__grid-cell_alive';
+    const updatedCell = document.querySelector(`.js-game__grid-cell[data-i='${i}'][data-j='${j}']`);
+    if (updatedCell.className === 'game__grid-cell js-game__grid-cell') {
+      updatedCell.className += ' game__grid-cell_alive';
     } else {
-      updatedCell.className = 'game__grid-cell';
+      updatedCell.className = 'game__grid-cell js-game__grid-cell';
     }
   }
 
   replaceStartButton() {
-    document.querySelector('.game__start-stop').innerHTML = 'Stop';
+    const btnStopText = 'Stop';
+    document.querySelector('.js-game__start-stop').innerHTML = btnStopText;
   }
 
   replaceStopButton() {
-    document.querySelector('.game__start-stop').innerHTML = 'Start';
+    const btnStartText = 'Start';
+    document.querySelector('.js-game__start-stop').innerHTML = btnStartText;
   }
 }
 
@@ -11173,6 +11175,12 @@ class Model {
     this.createGridMatrixEvent = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */](this);
     this.updateCellEvent = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */](this);
     this.endGameEvent = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */](this);
+    this._constants = {
+      DEAD_CELL: 0,
+      ALIVE_CELL: 1,
+      MAX_ALIVE_NEIGHBOURS: 3,
+      MIN_ALIVE_NEIGHBOURS: 2,
+    };
   }
 
   createGridMatrix(cellsX, cellsY) {
@@ -11180,20 +11188,20 @@ class Model {
     for (let i = 0; i < cellsY; i += 1) {
       const gridMatrixRow = [];
       for (let j = 0; j < cellsX; j += 1) {
-        gridMatrixRow.push(0);
+        gridMatrixRow.push(this._constants.DEAD_CELL);
       }
       this._gridMatrix.push(gridMatrixRow);
     }
-    this.cellsY = this._gridMatrix.length;
-    this.cellsX = this._gridMatrix[0].length;
+    this.cellsY = cellsY;
+    this.cellsX = cellsX;
     this.createGridMatrixEvent.notify();
   }
 
   updateCell(i, j) {
-    if (this._gridMatrix[i][j] === 0) {
-      this._gridMatrix[i][j] = 1;
+    if (this._gridMatrix[i][j] === this._constants.DEAD_CELL) {
+      this._gridMatrix[i][j] = this._constants.ALIVE_CELL;
     } else {
-      this._gridMatrix[i][j] = 0;
+      this._gridMatrix[i][j] = this._constants.DEAD_CELL;
     }
     this.updateCellEvent.notify(i, j);
   }
@@ -11204,7 +11212,7 @@ class Model {
       for (let m = Math.max(0, j - 1); m < Math.min(this.cellsX, j + 2); m += 1) {
         const notCurrentCell = k !== i || m !== j;
         if (notCurrentCell) {
-          if (this._gridMatrix[k][m] === 1) {
+          if (this._gridMatrix[k][m] === this._constants.ALIVE_CELL) {
             aliveNeighbours += 1;
           }
         }
@@ -11214,15 +11222,27 @@ class Model {
   }
 
   calculateNextGeneration() {
+    const self = this;
     const indexesToUpdate = [];
+
+    const cellWillLive = function checkIfDeadCellWillLive(aliveNeighbours) {
+      return aliveNeighbours === self._constants.MAX_ALIVE_NEIGHBOURS;
+    };
+
+    const cellWillDie = function checkIfAliveCellWillDie(aliveNeighbours) {
+      const tooFewNeighbours = aliveNeighbours < self._constants.MIN_ALIVE_NEIGHBOURS;
+      const tooManyNeighbours = aliveNeighbours > self._constants.MAX_ALIVE_NEIGHBOURS;
+      return tooFewNeighbours || tooManyNeighbours;
+    };
+
     for (let i = 0; i < this.cellsY; i += 1) {
       for (let j = 0; j < this.cellsX; j += 1) {
         const aliveNeighbours = this.countAliveNeighbours(i, j);
-        if (this._gridMatrix[i][j] === 0) {
-          if (aliveNeighbours === 3) {
+        if (this._gridMatrix[i][j] === this._constants.DEAD_CELL) {
+          if (cellWillLive(aliveNeighbours)) {
             indexesToUpdate.push([i, j]);
           }
-        } else if (aliveNeighbours < 2 || aliveNeighbours > 3) {
+        } else if (cellWillDie(aliveNeighbours)) {
           indexesToUpdate.push([i, j]);
         }
       }
@@ -11276,11 +11296,11 @@ class ObservedEvent {
 
   setListeners() {
     const self = this;
-    const $grid = $('.game__grid');
-    const $startStopButton = $('.game__start-stop');
-    const $oneStepButton = $('.game__one-step');
-    const $clearButton = $('.game__clear');
-    const $delayInput = $('.game__delay-input');
+    const $grid = $('.js-game__grid');
+    const $startStopButton = $('.js-game__start-stop');
+    const $oneStepButton = $('.js-game__one-step');
+    const $clearButton = $('.js-game__clear');
+    const $delayInput = $('.js-game__delay-input');
     let timerId;
     let gameIsRunning = false;
 
@@ -11307,16 +11327,16 @@ class ObservedEvent {
     };
 
     const setButtonsListeners = function setListenersRelatedToAllButtons() {
-      const stopGame = function pauseGameAndReplaceStopButton() {
+      const stopGame = function stopGameAndReplaceStopButton() {
         clearInterval(timerId);
         gameIsRunning = false;
         self._view.replaceStopButton();
       };
+      self._model.endGameEvent.attach(stopGame);
 
       const startGame = function startGameAndReplaceStartButton() {
         const delay = parseInt($delayInput.val(), 10);
         if (delay > 0) {
-          self._model.endGameEvent.attach(stopGame);
           timerId = setInterval(self._model.calculateNextGeneration.bind(self._model), delay);
           gameIsRunning = true;
           self._view.replaceStartButton();
@@ -11324,7 +11344,8 @@ class ObservedEvent {
       };
 
       const startOrStopGame = function startOrStopGameRunning(event) {
-        if ($(event.target).text() === 'Start') {
+        const btnStartText = 'Start';
+        if ($(event.target).text() === btnStartText) {
           startGame();
         } else {
           stopGame();
@@ -11356,7 +11377,7 @@ class ObservedEvent {
 
       const changeDelay = function changeGridNextGenerationCalculationDelay(event) {
         const newDelay = parseInt($(event.target).val(), 10);
-        if (newDelay >= 0) {
+        if (newDelay > 0) {
           $(event.target).removeClass('game__wrong-input');
           if (gameIsRunning && delayHasBeenChanged(newDelay)) {
             clearInterval(timerId);
@@ -11373,15 +11394,16 @@ class ObservedEvent {
     const setGridSizeListeners = function setListenersRelatedToGridSizeChanging() {
       let currentWidth;
       let currentHeight;
-      const $width = $('.game__width-input');
-      const $height = $('.game__height-input');
+      const $width = $('.js-game__width-input');
+      const $height = $('.js-game__height-input');
+      const $widthAndHeight = $('.js-game__width-input, .js-game__height-input');
 
       const saveGridSize = function saveCurrentWidthAndHeightValue() {
         currentWidth = parseInt($width.val(), 10);
         currentHeight = parseInt($height.val(), 10);
       };
 
-      $('.game__width-input, .game__height-input').on('focus', saveGridSize);
+      $widthAndHeight.on('focus', saveGridSize);
 
       const widthHasBeenChanged = function checkIfWidthHasBeenChanged(newWidth) {
         return (newWidth !== currentWidth);
@@ -11403,7 +11425,7 @@ class ObservedEvent {
         }
       };
 
-      $('.game__width-input').blur(changeGridWidth);
+      $width.blur(changeGridWidth);
 
       const changeGridHeight = function createNewGridMatrixWidthUpdatedHeight(event) {
         const newHeight = parseInt($(event.target).val(), 10);
@@ -11417,7 +11439,7 @@ class ObservedEvent {
         }
       };
 
-      $('.game__height-input').blur(changeGridHeight);
+      $height.blur(changeGridHeight);
     };
 
     setGridListeners();
