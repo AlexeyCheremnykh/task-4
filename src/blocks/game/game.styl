@@ -1,3 +1,5 @@
+@import "../../colors"
+
 .game
   display: flex
   flex-direction: column
@@ -9,17 +11,17 @@
   &__grid
     display: flex
     flex-wrap: wrap
-    box-shadow: 0 0 10px 0px rgba(0,0,0,0.5)
+    box-shadow: 0 0 10px 0px $semitransparent-black
     cursor: pointer
 
   &__grid-cell
     box-sizing: border-box
     height: 12px
     width: 12px
-    border: 1px solid #bbbbbb
+    border: 1px solid $grey-bb
 
     &_alive
-      background-color: #ed2525
+      background-color: $red
 
   &__buttons
     margin: 15px 0
@@ -27,12 +29,12 @@
   &__button
     width: 100px
     height: 40px
-    background-color: #e5e5e5
-    border: 1px solid #888888
+    background-color: $grey-e5
+    border: 1px solid $grey-88
     cursor: pointer
 
     &:hover
-      background-color: #efefef
+      background-color: $grey-ef
 
   &__one-step
     margin: 0 10px
@@ -45,12 +47,11 @@
     margin-bottom: 10px
 
   &__input
-    border: 1px solid #999999
+    border: 1px solid $grey-99
     width: 50px
     margin-left: 5px
 
   &__wrong-input
     outline-color: red
-    background-color: rgba(255, 0, 0, 0.1);
+    background-color: $semitransparent-red;
     border: 1px solid red
-
