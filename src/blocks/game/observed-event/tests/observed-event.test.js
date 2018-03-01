@@ -22,6 +22,10 @@ class Observer {
   observe() {
     this.observable.observedEvent.attach(this.handler.bind(this));
   }
+
+  stopObserving() {
+    this.observable.observedEvent.detach(this.handler.bind(this));
+  }
 }
 
 describe('Observed event tests', () => {
@@ -44,5 +48,10 @@ describe('Observed event tests', () => {
     expect(spy).not.toHaveBeenCalled();
     observable.notify();
     expect(spy).toHaveBeenCalled();
+  });
+
+  test('Handler has been detached', () => {
+    observer.stopObserving();
+    expect(observable.observedEvent._handlers[0]).toBeUndefined();
   });
 });

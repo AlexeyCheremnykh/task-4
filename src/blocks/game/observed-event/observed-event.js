@@ -7,6 +7,10 @@ class ObservedEvent {
     this._handlers.push(handler);
   }
 
+  detach(handler) {
+    this._handlers.splice(this._handlers.indexOf(handler), 1);
+  }
+
   notify(...args) {
     this._handlers.forEach((handler) => {
       handler(...args);
