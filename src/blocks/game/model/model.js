@@ -14,14 +14,7 @@ class Model {
   }
 
   createGridMatrix(cellsX, cellsY) {
-    this._gridMatrix = [];
-    for (let i = 0; i < cellsY; i += 1) {
-      const gridMatrixRow = [];
-      for (let j = 0; j < cellsX; j += 1) {
-        gridMatrixRow.push(this._constants.DEAD_CELL);
-      }
-      this._gridMatrix.push(gridMatrixRow);
-    }
+    this._gridMatrix = [...Array(cellsY)].map(() => Array(cellsX).fill(this._constants.DEAD_CELL));
     this.cellsY = cellsY;
     this.cellsX = cellsX;
     this.createGridMatrixEvent.notify();
@@ -38,6 +31,7 @@ class Model {
 
   countAliveNeighbours(i, j) {
     let aliveNeighbours = 0;
+
     for (let k = Math.max(0, i - 1); k < Math.min(this.cellsY, i + 2); k += 1) {
       for (let m = Math.max(0, j - 1); m < Math.min(this.cellsX, j + 2); m += 1) {
         const notCurrentCell = k !== i || m !== j;
