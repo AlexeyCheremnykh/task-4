@@ -59,18 +59,18 @@ class Model {
       return tooFewNeighbours || tooManyNeighbours;
     };
 
-    for (let i = 0; i < this.cellsY; i += 1) {
-      for (let j = 0; j < this.cellsX; j += 1) {
-        const aliveNeighbours = this.countAliveNeighbours(i, j);
-        if (this._gridMatrix[i][j] === this._constants.DEAD_CELL) {
+    this._gridMatrix.forEach((row, rowIndex) => {
+      row.forEach((matrixElement, colIndex) => {
+        const aliveNeighbours = this.countAliveNeighbours(rowIndex, colIndex);
+        if (matrixElement === this._constants.DEAD_CELL) {
           if (cellWillLive(aliveNeighbours)) {
-            indexesToUpdate.push([i, j]);
+            indexesToUpdate.push([rowIndex, colIndex]);
           }
         } else if (cellWillDie(aliveNeighbours)) {
-          indexesToUpdate.push([i, j]);
+          indexesToUpdate.push([rowIndex, colIndex]);
         }
-      }
-    }
+      });
+    });
     if (!indexesToUpdate.length) {
       this.endGameEvent.notify();
     }
