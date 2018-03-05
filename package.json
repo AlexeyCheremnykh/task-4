@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
-    "server": "webpack-dev-server",
-    "watch": "webpack --watch",
-    "build": "webpack"
+    "test": "node_modules/.bin/jest",
+    "server": "node_modules/.bin/webpack-dev-server",
+    "watch": "node_modules/.bin/webpack --watch",
+    "build": "node_modules/.bin/webpack"
   },
   "author": "",
   "license": "ISC",

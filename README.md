@@ -8,3 +8,5 @@ https://alexeycheremnykh.github.io/task-4/
 `npm run watch`
 ### run webpack-dev-server:
 `npm run server`
+### run tests
+`npm run test`
