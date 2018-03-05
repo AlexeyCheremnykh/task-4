@@ -20,7 +20,7 @@ describe('Model tests', () => {
     expect(model.cellsX === cellsX).toBe(true);
   });
 
-  describe('Change matrix element', () => {
+  describe('Update matrix cell', () => {
     const i = 1;
     const j = 2;
     test('0 -> 1', () => {
@@ -34,24 +34,21 @@ describe('Model tests', () => {
     });
   });
 
-  test('Correct alive neighbours counting', () => {
-    model.createGridMatrix(3, 3);
-    for (let i = 0; i < cellsX; i += 1) {
-      for (let j = 0; j < cellsY; j += 1) {
-        model.updateCell(i, j);
-      }
-    }
-    expect(model.countAliveNeighbours(1, 1)).toBe(8);
-    model.updateCell(0, 1);
-    expect(model.countAliveNeighbours(0, 0)).toBe(2);
-    expect(model.countAliveNeighbours(0, 1)).toBe(5);
-    expect(model.countAliveNeighbours(1, 2)).toBe(4);
-  });
-
   test('Correct next generation calculation', () => {
+    const firstMatrix = [
+      [0, 1, 0],
+      [0, 1, 0],
+      [0, 1, 0],
+    ];
+    const secondMatrix = [
+      [0, 0, 0],
+      [1, 1, 1],
+      [0, 0, 0],
+    ];
+    model._gridMatrix = firstMatrix;
     model.calculateNextGeneration();
-    expect(model.countAliveNeighbours(0, 0)).toBe(0);
-    expect(model.countAliveNeighbours(0, 1)).toBe(2);
-    expect(model.countAliveNeighbours(0, 2)).toBe(0);
+    expect(model._gridMatrix).toEqual(secondMatrix);
+    model.calculateNextGeneration();
+    expect(model._gridMatrix).toEqual(firstMatrix);
   });
 });
