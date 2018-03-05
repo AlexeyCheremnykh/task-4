@@ -8,6 +8,7 @@ class Model {
     this._constants = {
       DEAD_CELL: 0,
       ALIVE_CELL: 1,
+      CURRENT_CELL: 2,
       MAX_ALIVE_NEIGHBOURS: 3,
       MIN_ALIVE_NEIGHBOURS: 2,
     };
@@ -20,29 +21,13 @@ class Model {
     this.createGridMatrixEvent.notify();
   }
 
-  updateCell(i, j) {
-    if (this._gridMatrix[i][j] === this._constants.DEAD_CELL) {
-      this._gridMatrix[i][j] = this._constants.ALIVE_CELL;
+  updateCell(cellRow, cellCol) {
+    if (this._gridMatrix[cellRow][cellCol] === this._constants.DEAD_CELL) {
+      this._gridMatrix[cellRow][cellCol] = this._constants.ALIVE_CELL;
     } else {
-      this._gridMatrix[i][j] = this._constants.DEAD_CELL;
+      this._gridMatrix[cellRow][cellCol] = this._constants.DEAD_CELL;
     }
-    this.updateCellEvent.notify(i, j);
-  }
-
-  countAliveNeighbours(i, j) {
-    let aliveNeighbours = 0;
-
-    for (let k = Math.max(0, i - 1); k < Math.min(this.cellsY, i + 2); k += 1) {
-      for (let m = Math.max(0, j - 1); m < Math.min(this.cellsX, j + 2); m += 1) {
-        const notCurrentCell = k !== i || m !== j;
-        if (notCurrentCell) {
-          if (this._gridMatrix[k][m] === this._constants.ALIVE_CELL) {
-            aliveNeighbours += 1;
-          }
-        }
-      }
-    }
-    return aliveNeighbours;
+    this.updateCellEvent.notify(cellRow, cellCol);
   }
 
   calculateNextGeneration() {
@@ -61,7 +46,7 @@ class Model {
 
     this._gridMatrix.forEach((row, rowIndex) => {
       row.forEach((matrixElement, colIndex) => {
-        const aliveNeighbours = this.countAliveNeighbours(rowIndex, colIndex);
+        const aliveNeighbours = this._countAliveNeighbours(rowIndex, colIndex);
         if (matrixElement === this._constants.DEAD_CELL) {
           if (cellWillLive(aliveNeighbours)) {
             indexesToUpdate.push([rowIndex, colIndex]);
@@ -77,6 +62,42 @@ class Model {
     indexesToUpdate.forEach((indexesPair) => {
       this.updateCell(indexesPair[0], indexesPair[1]);
     });
+  }
+
+  _countAliveNeighbours(cellRow, cellCol) {
+    let aliveNeighbours = 0;
+    const matrixOfNeighbors = this._createMatrixOfNeighbors(cellRow, cellCol);
+
+    matrixOfNeighbors.forEach((row) => {
+      row.forEach((matrixElement) => {
+        if (matrixElement === this._constants.ALIVE_CELL) {
+          aliveNeighbours += 1;
+        }
+      });
+    });
+    return aliveNeighbours;
+  }
+
+  _createMatrixOfNeighbors(cellRow, cellCol) {
+    const firstNeighboringRow = Math.max(0, cellRow - 1);
+    const lastNeighboringRow = Math.min(this.cellsY, cellRow + 2);
+    const neighboringRows = lastNeighboringRow - firstNeighboringRow;
+
+    const firstNeighboringCol = Math.max(0, cellCol - 1);
+    const lastNeighboringCol = Math.min(this.cellsX, cellCol + 2);
+    const neighboringCols = lastNeighboringCol - firstNeighboringCol;
+
+    const matrixOfNeighbors = [...Array(neighboringRows)].map((row, rowIndex) => {
+      const rowInGridMatrix = rowIndex + firstNeighboringRow;
+      return [...Array(neighboringCols)].map((col, colIndex) => {
+        const colInGridMatrix = colIndex + firstNeighboringCol;
+        const notCurrentCell = rowInGridMatrix !== cellRow || colInGridMatrix !== cellCol;
+        if (notCurrentCell) return this._gridMatrix[rowInGridMatrix][colInGridMatrix];
+        return this._constants.CURRENT_CELL;
+      });
+    });
+
+    return matrixOfNeighbors;
   }
 }
 
