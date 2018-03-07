@@ -1,53 +1,46 @@
 import ObservedEvent from '../observed-event/observed-event';
+import constants from '../constants';
 
 class Model {
   constructor() {
     this.createGridMatrixEvent = new ObservedEvent(this);
     this.updateCellEvent = new ObservedEvent(this);
     this.endGameEvent = new ObservedEvent(this);
-    this._constants = {
-      DEAD_CELL: 0,
-      ALIVE_CELL: 1,
-      CURRENT_CELL: 2,
-      MAX_ALIVE_NEIGHBOURS: 3,
-      MIN_ALIVE_NEIGHBOURS: 2,
-    };
   }
 
   createGridMatrix(cellsX, cellsY) {
-    this._gridMatrix = [...Array(cellsY)].map(() => Array(cellsX).fill(this._constants.DEAD_CELL));
+    this._gridMatrix = [...Array(cellsY)].map(() => Array(cellsX).fill(constants.DEAD_CELL));
     this.cellsY = cellsY;
     this.cellsX = cellsX;
     this.createGridMatrixEvent.notify(cellsX, cellsY);
   }
 
   updateCell(cellRow, cellCol) {
-    if (this._gridMatrix[cellRow][cellCol] === this._constants.DEAD_CELL) {
-      this._gridMatrix[cellRow][cellCol] = this._constants.ALIVE_CELL;
+    if (this._gridMatrix[cellRow][cellCol] === constants.DEAD_CELL) {
+      this._gridMatrix[cellRow][cellCol] = constants.ALIVE_CELL;
     } else {
-      this._gridMatrix[cellRow][cellCol] = this._constants.DEAD_CELL;
+      this._gridMatrix[cellRow][cellCol] = constants.DEAD_CELL;
     }
     this.updateCellEvent.notify(cellRow, cellCol);
   }
 
   calculateNextGeneration() {
-    const self = this;
     const indexesToUpdate = [];
 
     const cellWillLive = function checkIfDeadCellWillLive(aliveNeighbours) {
-      return aliveNeighbours === self._constants.MAX_ALIVE_NEIGHBOURS;
+      return aliveNeighbours === constants.MAX_ALIVE_NEIGHBOURS;
     };
 
     const cellWillDie = function checkIfAliveCellWillDie(aliveNeighbours) {
-      const tooFewNeighbours = aliveNeighbours < self._constants.MIN_ALIVE_NEIGHBOURS;
-      const tooManyNeighbours = aliveNeighbours > self._constants.MAX_ALIVE_NEIGHBOURS;
+      const tooFewNeighbours = aliveNeighbours < constants.MIN_ALIVE_NEIGHBOURS;
+      const tooManyNeighbours = aliveNeighbours > constants.MAX_ALIVE_NEIGHBOURS;
       return tooFewNeighbours || tooManyNeighbours;
     };
 
     this._gridMatrix.forEach((row, rowIndex) => {
       row.forEach((matrixElement, colIndex) => {
         const aliveNeighbours = this._countAliveNeighbours(rowIndex, colIndex);
-        if (matrixElement === this._constants.DEAD_CELL) {
+        if (matrixElement === constants.DEAD_CELL) {
           if (cellWillLive(aliveNeighbours)) {
             indexesToUpdate.push([rowIndex, colIndex]);
           }
@@ -70,7 +63,7 @@ class Model {
 
     matrixOfNeighbors.forEach((row) => {
       row.forEach((matrixElement) => {
-        if (matrixElement === this._constants.ALIVE_CELL) {
+        if (matrixElement === constants.ALIVE_CELL) {
           aliveNeighbours += 1;
         }
       });

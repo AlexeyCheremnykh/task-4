@@ -1,5 +1,4 @@
 /* eslint no-param-reassign: 0 */
-
 class View {
   createGrid(cellsX, cellsY) {
     const cellSize = 12;
