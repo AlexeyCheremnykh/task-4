@@ -6,12 +6,10 @@ class View {
     const grid = document.querySelector('.js-game__grid');
     grid.style.width = `${cellsX * cellSize}px`;
     grid.innerHTML = '';
-    for (let i = 0; i < cellsY; i += 1) {
-      for (let j = 0; j < cellsX; j += 1) {
-        const cell = document.createElement('div');
-        cell.className = 'game__grid-cell js-game__grid-cell';
-        grid.appendChild(cell);
-      }
+    for (let i = 0; i < cellsY * cellsX; i += 1) {
+      const cell = document.createElement('div');
+      cell.className = 'game__grid-cell js-game__grid-cell';
+      grid.appendChild(cell);
     }
   }
 
