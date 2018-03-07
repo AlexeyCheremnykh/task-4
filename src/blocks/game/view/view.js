@@ -1,3 +1,5 @@
+/* eslint no-param-reassign: 0 */
+
 class View {
   createGrid(cellsX, cellsY) {
     const cellSize = 12;
@@ -13,15 +15,15 @@ class View {
     }
   }
 
-  getCellIndex(cellElem) {
-    return $(cellElem).index();
+  getCellIndex(cell) {
+    return $(cell).index();
   }
 
-  updateCell(cellElem) {
-    if (cellElem.className === 'game__grid-cell js-game__grid-cell') {
-      cellElem.className += ' game__grid-cell_alive';
+  updateCell(cell) {
+    if (cell.className === 'game__grid-cell js-game__grid-cell') {
+      cell.className += ' game__grid-cell_alive';
     } else {
-      cellElem.className = 'game__grid-cell js-game__grid-cell';
+      cell.className = 'game__grid-cell js-game__grid-cell';
     }
   }
 
