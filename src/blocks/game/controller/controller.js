@@ -94,13 +94,13 @@ class Controller {
       const changeDelay = function changeGridNextGenerationCalculationDelay(event) {
         if (inputIsCorrect(event.target)) {
           const newDelay = parseInt($(event.target).val(), 10);
-          $(event.target).removeClass('game__wrong-input');
+          $(event.target).removeClass('game__input_invalid');
           if (gameIsRunning && delayHasBeenChanged(newDelay)) {
             clearInterval(timerId);
             timerId = setInterval(self._model.calculateNextGeneration.bind(self._model), newDelay);
           }
         } else {
-          $(event.target).addClass('game__wrong-input');
+          $(event.target).addClass('game__input_invalid');
         }
       };
 
@@ -132,12 +132,12 @@ class Controller {
       const changeGridWidth = function createNewGridMatrixWidthUpdatedWidth(event) {
         if (inputIsCorrect(event.target)) {
           const newWidth = parseInt($(event.target).val(), 10);
-          $(event.target).removeClass('game__wrong-input');
+          $(event.target).removeClass('game__input_invalid');
           if (currentHeight > 0 && widthHasBeenChanged(newWidth)) {
             self._model.createGridMatrix(newWidth, currentHeight);
           }
         } else {
-          $(event.target).addClass('game__wrong-input');
+          $(event.target).addClass('game__input_invalid');
         }
       };
 
@@ -146,12 +146,12 @@ class Controller {
       const changeGridHeight = function createNewGridMatrixWidthUpdatedHeight(event) {
         if (inputIsCorrect(event.target)) {
           const newHeight = parseInt($(event.target).val(), 10);
-          $(event.target).removeClass('game__wrong-input');
+          $(event.target).removeClass('game__input_invalid');
           if (currentWidth > 0 && heightHasBeenChanged(newHeight)) {
             self._model.createGridMatrix(currentWidth, newHeight);
           }
         } else {
-          $(event.target).addClass('game__wrong-input');
+          $(event.target).addClass('game__input_invalid');
         }
       };
 
