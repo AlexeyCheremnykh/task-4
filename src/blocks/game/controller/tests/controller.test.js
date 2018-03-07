@@ -43,7 +43,7 @@ const updateCellSpy = jest.spyOn(model, 'updateCell');
 const replaceStartButtonSpy = jest.spyOn(view, 'replaceStartButton');
 const replaceStopButtonSpy = jest.spyOn(view, 'replaceStopButton');
 
-view.observeModel();
+controller.observeModel();
 model.createGridMatrix(5, 5);
 controller.setListeners();
 

@@ -4,6 +4,16 @@ class Controller {
     this._model = model;
   }
 
+  observeModel() {
+    this._model.createGridMatrixEvent.attach(this._view.createGrid.bind(this));
+    this._model.updateCellEvent.attach(this.updateViewCell.bind(this));
+  }
+
+  updateViewCell(cellRow, cellCol) {
+    const updatingCell = $('.js-game__grid-cell')[(cellRow * this._model.cellsX) + cellCol];
+    this._view.updateCell(updatingCell);
+  }
+
   setListeners() {
     const self = this;
     const $grid = $('.js-game__grid');
@@ -16,8 +26,10 @@ class Controller {
 
     const setGridListeners = function setListenersRelatedToGridUpdate() {
       const updateCell = function updateCellInModel(event) {
-        const indexes = self._view.getCellIndexes(event.target);
-        self._model.updateCell(indexes.i, indexes.j);
+        const cellIndex = self._view.getCellIndex(event.target);
+        const cellRow = Math.floor(cellIndex / self._model.cellsX);
+        const cellCol = cellIndex % self._model.cellsX;
+        self._model.updateCell(cellRow, cellCol);
       };
 
       const updateCellAndListenMouseover = function updateCellAndSetMouseoverListener(event) {

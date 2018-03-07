@@ -18,7 +18,7 @@ class Model {
     this._gridMatrix = [...Array(cellsY)].map(() => Array(cellsX).fill(this._constants.DEAD_CELL));
     this.cellsY = cellsY;
     this.cellsX = cellsX;
-    this.createGridMatrixEvent.notify();
+    this.createGridMatrixEvent.notify(cellsX, cellsY);
   }
 
   updateCell(cellRow, cellCol) {
