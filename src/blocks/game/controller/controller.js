@@ -10,8 +10,8 @@ class Controller {
   }
 
   updateViewCell(cellRow, cellCol) {
-    const updatingCell = $('.js-game__grid-cell')[(cellRow * this._model.cellsX) + cellCol];
-    this._view.updateCell(updatingCell);
+    const updatableCell = $('.js-game__grid-cell')[(cellRow * this._model.cellsX) + cellCol];
+    this._view.updateCell(updatableCell);
   }
 
   setListeners() {
