@@ -65,460 +65,6 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function(useSourceMap) {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		return this.map(function (item) {
-			var content = cssWithMappingToString(item, useSourceMap);
-			if(item[2]) {
-				return "@media " + item[2] + "{" + content + "}";
-			} else {
-				return content;
-			}
-		}).join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-function cssWithMappingToString(item, useSourceMap) {
-	var content = item[1] || '';
-	var cssMapping = item[3];
-	if (!cssMapping) {
-		return content;
-	}
-
-	if (useSourceMap && typeof btoa === 'function') {
-		var sourceMapping = toComment(cssMapping);
-		var sourceURLs = cssMapping.sources.map(function (source) {
-			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
-		});
-
-		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
-	}
-
-	return [content].join('\n');
-}
-
-// Adapted from convert-source-map (MIT)
-function toComment(sourceMap) {
-	// eslint-disable-next-line no-undef
-	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
-	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
-
-	return '/*# ' + data + ' */';
-}
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-
-var stylesInDom = {};
-
-var	memoize = function (fn) {
-	var memo;
-
-	return function () {
-		if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-		return memo;
-	};
-};
-
-var isOldIE = memoize(function () {
-	// Test for IE <= 9 as proposed by Browserhacks
-	// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
-	// Tests for existence of standard globals is to allow style-loader
-	// to operate correctly into non-standard environments
-	// @see https://github.com/webpack-contrib/style-loader/issues/177
-	return window && document && document.all && !window.atob;
-});
-
-var getElement = (function (fn) {
-	var memo = {};
-
-	return function(selector) {
-		if (typeof memo[selector] === "undefined") {
-			var styleTarget = fn.call(this, selector);
-			// Special case to return head of iframe instead of iframe itself
-			if (styleTarget instanceof window.HTMLIFrameElement) {
-				try {
-					// This will throw an exception if access to iframe is blocked
-					// due to cross-origin restrictions
-					styleTarget = styleTarget.contentDocument.head;
-				} catch(e) {
-					styleTarget = null;
-				}
-			}
-			memo[selector] = styleTarget;
-		}
-		return memo[selector]
-	};
-})(function (target) {
-	return document.querySelector(target)
-});
-
-var singleton = null;
-var	singletonCounter = 0;
-var	stylesInsertedAtTop = [];
-
-var	fixUrls = __webpack_require__(16);
-
-module.exports = function(list, options) {
-	if (typeof DEBUG !== "undefined" && DEBUG) {
-		if (typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-	}
-
-	options = options || {};
-
-	options.attrs = typeof options.attrs === "object" ? options.attrs : {};
-
-	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-	// tags it will allow on a page
-	if (!options.singleton && typeof options.singleton !== "boolean") options.singleton = isOldIE();
-
-	// By default, add <style> tags to the <head> element
-	if (!options.insertInto) options.insertInto = "head";
-
-	// By default, add <style> tags to the bottom of the target
-	if (!options.insertAt) options.insertAt = "bottom";
-
-	var styles = listToStyles(list, options);
-
-	addStylesToDom(styles, options);
-
-	return function update (newList) {
-		var mayRemove = [];
-
-		for (var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-
-			domStyle.refs--;
-			mayRemove.push(domStyle);
-		}
-
-		if(newList) {
-			var newStyles = listToStyles(newList, options);
-			addStylesToDom(newStyles, options);
-		}
-
-		for (var i = 0; i < mayRemove.length; i++) {
-			var domStyle = mayRemove[i];
-
-			if(domStyle.refs === 0) {
-				for (var j = 0; j < domStyle.parts.length; j++) domStyle.parts[j]();
-
-				delete stylesInDom[domStyle.id];
-			}
-		}
-	};
-};
-
-function addStylesToDom (styles, options) {
-	for (var i = 0; i < styles.length; i++) {
-		var item = styles[i];
-		var domStyle = stylesInDom[item.id];
-
-		if(domStyle) {
-			domStyle.refs++;
-
-			for(var j = 0; j < domStyle.parts.length; j++) {
-				domStyle.parts[j](item.parts[j]);
-			}
-
-			for(; j < item.parts.length; j++) {
-				domStyle.parts.push(addStyle(item.parts[j], options));
-			}
-		} else {
-			var parts = [];
-
-			for(var j = 0; j < item.parts.length; j++) {
-				parts.push(addStyle(item.parts[j], options));
-			}
-
-			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-		}
-	}
-}
-
-function listToStyles (list, options) {
-	var styles = [];
-	var newStyles = {};
-
-	for (var i = 0; i < list.length; i++) {
-		var item = list[i];
-		var id = options.base ? item[0] + options.base : item[0];
-		var css = item[1];
-		var media = item[2];
-		var sourceMap = item[3];
-		var part = {css: css, media: media, sourceMap: sourceMap};
-
-		if(!newStyles[id]) styles.push(newStyles[id] = {id: id, parts: [part]});
-		else newStyles[id].parts.push(part);
-	}
-
-	return styles;
-}
-
-function insertStyleElement (options, style) {
-	var target = getElement(options.insertInto)
-
-	if (!target) {
-		throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
-	}
-
-	var lastStyleElementInsertedAtTop = stylesInsertedAtTop[stylesInsertedAtTop.length - 1];
-
-	if (options.insertAt === "top") {
-		if (!lastStyleElementInsertedAtTop) {
-			target.insertBefore(style, target.firstChild);
-		} else if (lastStyleElementInsertedAtTop.nextSibling) {
-			target.insertBefore(style, lastStyleElementInsertedAtTop.nextSibling);
-		} else {
-			target.appendChild(style);
-		}
-		stylesInsertedAtTop.push(style);
-	} else if (options.insertAt === "bottom") {
-		target.appendChild(style);
-	} else if (typeof options.insertAt === "object" && options.insertAt.before) {
-		var nextSibling = getElement(options.insertInto + " " + options.insertAt.before);
-		target.insertBefore(style, nextSibling);
-	} else {
-		throw new Error("[Style Loader]\n\n Invalid value for parameter 'insertAt' ('options.insertAt') found.\n Must be 'top', 'bottom', or Object.\n (https://github.com/webpack-contrib/style-loader#insertat)\n");
-	}
-}
-
-function removeStyleElement (style) {
-	if (style.parentNode === null) return false;
-	style.parentNode.removeChild(style);
-
-	var idx = stylesInsertedAtTop.indexOf(style);
-	if(idx >= 0) {
-		stylesInsertedAtTop.splice(idx, 1);
-	}
-}
-
-function createStyleElement (options) {
-	var style = document.createElement("style");
-
-	options.attrs.type = "text/css";
-
-	addAttrs(style, options.attrs);
-	insertStyleElement(options, style);
-
-	return style;
-}
-
-function createLinkElement (options) {
-	var link = document.createElement("link");
-
-	options.attrs.type = "text/css";
-	options.attrs.rel = "stylesheet";
-
-	addAttrs(link, options.attrs);
-	insertStyleElement(options, link);
-
-	return link;
-}
-
-function addAttrs (el, attrs) {
-	Object.keys(attrs).forEach(function (key) {
-		el.setAttribute(key, attrs[key]);
-	});
-}
-
-function addStyle (obj, options) {
-	var style, update, remove, result;
-
-	// If a transform function was defined, run it on the css
-	if (options.transform && obj.css) {
-	    result = options.transform(obj.css);
-
-	    if (result) {
-	    	// If transform returns a value, use that instead of the original css.
-	    	// This allows running runtime transformations on the css.
-	    	obj.css = result;
-	    } else {
-	    	// If the transform function returns a falsy value, don't add this css.
-	    	// This allows conditional loading of css
-	    	return function() {
-	    		// noop
-	    	};
-	    }
-	}
-
-	if (options.singleton) {
-		var styleIndex = singletonCounter++;
-
-		style = singleton || (singleton = createStyleElement(options));
-
-		update = applyToSingletonTag.bind(null, style, styleIndex, false);
-		remove = applyToSingletonTag.bind(null, style, styleIndex, true);
-
-	} else if (
-		obj.sourceMap &&
-		typeof URL === "function" &&
-		typeof URL.createObjectURL === "function" &&
-		typeof URL.revokeObjectURL === "function" &&
-		typeof Blob === "function" &&
-		typeof btoa === "function"
-	) {
-		style = createLinkElement(options);
-		update = updateLink.bind(null, style, options);
-		remove = function () {
-			removeStyleElement(style);
-
-			if(style.href) URL.revokeObjectURL(style.href);
-		};
-	} else {
-		style = createStyleElement(options);
-		update = applyToTag.bind(null, style);
-		remove = function () {
-			removeStyleElement(style);
-		};
-	}
-
-	update(obj);
-
-	return function updateStyle (newObj) {
-		if (newObj) {
-			if (
-				newObj.css === obj.css &&
-				newObj.media === obj.media &&
-				newObj.sourceMap === obj.sourceMap
-			) {
-				return;
-			}
-
-			update(obj = newObj);
-		} else {
-			remove();
-		}
-	};
-}
-
-var replaceText = (function () {
-	var textStore = [];
-
-	return function (index, replacement) {
-		textStore[index] = replacement;
-
-		return textStore.filter(Boolean).join('\n');
-	};
-})();
-
-function applyToSingletonTag (style, index, remove, obj) {
-	var css = remove ? "" : obj.css;
-
-	if (style.styleSheet) {
-		style.styleSheet.cssText = replaceText(index, css);
-	} else {
-		var cssNode = document.createTextNode(css);
-		var childNodes = style.childNodes;
-
-		if (childNodes[index]) style.removeChild(childNodes[index]);
-
-		if (childNodes.length) {
-			style.insertBefore(cssNode, childNodes[index]);
-		} else {
-			style.appendChild(cssNode);
-		}
-	}
-}
-
-function applyToTag (style, obj) {
-	var css = obj.css;
-	var media = obj.media;
-
-	if(media) {
-		style.setAttribute("media", media)
-	}
-
-	if(style.styleSheet) {
-		style.styleSheet.cssText = css;
-	} else {
-		while(style.firstChild) {
-			style.removeChild(style.firstChild);
-		}
-
-		style.appendChild(document.createTextNode(css));
-	}
-}
-
-function updateLink (link, options, obj) {
-	var css = obj.css;
-	var sourceMap = obj.sourceMap;
-
-	/*
-		If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
-		and there is no publicPath defined then lets turn convertToAbsoluteUrls
-		on by default.  Otherwise default to the convertToAbsoluteUrls option
-		directly
-	*/
-	var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
-
-	if (options.convertToAbsoluteUrls || autoFixUrls) {
-		css = fixUrls(css);
-	}
-
-	if (sourceMap) {
-		// http://stackoverflow.com/a/26603875
-		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-	}
-
-	var blob = new Blob([css], { type: "text/css" });
-
-	var oldSrc = link.href;
-
-	link.href = URL.createObjectURL(blob);
-
-	if(oldSrc) URL.revokeObjectURL(oldSrc);
-}
-
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10778,6 +10324,460 @@ return jQuery;
 
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+
+var stylesInDom = {};
+
+var	memoize = function (fn) {
+	var memo;
+
+	return function () {
+		if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+		return memo;
+	};
+};
+
+var isOldIE = memoize(function () {
+	// Test for IE <= 9 as proposed by Browserhacks
+	// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
+	// Tests for existence of standard globals is to allow style-loader
+	// to operate correctly into non-standard environments
+	// @see https://github.com/webpack-contrib/style-loader/issues/177
+	return window && document && document.all && !window.atob;
+});
+
+var getElement = (function (fn) {
+	var memo = {};
+
+	return function(selector) {
+		if (typeof memo[selector] === "undefined") {
+			var styleTarget = fn.call(this, selector);
+			// Special case to return head of iframe instead of iframe itself
+			if (styleTarget instanceof window.HTMLIFrameElement) {
+				try {
+					// This will throw an exception if access to iframe is blocked
+					// due to cross-origin restrictions
+					styleTarget = styleTarget.contentDocument.head;
+				} catch(e) {
+					styleTarget = null;
+				}
+			}
+			memo[selector] = styleTarget;
+		}
+		return memo[selector]
+	};
+})(function (target) {
+	return document.querySelector(target)
+});
+
+var singleton = null;
+var	singletonCounter = 0;
+var	stylesInsertedAtTop = [];
+
+var	fixUrls = __webpack_require__(16);
+
+module.exports = function(list, options) {
+	if (typeof DEBUG !== "undefined" && DEBUG) {
+		if (typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+	}
+
+	options = options || {};
+
+	options.attrs = typeof options.attrs === "object" ? options.attrs : {};
+
+	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+	// tags it will allow on a page
+	if (!options.singleton && typeof options.singleton !== "boolean") options.singleton = isOldIE();
+
+	// By default, add <style> tags to the <head> element
+	if (!options.insertInto) options.insertInto = "head";
+
+	// By default, add <style> tags to the bottom of the target
+	if (!options.insertAt) options.insertAt = "bottom";
+
+	var styles = listToStyles(list, options);
+
+	addStylesToDom(styles, options);
+
+	return function update (newList) {
+		var mayRemove = [];
+
+		for (var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+
+			domStyle.refs--;
+			mayRemove.push(domStyle);
+		}
+
+		if(newList) {
+			var newStyles = listToStyles(newList, options);
+			addStylesToDom(newStyles, options);
+		}
+
+		for (var i = 0; i < mayRemove.length; i++) {
+			var domStyle = mayRemove[i];
+
+			if(domStyle.refs === 0) {
+				for (var j = 0; j < domStyle.parts.length; j++) domStyle.parts[j]();
+
+				delete stylesInDom[domStyle.id];
+			}
+		}
+	};
+};
+
+function addStylesToDom (styles, options) {
+	for (var i = 0; i < styles.length; i++) {
+		var item = styles[i];
+		var domStyle = stylesInDom[item.id];
+
+		if(domStyle) {
+			domStyle.refs++;
+
+			for(var j = 0; j < domStyle.parts.length; j++) {
+				domStyle.parts[j](item.parts[j]);
+			}
+
+			for(; j < item.parts.length; j++) {
+				domStyle.parts.push(addStyle(item.parts[j], options));
+			}
+		} else {
+			var parts = [];
+
+			for(var j = 0; j < item.parts.length; j++) {
+				parts.push(addStyle(item.parts[j], options));
+			}
+
+			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+		}
+	}
+}
+
+function listToStyles (list, options) {
+	var styles = [];
+	var newStyles = {};
+
+	for (var i = 0; i < list.length; i++) {
+		var item = list[i];
+		var id = options.base ? item[0] + options.base : item[0];
+		var css = item[1];
+		var media = item[2];
+		var sourceMap = item[3];
+		var part = {css: css, media: media, sourceMap: sourceMap};
+
+		if(!newStyles[id]) styles.push(newStyles[id] = {id: id, parts: [part]});
+		else newStyles[id].parts.push(part);
+	}
+
+	return styles;
+}
+
+function insertStyleElement (options, style) {
+	var target = getElement(options.insertInto)
+
+	if (!target) {
+		throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
+	}
+
+	var lastStyleElementInsertedAtTop = stylesInsertedAtTop[stylesInsertedAtTop.length - 1];
+
+	if (options.insertAt === "top") {
+		if (!lastStyleElementInsertedAtTop) {
+			target.insertBefore(style, target.firstChild);
+		} else if (lastStyleElementInsertedAtTop.nextSibling) {
+			target.insertBefore(style, lastStyleElementInsertedAtTop.nextSibling);
+		} else {
+			target.appendChild(style);
+		}
+		stylesInsertedAtTop.push(style);
+	} else if (options.insertAt === "bottom") {
+		target.appendChild(style);
+	} else if (typeof options.insertAt === "object" && options.insertAt.before) {
+		var nextSibling = getElement(options.insertInto + " " + options.insertAt.before);
+		target.insertBefore(style, nextSibling);
+	} else {
+		throw new Error("[Style Loader]\n\n Invalid value for parameter 'insertAt' ('options.insertAt') found.\n Must be 'top', 'bottom', or Object.\n (https://github.com/webpack-contrib/style-loader#insertat)\n");
+	}
+}
+
+function removeStyleElement (style) {
+	if (style.parentNode === null) return false;
+	style.parentNode.removeChild(style);
+
+	var idx = stylesInsertedAtTop.indexOf(style);
+	if(idx >= 0) {
+		stylesInsertedAtTop.splice(idx, 1);
+	}
+}
+
+function createStyleElement (options) {
+	var style = document.createElement("style");
+
+	options.attrs.type = "text/css";
+
+	addAttrs(style, options.attrs);
+	insertStyleElement(options, style);
+
+	return style;
+}
+
+function createLinkElement (options) {
+	var link = document.createElement("link");
+
+	options.attrs.type = "text/css";
+	options.attrs.rel = "stylesheet";
+
+	addAttrs(link, options.attrs);
+	insertStyleElement(options, link);
+
+	return link;
+}
+
+function addAttrs (el, attrs) {
+	Object.keys(attrs).forEach(function (key) {
+		el.setAttribute(key, attrs[key]);
+	});
+}
+
+function addStyle (obj, options) {
+	var style, update, remove, result;
+
+	// If a transform function was defined, run it on the css
+	if (options.transform && obj.css) {
+	    result = options.transform(obj.css);
+
+	    if (result) {
+	    	// If transform returns a value, use that instead of the original css.
+	    	// This allows running runtime transformations on the css.
+	    	obj.css = result;
+	    } else {
+	    	// If the transform function returns a falsy value, don't add this css.
+	    	// This allows conditional loading of css
+	    	return function() {
+	    		// noop
+	    	};
+	    }
+	}
+
+	if (options.singleton) {
+		var styleIndex = singletonCounter++;
+
+		style = singleton || (singleton = createStyleElement(options));
+
+		update = applyToSingletonTag.bind(null, style, styleIndex, false);
+		remove = applyToSingletonTag.bind(null, style, styleIndex, true);
+
+	} else if (
+		obj.sourceMap &&
+		typeof URL === "function" &&
+		typeof URL.createObjectURL === "function" &&
+		typeof URL.revokeObjectURL === "function" &&
+		typeof Blob === "function" &&
+		typeof btoa === "function"
+	) {
+		style = createLinkElement(options);
+		update = updateLink.bind(null, style, options);
+		remove = function () {
+			removeStyleElement(style);
+
+			if(style.href) URL.revokeObjectURL(style.href);
+		};
+	} else {
+		style = createStyleElement(options);
+		update = applyToTag.bind(null, style);
+		remove = function () {
+			removeStyleElement(style);
+		};
+	}
+
+	update(obj);
+
+	return function updateStyle (newObj) {
+		if (newObj) {
+			if (
+				newObj.css === obj.css &&
+				newObj.media === obj.media &&
+				newObj.sourceMap === obj.sourceMap
+			) {
+				return;
+			}
+
+			update(obj = newObj);
+		} else {
+			remove();
+		}
+	};
+}
+
+var replaceText = (function () {
+	var textStore = [];
+
+	return function (index, replacement) {
+		textStore[index] = replacement;
+
+		return textStore.filter(Boolean).join('\n');
+	};
+})();
+
+function applyToSingletonTag (style, index, remove, obj) {
+	var css = remove ? "" : obj.css;
+
+	if (style.styleSheet) {
+		style.styleSheet.cssText = replaceText(index, css);
+	} else {
+		var cssNode = document.createTextNode(css);
+		var childNodes = style.childNodes;
+
+		if (childNodes[index]) style.removeChild(childNodes[index]);
+
+		if (childNodes.length) {
+			style.insertBefore(cssNode, childNodes[index]);
+		} else {
+			style.appendChild(cssNode);
+		}
+	}
+}
+
+function applyToTag (style, obj) {
+	var css = obj.css;
+	var media = obj.media;
+
+	if(media) {
+		style.setAttribute("media", media)
+	}
+
+	if(style.styleSheet) {
+		style.styleSheet.cssText = css;
+	} else {
+		while(style.firstChild) {
+			style.removeChild(style.firstChild);
+		}
+
+		style.appendChild(document.createTextNode(css));
+	}
+}
+
+function updateLink (link, options, obj) {
+	var css = obj.css;
+	var sourceMap = obj.sourceMap;
+
+	/*
+		If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
+		and there is no publicPath defined then lets turn convertToAbsoluteUrls
+		on by default.  Otherwise default to the convertToAbsoluteUrls option
+		directly
+	*/
+	var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
+
+	if (options.convertToAbsoluteUrls || autoFixUrls) {
+		css = fixUrls(css);
+	}
+
+	if (sourceMap) {
+		// http://stackoverflow.com/a/26603875
+		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+	}
+
+	var blob = new Blob([css], { type: "text/css" });
+
+	var oldSrc = link.href;
+
+	link.href = URL.createObjectURL(blob);
+
+	if(oldSrc) URL.revokeObjectURL(oldSrc);
+}
+
+
+/***/ }),
 /* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -10897,7 +10897,7 @@ var transform;
 var options = {"hmr":true}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, options);
+var update = __webpack_require__(2)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -10917,7 +10917,7 @@ if(false) {
 /* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(false);
+exports = module.exports = __webpack_require__(1)(false);
 // imports
 
 
@@ -11037,7 +11037,7 @@ var transform;
 var options = {"hmr":true}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, options);
+var update = __webpack_require__(2)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -11057,12 +11057,12 @@ if(false) {
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(false);
+exports = module.exports = __webpack_require__(1)(false);
 // imports
 
 
 // module
-exports.push([module.i, ".game {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n.game__title {\n  font-weight: 400;\n}\n.game__grid {\n  display: flex;\n  flex-wrap: wrap;\n  box-shadow: 0 0 10px 0px rgba(0,0,0,0.5);\n  cursor: pointer;\n}\n.game__grid-cell {\n  box-sizing: border-box;\n  height: 12px;\n  width: 12px;\n  border: 1px solid #bbb;\n}\n.game__grid-cell_alive {\n  background-color: #ed2525;\n}\n.game__buttons {\n  margin: 15px 0;\n}\n.game__button {\n  width: 100px;\n  height: 40px;\n  background-color: #e5e5e5;\n  border: 1px solid #888;\n  cursor: pointer;\n}\n.game__button:hover {\n  background-color: #efefef;\n}\n.game__one-step {\n  margin: 0 10px;\n}\n.game__settings {\n  text-align: center;\n}\n.game__grid-size {\n  display: block;\n  margin-bottom: 10px;\n}\n.game__input {\n  border: 1px solid #999;\n  width: 50px;\n  margin-left: 5px;\n}\n.game__wrong-input {\n  outline-color: #f00;\n  background-color: rgba(255,0,0,0.1);\n  border: 1px solid #f00;\n}\n", ""]);
+exports.push([module.i, ".game {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n.game__title {\n  font-weight: 400;\n}\n.game__grid {\n  display: flex;\n  flex-wrap: wrap;\n  box-shadow: 0 0 0.625rem 0rem rgba(0,0,0,0.5);\n  cursor: pointer;\n}\n.game__grid-cell {\n  box-sizing: border-box;\n  height: 0.75rem;\n  width: 0.75rem;\n  border: 0.0625rem solid #bbb;\n}\n.game__grid-cell_alive {\n  background-color: #ed2525;\n}\n.game__buttons {\n  margin: 0.9375rem 0;\n}\n.game__button {\n  width: 6.25rem;\n  height: 2.5rem;\n  background-color: #e5e5e5;\n  border: 0.0625rem solid #888;\n  cursor: pointer;\n}\n.game__button:hover {\n  background-color: #efefef;\n}\n.game__one-step {\n  margin: 0 0.625rem;\n}\n.game__settings {\n  text-align: center;\n}\n.game__grid-size {\n  display: block;\n  margin-bottom: 0.625rem;\n}\n.game__input {\n  border: 0.0625rem solid #999;\n  width: 3.125rem;\n  margin-left: 0.3125rem;\n}\n.game__input_invalid {\n  outline-color: #f00;\n  background-color: rgba(255,0,0,0.1);\n  border: 0.0625rem solid #f00;\n}\n", ""]);
 
 // exports
 
@@ -11074,7 +11074,7 @@ exports.push([module.i, ".game {\n  display: flex;\n  flex-direction: column;\n 
 "use strict";
 /* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view_view__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__model_model__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__controller_controller__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__controller_controller__ = __webpack_require__(24);
 
 
 
@@ -11082,14 +11082,14 @@ exports.push([module.i, ".game {\n  display: flex;\n  flex-direction: column;\n 
 class App {
   constructor() {
     this._model = new __WEBPACK_IMPORTED_MODULE_1__model_model__["a" /* default */]();
-    this._view = new __WEBPACK_IMPORTED_MODULE_0__view_view__["a" /* default */](this._model);
+    this._view = new __WEBPACK_IMPORTED_MODULE_0__view_view__["a" /* default */]();
     this._controller = new __WEBPACK_IMPORTED_MODULE_2__controller_controller__["a" /* default */](this._model, this._view);
   }
 
   init() {
     const $width = $('.js-game__width-input');
     const $height = $('.js-game__height-input');
-    this._view.observeModel();
+    this._controller.observeModel();
     this._model.createGridMatrix(parseInt($width.val(), 10), parseInt($height.val(), 10));
     this._controller.setListeners();
   }
@@ -11098,53 +11098,36 @@ class App {
 const app = new App();
 app.init();
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(2)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ }),
 /* 20 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function($) {/* eslint no-param-reassign: 0 */
 class View {
-  constructor(model) {
-    this._model = model;
-  }
-
-  observeModel() {
-    this._model.createGridMatrixEvent.attach(this.createGrid.bind(this));
-    this._model.updateCellEvent.attach(this.updateCell.bind(this));
-  }
-
-  createGrid() {
+  createGrid(cellsX, cellsY) {
     const cellSize = 12;
     const grid = document.querySelector('.js-game__grid');
-    grid.style.width = `${this._model.cellsX * cellSize}px`;
+    grid.style.width = `${cellsX * cellSize}px`;
     grid.innerHTML = '';
-    for (let i = 0; i < this._model.cellsY; i += 1) {
-      for (let j = 0; j < this._model.cellsX; j += 1) {
-        const cell = document.createElement('div');
-        cell.className = 'game__grid-cell js-game__grid-cell';
-        // Дата-аттрибуты содержат индексы для матрицы в модели
-        cell.dataset.i = i;
-        cell.dataset.j = j;
-        grid.appendChild(cell);
-      }
+    for (let i = 0; i < cellsY * cellsX; i += 1) {
+      const cell = document.createElement('div');
+      cell.className = 'game__grid-cell js-game__grid-cell';
+      grid.appendChild(cell);
     }
   }
 
-  getCellIndexes(elem) {
-    return {
-      i: parseInt(elem.dataset.i, 10),
-      j: parseInt(elem.dataset.j, 10),
-    };
+  getCellIndex(cell) {
+    return $(cell).index();
   }
 
-  updateCell(i, j) {
-    const updatedCell = document.querySelector(`.js-game__grid-cell[data-i='${i}'][data-j='${j}']`);
-    if (updatedCell.className === 'game__grid-cell js-game__grid-cell') {
-      updatedCell.className += ' game__grid-cell_alive';
+  updateCell(cell) {
+    if (cell.className === 'game__grid-cell js-game__grid-cell') {
+      cell.className += ' game__grid-cell_alive';
     } else {
-      updatedCell.className = 'game__grid-cell js-game__grid-cell';
+      cell.className = 'game__grid-cell js-game__grid-cell';
     }
   }
 
@@ -11157,10 +11140,27 @@ class View {
     const btnStartText = 'Start';
     document.querySelector('.js-game__start-stop').innerHTML = btnStartText;
   }
+
+  addInvalidModificator(input) {
+    $(input).addClass('game__input_invalid');
+  }
+
+  removeInvalidModificator(input) {
+    $(input).removeClass('game__input_invalid');
+  }
+
+  inputValueIsValid(input) {
+    return !$(input).hasClass('game__input_invalid');
+  }
+
+  getInputValue(input) {
+    return $(input).val();
+  }
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (View);
 
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ }),
 /* 21 */
@@ -11168,6 +11168,8 @@ class View {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__constants__ = __webpack_require__(23);
+
 
 
 class Model {
@@ -11175,84 +11177,86 @@ class Model {
     this.createGridMatrixEvent = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */](this);
     this.updateCellEvent = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */](this);
     this.endGameEvent = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */](this);
-    this._constants = {
-      DEAD_CELL: 0,
-      ALIVE_CELL: 1,
-      MAX_ALIVE_NEIGHBOURS: 3,
-      MIN_ALIVE_NEIGHBOURS: 2,
-    };
   }
 
   createGridMatrix(cellsX, cellsY) {
-    this._gridMatrix = [];
-    for (let i = 0; i < cellsY; i += 1) {
-      const gridMatrixRow = [];
-      for (let j = 0; j < cellsX; j += 1) {
-        gridMatrixRow.push(this._constants.DEAD_CELL);
-      }
-      this._gridMatrix.push(gridMatrixRow);
-    }
+    this._gridMatrix = [...Array(cellsY)].map(() => Array(cellsX).fill(__WEBPACK_IMPORTED_MODULE_1__constants__["a" /* default */].DEAD_CELL));
     this.cellsY = cellsY;
     this.cellsX = cellsX;
-    this.createGridMatrixEvent.notify();
+    this.createGridMatrixEvent.notify(cellsX, cellsY);
   }
 
-  updateCell(i, j) {
-    if (this._gridMatrix[i][j] === this._constants.DEAD_CELL) {
-      this._gridMatrix[i][j] = this._constants.ALIVE_CELL;
+  updateCell(cellRow, cellCol) {
+    if (this._gridMatrix[cellRow][cellCol] === __WEBPACK_IMPORTED_MODULE_1__constants__["a" /* default */].DEAD_CELL) {
+      this._gridMatrix[cellRow][cellCol] = __WEBPACK_IMPORTED_MODULE_1__constants__["a" /* default */].ALIVE_CELL;
     } else {
-      this._gridMatrix[i][j] = this._constants.DEAD_CELL;
+      this._gridMatrix[cellRow][cellCol] = __WEBPACK_IMPORTED_MODULE_1__constants__["a" /* default */].DEAD_CELL;
     }
-    this.updateCellEvent.notify(i, j);
-  }
-
-  countAliveNeighbours(i, j) {
-    let aliveNeighbours = 0;
-    for (let k = Math.max(0, i - 1); k < Math.min(this.cellsY, i + 2); k += 1) {
-      for (let m = Math.max(0, j - 1); m < Math.min(this.cellsX, j + 2); m += 1) {
-        const notCurrentCell = k !== i || m !== j;
-        if (notCurrentCell) {
-          if (this._gridMatrix[k][m] === this._constants.ALIVE_CELL) {
-            aliveNeighbours += 1;
-          }
-        }
-      }
-    }
-    return aliveNeighbours;
+    this.updateCellEvent.notify(cellRow, cellCol);
   }
 
   calculateNextGeneration() {
-    const self = this;
     const indexesToUpdate = [];
 
     const cellWillLive = function checkIfDeadCellWillLive(aliveNeighbours) {
-      return aliveNeighbours === self._constants.MAX_ALIVE_NEIGHBOURS;
+      return aliveNeighbours === __WEBPACK_IMPORTED_MODULE_1__constants__["a" /* default */].MAX_ALIVE_NEIGHBOURS;
     };
 
     const cellWillDie = function checkIfAliveCellWillDie(aliveNeighbours) {
-      const tooFewNeighbours = aliveNeighbours < self._constants.MIN_ALIVE_NEIGHBOURS;
-      const tooManyNeighbours = aliveNeighbours > self._constants.MAX_ALIVE_NEIGHBOURS;
+      const tooFewNeighbours = aliveNeighbours < __WEBPACK_IMPORTED_MODULE_1__constants__["a" /* default */].MIN_ALIVE_NEIGHBOURS;
+      const tooManyNeighbours = aliveNeighbours > __WEBPACK_IMPORTED_MODULE_1__constants__["a" /* default */].MAX_ALIVE_NEIGHBOURS;
       return tooFewNeighbours || tooManyNeighbours;
     };
 
-    for (let i = 0; i < this.cellsY; i += 1) {
-      for (let j = 0; j < this.cellsX; j += 1) {
-        const aliveNeighbours = this.countAliveNeighbours(i, j);
-        if (this._gridMatrix[i][j] === this._constants.DEAD_CELL) {
+    this._gridMatrix.forEach((row, rowIndex) => {
+      row.forEach((matrixElement, colIndex) => {
+        const aliveNeighbours = this._countAliveNeighbours(rowIndex, colIndex);
+        if (matrixElement === __WEBPACK_IMPORTED_MODULE_1__constants__["a" /* default */].DEAD_CELL) {
           if (cellWillLive(aliveNeighbours)) {
-            indexesToUpdate.push([i, j]);
+            indexesToUpdate.push([rowIndex, colIndex]);
           }
         } else if (cellWillDie(aliveNeighbours)) {
-          indexesToUpdate.push([i, j]);
+          indexesToUpdate.push([rowIndex, colIndex]);
         }
-      }
-    }
+      });
+    });
     if (!indexesToUpdate.length) {
       this.endGameEvent.notify();
     }
     indexesToUpdate.forEach((indexesPair) => {
       this.updateCell(indexesPair[0], indexesPair[1]);
     });
+  }
+
+  _countAliveNeighbours(cellRow, cellCol) {
+    let aliveNeighbours = 0;
+    const matrixOfNeighbors = this._createMatrixOfNeighbors(cellRow, cellCol);
+
+    matrixOfNeighbors.forEach((row) => {
+      row.forEach((matrixElement) => {
+        if (matrixElement === __WEBPACK_IMPORTED_MODULE_1__constants__["a" /* default */].ALIVE_CELL) {
+          aliveNeighbours += 1;
+        }
+      });
+    });
+    return aliveNeighbours;
+  }
+
+  _createMatrixOfNeighbors(cellRow, cellCol) {
+    const firstNeighboringRow = Math.max(0, cellRow - 1);
+    const lastNeighboringRow = Math.min(this.cellsY, cellRow + 1);
+
+    const firstNeighboringCol = Math.max(0, cellCol - 1);
+    const lastNeighboringCol = Math.min(this.cellsX, cellCol + 1);
+
+    const matrixOfNeighbors = this._gridMatrix
+      .slice(firstNeighboringRow, lastNeighboringRow + 1)
+      .map(matrixRow => matrixRow.slice(firstNeighboringCol, lastNeighboringCol + 1));
+
+    // убрать текущий элемент из матрицы с соседями
+    matrixOfNeighbors[cellRow - firstNeighboringRow].splice(cellCol - firstNeighboringCol, 1);
+
+    return matrixOfNeighbors;
   }
 }
 
@@ -11273,6 +11277,10 @@ class ObservedEvent {
     this._handlers.push(handler);
   }
 
+  detach(handler) {
+    this._handlers.splice(this._handlers.indexOf(handler), 1);
+  }
+
   notify(...args) {
     this._handlers.forEach((handler) => {
       handler(...args);
@@ -11288,170 +11296,212 @@ class ObservedEvent {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+const constants = {
+  DEAD_CELL: 0,
+  ALIVE_CELL: 1,
+  MAX_ALIVE_NEIGHBOURS: 3,
+  MIN_ALIVE_NEIGHBOURS: 2,
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (constants);
+
+
+/***/ }),
+/* 24 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* WEBPACK VAR INJECTION */(function($) {class Controller {
   constructor(model, view) {
     this._view = view;
     this._model = model;
+    this._gameIsRunning = false;
+    this._timerId = null;
+  }
+
+  observeModel() {
+    this._model.createGridMatrixEvent.attach(this._view.createGrid);
+    this._model.updateCellEvent.attach(this.updateViewCell.bind(this));
+    this._model.endGameEvent.attach(this.stopGame.bind(this));
+  }
+
+  updateViewCell(cellRow, cellCol) {
+    const updatableCell = $('.js-game__grid-cell')[(cellRow * this._model.cellsX) + cellCol];
+    this._view.updateCell(updatableCell);
+  }
+
+  startGame() {
+    const delayInput = $('.js-game__delay-input')[0];
+    if (this._view.inputValueIsValid(delayInput)) {
+      const delay = parseInt(this._view.getInputValue(delayInput), 10);
+      const calcNextGeneration = this._model.calculateNextGeneration.bind(this._model);
+      this._timerId = setInterval(calcNextGeneration, delay);
+      this._gameIsRunning = true;
+      this._view.replaceStartButton();
+    }
+  }
+
+  stopGame() {
+    clearInterval(this._timerId);
+    this._gameIsRunning = false;
+    this._view.replaceStopButton();
   }
 
   setListeners() {
+    this._setGridListeners();
+    this._setButtonsListeners();
+    this._setInputListeners();
+  }
+
+  _setGridListeners() {
     const self = this;
     const $grid = $('.js-game__grid');
+
+    const updateCell = function updateCellInModel(event) {
+      const cellIndex = self._view.getCellIndex(event.target);
+      const cellRow = Math.floor(cellIndex / self._model.cellsX);
+      const cellCol = cellIndex % self._model.cellsX;
+      self._model.updateCell(cellRow, cellCol);
+    };
+
+    const updateCellAndListenMouseover = function updateCellAndSetMouseoverListener(event) {
+      updateCell(event);
+      $grid.bind('mouseover', updateCell);
+      return false;
+    };
+
+    const unbindMouseover = function unbindMouseoverUpdateCellListener() {
+      $grid.unbind('mouseover');
+    };
+
+    $grid
+      .mousedown(updateCellAndListenMouseover)
+      .mouseup(unbindMouseover)
+      .mouseleave(unbindMouseover);
+  }
+
+  _setButtonsListeners() {
+    const self = this;
     const $startStopButton = $('.js-game__start-stop');
     const $oneStepButton = $('.js-game__one-step');
     const $clearButton = $('.js-game__clear');
-    const $delayInput = $('.js-game__delay-input');
-    let timerId;
-    let gameIsRunning = false;
 
-    const setGridListeners = function setListenersRelatedToGridUpdate() {
-      const updateCell = function updateCellInModel(event) {
-        const indexes = self._view.getCellIndexes(event.target);
-        self._model.updateCell(indexes.i, indexes.j);
-      };
+    const startOrStopGame = function startOrStopGameRunning() {
+      if (!self._gameIsRunning) {
+        self.startGame();
+      } else {
+        self.stopGame();
+      }
+    };
+    $startStopButton.click(startOrStopGame);
 
-      const updateCellAndListenMouseover = function updateCellAndSetMouseoverListener(event) {
-        updateCell(event);
-        $grid.bind('mouseover', updateCell);
-        return false;
-      };
+    const clearGrid = function createAllZeroGridMatrix() {
+      self._model.createGridMatrix(self._model.cellsX, self._model.cellsY);
+    };
+    $clearButton.click(clearGrid);
 
-      const unbindMouseover = function unbindMouseoverUpdateCellListener() {
-        $grid.unbind('mouseover');
-      };
+    const calcNextGeneration = self._model.calculateNextGeneration.bind(self._model);
+    $oneStepButton.click(calcNextGeneration);
+  }
 
-      $grid
-        .mousedown(updateCellAndListenMouseover)
-        .mouseup(unbindMouseover)
-        .mouseleave(unbindMouseover);
+  _setInputListeners() {
+    const self = this;
+
+    const validateInput = function addOrRemoveInvalidInputModificator(event) {
+      const value = self._view.getInputValue(event.target);
+      if ($.isNumeric(value) && (parseInt(value, 10) > 0)) {
+        self._view.removeInvalidModificator(event.target);
+      } else {
+        self._view.addInvalidModificator(event.target);
+      }
     };
 
-    const setButtonsListeners = function setListenersRelatedToAllButtons() {
-      const stopGame = function stopGameAndReplaceStopButton() {
-        clearInterval(timerId);
-        gameIsRunning = false;
-        self._view.replaceStopButton();
-      };
-      self._model.endGameEvent.attach(stopGame);
-
-      const startGame = function startGameAndReplaceStartButton() {
-        const delay = parseInt($delayInput.val(), 10);
-        if (delay > 0) {
-          timerId = setInterval(self._model.calculateNextGeneration.bind(self._model), delay);
-          gameIsRunning = true;
-          self._view.replaceStartButton();
-        }
-      };
-
-      const startOrStopGame = function startOrStopGameRunning(event) {
-        const btnStartText = 'Start';
-        if ($(event.target).text() === btnStartText) {
-          startGame();
-        } else {
-          stopGame();
-        }
-      };
-
-      $startStopButton.on('click', startOrStopGame);
-
-      const clearGrid = function createAllZeroGridMatrix() {
-        self._model.createGridMatrix(self._model.cellsX, self._model.cellsY);
-      };
-
-      $clearButton.on('click', clearGrid);
-      $oneStepButton.on('click', self._model.calculateNextGeneration.bind(self._model));
+    const valueHasBeenChanged = function checkIfInputValueHasBeenChanged(newValue, oldValue) {
+      return (newValue !== oldValue);
     };
 
-    const setDelayListeners = function setListenersRelatedToDelayField() {
+    const setDelayListeners = function setListenersRelatedToDelayInput() {
+      const $delayInput = $('.js-game__delay-input');
+
       let currentDelay;
-
-      const saveDelay = function saveCurrentDelayValue(event) {
-        currentDelay = parseInt($(event.target).val(), 10);
+      const saveDelay = function saveCurrentDelayValueIfValid(event) {
+        if (self._view.inputValueIsValid(event.target)) {
+          currentDelay = parseInt(self._view.getInputValue(event.target), 10);
+        }
       };
+      $delayInput.focus(saveDelay);
 
-      $delayInput.on('focus', saveDelay);
-
-      const delayHasBeenChanged = function checkIfDelayHasBeenChanged(newDelay) {
-        return (newDelay !== currentDelay);
-      };
+      $delayInput.blur(validateInput);
 
       const changeDelay = function changeGridNextGenerationCalculationDelay(event) {
-        const newDelay = parseInt($(event.target).val(), 10);
-        if (newDelay > 0) {
-          $(event.target).removeClass('game__wrong-input');
-          if (gameIsRunning && delayHasBeenChanged(newDelay)) {
-            clearInterval(timerId);
-            timerId = setInterval(self._model.calculateNextGeneration.bind(self._model), newDelay);
+        if (self._view.inputValueIsValid(event.target)) {
+          const newDelay = parseInt(self._view.getInputValue(event.target), 10);
+          if (self._gameIsRunning && valueHasBeenChanged(newDelay, currentDelay)) {
+            clearInterval(self._timerId);
+            const calcNextGeneration = self._model.calculateNextGeneration.bind(self._model);
+            self._timerId = setInterval(calcNextGeneration, newDelay);
           }
-        } else {
-          $(event.target).addClass('game__wrong-input');
         }
       };
-
-      $delayInput.on('blur', changeDelay);
+      $delayInput.blur(changeDelay);
     };
 
-    const setGridSizeListeners = function setListenersRelatedToGridSizeChanging() {
+    const setSizeListeners = function setListenersRelatedToSizeChanging() {
       let currentWidth;
       let currentHeight;
       const $width = $('.js-game__width-input');
+      const widthInput = $width[0];
       const $height = $('.js-game__height-input');
+      const heightInput = $height[0];
       const $widthAndHeight = $('.js-game__width-input, .js-game__height-input');
 
       const saveGridSize = function saveCurrentWidthAndHeightValue() {
-        currentWidth = parseInt($width.val(), 10);
-        currentHeight = parseInt($height.val(), 10);
+        if (self._view.inputValueIsValid(widthInput)) {
+          currentWidth = parseInt(self._view.getInputValue(widthInput), 10);
+        }
+        if (self._view.inputValueIsValid(heightInput)) {
+          currentHeight = parseInt(self._view.getInputValue(heightInput), 10);
+        }
       };
+      $widthAndHeight.focus(saveGridSize);
 
-      $widthAndHeight.on('focus', saveGridSize);
+      $widthAndHeight.blur(validateInput);
 
-      const widthHasBeenChanged = function checkIfWidthHasBeenChanged(newWidth) {
-        return (newWidth !== currentWidth);
-      };
-
-      const heightHasBeenChanged = function checkIfHeightHasBeenChanged(newHeight) {
-        return (newHeight !== currentHeight);
+      const sizeInputsAreValid = function checkIfSizeInputsAreValid() {
+        const widthIsValid = self._view.inputValueIsValid(widthInput);
+        const heightIsValid = self._view.inputValueIsValid(heightInput);
+        return widthIsValid && heightIsValid;
       };
 
       const changeGridWidth = function createNewGridMatrixWidthUpdatedWidth(event) {
-        const newWidth = parseInt($(event.target).val(), 10);
-        if (newWidth > 0) {
-          $(event.target).removeClass('game__wrong-input');
-          if (currentHeight > 0 && widthHasBeenChanged(newWidth)) {
+        if (sizeInputsAreValid()) {
+          const newWidth = parseInt(self._view.getInputValue(event.target), 10);
+          if (valueHasBeenChanged(newWidth, currentWidth)) {
             self._model.createGridMatrix(newWidth, currentHeight);
           }
-        } else {
-          $(event.target).addClass('game__wrong-input');
         }
       };
-
       $width.blur(changeGridWidth);
 
       const changeGridHeight = function createNewGridMatrixWidthUpdatedHeight(event) {
-        const newHeight = parseInt($(event.target).val(), 10);
-        if (newHeight > 0) {
-          $(event.target).removeClass('game__wrong-input');
-          if (currentWidth > 0 && heightHasBeenChanged(newHeight)) {
+        if (sizeInputsAreValid()) {
+          const newHeight = parseInt(self._view.getInputValue(event.target), 10);
+          if (valueHasBeenChanged(newHeight, currentHeight)) {
             self._model.createGridMatrix(currentWidth, newHeight);
           }
-        } else {
-          $(event.target).addClass('game__wrong-input');
         }
       };
-
       $height.blur(changeGridHeight);
     };
 
-    setGridListeners();
-    setButtonsListeners();
     setDelayListeners();
-    setGridSizeListeners();
+    setSizeListeners();
   }
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (Controller);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(2)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ })
 /******/ ]);
