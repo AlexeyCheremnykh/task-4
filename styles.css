@@ -1,0 +1,62 @@
+html {
+  background-color: #fff;
+  color: #4f4f4f;
+  font-size: 16px;
+  font-family: "Arial", "Verdana", sans-serif;
+}
+.game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.game__title {
+  font-weight: 400;
+}
+.game__grid {
+  display: flex;
+  flex-wrap: wrap;
+  box-shadow: 0 0 0.625rem 0rem rgba(0,0,0,0.5);
+  cursor: pointer;
+}
+.game__grid-cell {
+  box-sizing: border-box;
+  height: 0.75rem;
+  width: 0.75rem;
+  border: 0.0625rem solid #bbb;
+}
+.game__grid-cell_alive {
+  background-color: #ed2525;
+}
+.game__buttons {
+  margin: 0.9375rem 0;
+}
+.game__button {
+  width: 6.25rem;
+  height: 2.5rem;
+  background-color: #e5e5e5;
+  border: 0.0625rem solid #888;
+  cursor: pointer;
+}
+.game__button:hover {
+  background-color: #efefef;
+}
+.game__one-step {
+  margin: 0 0.625rem;
+}
+.game__settings {
+  text-align: center;
+}
+.game__grid-size {
+  display: block;
+  margin-bottom: 0.625rem;
+}
+.game__input {
+  border: 0.0625rem solid #999;
+  width: 3.125rem;
+  margin-left: 0.3125rem;
+}
+.game__input_invalid {
+  outline-color: #f00;
+  background-color: rgba(255,0,0,0.1);
+  border: 0.0625rem solid #f00;
+}
