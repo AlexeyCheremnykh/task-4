@@ -33,6 +33,22 @@ class View {
     const btnStartText = 'Start';
     document.querySelector('.js-game__start-stop').innerHTML = btnStartText;
   }
+
+  addInvalidModificator(input) {
+    $(input).addClass('game__input_invalid');
+  }
+
+  removeInvalidModificator(input) {
+    $(input).removeClass('game__input_invalid');
+  }
+
+  inputValueIsValid(input) {
+    return !$(input).hasClass('game__input_invalid');
+  }
+
+  getInputValue(input) {
+    return $(input).val();
+  }
 }
 
 export default View;
