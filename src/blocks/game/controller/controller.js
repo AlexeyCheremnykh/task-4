@@ -8,13 +8,17 @@ class Controller {
 
   observeModel() {
     this._model.createGridMatrixEvent.attach(this._view.createGrid);
-    this._model.updateCellEvent.attach(this.updateViewCell.bind(this));
+    this._model.updateMatrixEvent.attach(this.updateGrid.bind(this));
     this._model.endGameEvent.attach(this.stopGame.bind(this));
+    return this;
   }
 
-  updateViewCell(cellRow, cellCol) {
-    const updatableCell = $('.js-game__grid-cell')[(cellRow * this._model.cellsX) + cellCol];
-    this._view.updateCell(updatableCell);
+  observeView() {
+    this._view.startStopButtonClick.attach(this.startOrStopGame.bind(this));
+    this._view.oneStepButtonClick.attach(this._model.calculateNextGeneration.bind(this._model));
+    this._view.clearButtonClick.attach(this._model.clearMatrix.bind(this._model));
+    this._view.updateCellEvent.attach(this.updateMatrixCell.bind(this));
+    return this;
   }
 
   startGame() {
@@ -34,61 +38,31 @@ class Controller {
     this._view.replaceStopButton();
   }
 
+  startOrStopGame() {
+    if (!this._gameIsRunning) {
+      this.startGame();
+    } else {
+      this.stopGame();
+    }
+  }
+
   setListeners() {
-    this._setGridListeners();
-    this._setButtonsListeners();
     this._setInputListeners();
   }
 
-  _setGridListeners() {
-    const self = this;
-    const $grid = $('.js-game__grid');
-
-    const updateCell = function updateCellInModel(event) {
-      const cellIndex = self._view.getCellIndex(event.target);
-      const cellRow = Math.floor(cellIndex / self._model.cellsX);
-      const cellCol = cellIndex % self._model.cellsX;
-      self._model.updateCell(cellRow, cellCol);
-    };
-
-    const updateCellAndListenMouseover = function updateCellAndSetMouseoverListener(event) {
-      updateCell(event);
-      $grid.bind('mouseover', updateCell);
-      return false;
-    };
-
-    const unbindMouseover = function unbindMouseoverUpdateCellListener() {
-      $grid.unbind('mouseover');
-    };
-
-    $grid
-      .mousedown(updateCellAndListenMouseover)
-      .mouseup(unbindMouseover)
-      .mouseleave(unbindMouseover);
+  updateMatrixCell(cellIndex) {
+    const cellRow = Math.floor(cellIndex / this._model.cellsX);
+    const cellCol = cellIndex % this._model.cellsX;
+    this._model.updateCell(cellRow, cellCol);
   }
 
-  _setButtonsListeners() {
-    const self = this;
-    const $startStopButton = $('.js-game__start-stop');
-    const $oneStepButton = $('.js-game__one-step');
-    const $clearButton = $('.js-game__clear');
-
-    const startOrStopGame = function startOrStopGameRunning() {
-      if (!self._gameIsRunning) {
-        self.startGame();
-      } else {
-        self.stopGame();
-      }
-    };
-    $startStopButton.click(startOrStopGame);
-
-    const clearGrid = function createAllZeroGridMatrix() {
-      self._model.createGridMatrix(self._model.cellsX, self._model.cellsY);
-    };
-    $clearButton.click(clearGrid);
-
-    const calcNextGeneration = self._model.calculateNextGeneration.bind(self._model);
-    $oneStepButton.click(calcNextGeneration);
+  updateGrid(updatedIndexes) {
+    const cellIndexes = [];
+    updatedIndexes.forEach((indexes) => {
+      const cellIndex = (indexes[0] * this._model.cellsX) + indexes[1];
+      cellIndexes.push(cellIndex);
+    });
+    this._view.updateGrid(cellIndexes);
   }
 
   _setInputListeners() {
