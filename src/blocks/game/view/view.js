@@ -1,15 +1,16 @@
 /* eslint no-param-reassign: 0 */
+
 class View {
   createGrid(cellsX, cellsY) {
     const cellSize = 12;
     const grid = document.querySelector('.js-game__grid');
     grid.style.width = `${cellsX * cellSize}px`;
     grid.innerHTML = '';
-    for (let i = 0; i < cellsY * cellsX; i += 1) {
+    [...Array(cellsY * cellsX)].forEach(() => {
       const cell = document.createElement('div');
       cell.className = 'game__grid-cell js-game__grid-cell';
       grid.appendChild(cell);
-    }
+    });
   }
 
   getCellIndex(cell) {
