@@ -8,8 +8,19 @@ class Grid {
   }
 
   createGrid(cellsX, cellsY, cellSize) {
-    if (!(Number.isInteger(cellsX) && Number.isInteger(cellsY) && $.isNumeric(cellSize))) return;
-    if (cellsX < 0 || cellsY < 0 || cellSize < 0) return;
+    const inputIsInvalid = function checkIfInputParametersAreInvalid() {
+      if (
+        !Number.isInteger(cellsX) ||
+        !Number.isInteger(cellsY) ||
+        !$.isNumeric(cellSize) ||
+        cellsX <= 0 ||
+        cellsY <= 0 ||
+        cellSize <= 0
+      ) return true;
+      return false;
+    };
+
+    if (inputIsInvalid()) return;
     this._$grid.width(cellsX * cellSize);
     this._$grid.html('');
     [...Array(cellsY * cellsX)].forEach(() => {
@@ -19,8 +30,7 @@ class Grid {
   }
 
   updateCell(cellIndex) {
-    if (!Number.isInteger(cellIndex)) return;
-    if (cellIndex < 0) return;
+    if (!Number.isInteger(cellIndex) || cellIndex < 0) return;
     const $cell = $($('.js-game__grid-cell')[cellIndex]);
     const aliveClass = 'game__grid-cell_alive';
     if ($cell.hasClass(aliveClass)) {
