@@ -4,7 +4,7 @@ import constants from '../constants';
 class Model {
   constructor() {
     this.createGridMatrixEvent = new ObservedEvent();
-    this.updateMatrixEvent = new ObservedEvent();
+    this.updateCellEvent = new ObservedEvent();
     this.endGameEvent = new ObservedEvent();
   }
 
@@ -15,18 +15,13 @@ class Model {
     this.createGridMatrixEvent.notify(cellsX, cellsY);
   }
 
-  clearMatrix() {
-    this._gridMatrix.forEach((row, rowIndex) => {
-      this._gridMatrix[rowIndex] = row.map(() => constants.DEAD_CELL);
-    });
-  }
-
   updateCell(cellRow, cellCol) {
     if (this._gridMatrix[cellRow][cellCol] === constants.DEAD_CELL) {
       this._gridMatrix[cellRow][cellCol] = constants.ALIVE_CELL;
     } else {
       this._gridMatrix[cellRow][cellCol] = constants.DEAD_CELL;
     }
+    this.updateCellEvent.notify(cellRow, cellCol);
   }
 
   calculateNextGeneration() {
@@ -60,7 +55,6 @@ class Model {
     indexesToUpdate.forEach((indexesPair) => {
       this.updateCell(indexesPair[0], indexesPair[1]);
     });
-    this.updateMatrixEvent.notify(indexesToUpdate);
   }
 
   _countAliveNeighbours(cellRow, cellCol) {
