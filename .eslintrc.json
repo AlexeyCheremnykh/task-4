@@ -18,5 +18,11 @@
         "no-underscore-dangle": "off",
         "import/first": "off",
         "class-methods-use-this": "off"
+    },
+    "globals": {
+        "describe": true,
+        "expect": true,
+        "test": true,
+        "jest": true
     }
 }
