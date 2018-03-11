@@ -1,5 +1,3 @@
-/* global jest, test, describe, expect */
-
 import ObservedEvent from './observed-event';
 
 class Observable {
