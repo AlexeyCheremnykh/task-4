@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10328,41 +10328,116 @@ return jQuery;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__favicons_favicons__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__favicons_favicons___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__favicons_favicons__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_index_styl__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_index_styl___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__pages_index_styl__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blocks_game_game_styl__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blocks_game_game_styl___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__blocks_game_game_styl__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__blocks_game_app_app__ = __webpack_require__(14);
+class ObservedEvent {
+  constructor() {
+    this._handlers = [];
+  }
 
+  attach(handler) {
+    this._handlers.push(handler);
+  }
 
+  detach(handler) {
+    this._handlers.splice(this._handlers.indexOf(handler), 1);
+  }
 
+  notify(...args) {
+    this._handlers.forEach((handler) => {
+      handler(...args);
+    });
+  }
+}
 
+/* harmony default export */ __webpack_exports__["a"] = (ObservedEvent);
 
 
 /***/ }),
 /* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__ = __webpack_require__(1);
+
+
+class Button {
+  constructor(selector) {
+    this.click = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */]();
+    this._$button = $(selector);
+    this._setListeners();
+  }
+
+  _setListeners() {
+    const self = this;
+    const notifyClick = function notifyObserversOnButtonClick() {
+      self.click.notify();
+    };
+    this._$button.click(notifyClick);
+  }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (Button);
+
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+const constants = {
+  DEAD_CELL: 0,
+  ALIVE_CELL: 1,
+  MAX_ALIVE_NEIGHBOURS: 3,
+  MIN_ALIVE_NEIGHBOURS: 2,
+  CELL_SIZE: 12,
+  DEFAULT_DELAY: 200,
+  DEFAULT_WIDTH: 30,
+  DEFAULT_HEIGHT: 20,
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (constants);
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__favicons_favicons__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__favicons_favicons___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__favicons_favicons__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_index_styl__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_index_styl___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__pages_index_styl__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blocks_game_game_styl__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blocks_game_game_styl___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__blocks_game_game_styl__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__blocks_game_app_app__ = __webpack_require__(17);
+
+
+
+
+
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const faviconsContext = __webpack_require__(3);
+const faviconsContext = __webpack_require__(6);
 faviconsContext.keys().forEach(faviconsContext);
 
 
 /***/ }),
-/* 3 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./android-chrome-96x96.png": 4,
-	"./apple-touch-icon.png": 5,
-	"./browserconfig.xml": 6,
-	"./favicon-16x16.png": 7,
-	"./favicon-32x32.png": 8,
-	"./favicon.ico": 9,
-	"./mstile-150x150.png": 10,
-	"./safari-pinned-tab.svg": 11
+	"./android-chrome-96x96.png": 7,
+	"./apple-touch-icon.png": 8,
+	"./browserconfig.xml": 9,
+	"./favicon-16x16.png": 10,
+	"./favicon-32x32.png": 11,
+	"./favicon.ico": 12,
+	"./mstile-150x150.png": 13,
+	"./safari-pinned-tab.svg": 14
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -10378,76 +10453,76 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 3;
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "favicons/android-chrome-96x96.png";
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "favicons/apple-touch-icon.png";
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "favicons/browserconfig.xml";
+webpackContext.id = 6;
 
 /***/ }),
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "favicons/favicon-16x16.png";
+module.exports = __webpack_require__.p + "favicons/android-chrome-96x96.png";
 
 /***/ }),
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "favicons/favicon-32x32.png";
+module.exports = __webpack_require__.p + "favicons/apple-touch-icon.png";
 
 /***/ }),
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "favicons/favicon.ico";
+module.exports = __webpack_require__.p + "favicons/browserconfig.xml";
 
 /***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "favicons/mstile-150x150.png";
+module.exports = __webpack_require__.p + "favicons/favicon-16x16.png";
 
 /***/ }),
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "favicons/safari-pinned-tab.svg";
+module.exports = __webpack_require__.p + "favicons/favicon-32x32.png";
 
 /***/ }),
 /* 12 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-// removed by extract-text-webpack-plugin
+module.exports = __webpack_require__.p + "favicons/favicon.ico";
 
 /***/ }),
 /* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "favicons/mstile-150x150.png";
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "favicons/safari-pinned-tab.svg";
+
+/***/ }),
+/* 15 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 14 */
+/* 16 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 17 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view_view__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__model_model__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__controller_controller__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view_view__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__model_model__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__controller_controller__ = __webpack_require__(23);
 
 
 
@@ -10457,99 +10532,194 @@ class App {
     this._model = new __WEBPACK_IMPORTED_MODULE_1__model_model__["a" /* default */]();
     this._view = new __WEBPACK_IMPORTED_MODULE_0__view_view__["a" /* default */]();
     this._controller = new __WEBPACK_IMPORTED_MODULE_2__controller_controller__["a" /* default */](this._model, this._view);
-  }
-
-  init() {
-    const $width = $('.js-game__width-input');
-    const $height = $('.js-game__height-input');
-    this._controller.observeModel();
-    this._model.createGridMatrix(parseInt($width.val(), 10), parseInt($height.val(), 10));
-    this._controller.setListeners();
+    this._controller.init();
   }
 }
 
 const app = new App();
-app.init();
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ }),
-/* 15 */
+/* 18 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function($) {/* eslint no-param-reassign: 0 */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__grid_grid__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__button_button__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__changeable_button_changeable_button__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__input_input__ = __webpack_require__(21);
+
+
+
+
+
 class View {
-  createGrid(cellsX, cellsY) {
-    const cellSize = 12;
-    const grid = document.querySelector('.js-game__grid');
-    grid.style.width = `${cellsX * cellSize}px`;
-    grid.innerHTML = '';
-    for (let i = 0; i < cellsY * cellsX; i += 1) {
-      const cell = document.createElement('div');
-      cell.className = 'game__grid-cell js-game__grid-cell';
-      grid.appendChild(cell);
-    }
-  }
-
-  getCellIndex(cell) {
-    return $(cell).index();
-  }
-
-  updateCell(cell) {
-    if (cell.className === 'game__grid-cell js-game__grid-cell') {
-      cell.className += ' game__grid-cell_alive';
-    } else {
-      cell.className = 'game__grid-cell js-game__grid-cell';
-    }
-  }
-
-  replaceStartButton() {
-    const btnStopText = 'Stop';
-    document.querySelector('.js-game__start-stop').innerHTML = btnStopText;
-  }
-
-  replaceStopButton() {
-    const btnStartText = 'Start';
-    document.querySelector('.js-game__start-stop').innerHTML = btnStartText;
-  }
-
-  addInvalidModificator(input) {
-    $(input).addClass('game__input_invalid');
-  }
-
-  removeInvalidModificator(input) {
-    $(input).removeClass('game__input_invalid');
-  }
-
-  inputValueIsValid(input) {
-    return !$(input).hasClass('game__input_invalid');
-  }
-
-  getInputValue(input) {
-    return $(input).val();
+  constructor() {
+    this.grid = new __WEBPACK_IMPORTED_MODULE_0__grid_grid__["a" /* default */]('.js-game__grid');
+    this.startStop = new __WEBPACK_IMPORTED_MODULE_2__changeable_button_changeable_button__["a" /* default */]('.js-game__start-stop');
+    this.oneStep = new __WEBPACK_IMPORTED_MODULE_1__button_button__["a" /* default */]('.js-game__one-step');
+    this.clear = new __WEBPACK_IMPORTED_MODULE_1__button_button__["a" /* default */]('.js-game__clear');
+    this.delay = new __WEBPACK_IMPORTED_MODULE_3__input_input__["a" /* default */]('.js-game__delay');
+    this.width = new __WEBPACK_IMPORTED_MODULE_3__input_input__["a" /* default */]('.js-game__width');
+    this.height = new __WEBPACK_IMPORTED_MODULE_3__input_input__["a" /* default */]('.js-game__height');
   }
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (View);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ }),
-/* 16 */
+/* 19 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__constants__ = __webpack_require__(18);
+/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__ = __webpack_require__(1);
+
+
+class Grid {
+  constructor(selector) {
+    this.cellUpdate = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */]();
+    this._$grid = $(selector);
+    this._setListeners();
+  }
+
+  createGrid(cellsX, cellsY, cellSize) {
+    const inputIsInvalid = function checkIfInputParametersAreInvalid() {
+      if (
+        !Number.isInteger(cellsX) ||
+        !Number.isInteger(cellsY) ||
+        !$.isNumeric(cellSize) ||
+        cellsX <= 0 ||
+        cellsY <= 0 ||
+        cellSize <= 0
+      ) return true;
+      return false;
+    };
+
+    if (inputIsInvalid()) return;
+    this._$grid.width(cellsX * cellSize);
+    this._$grid.html('');
+    [...Array(cellsY * cellsX)].forEach(() => {
+      const cell = '<div class="game__grid-cell js-game__grid-cell"></div>';
+      this._$grid.append(cell);
+    });
+  }
+
+  updateCell(cellIndex) {
+    if (!Number.isInteger(cellIndex) || cellIndex < 0) return;
+    const $cell = $($('.js-game__grid-cell')[cellIndex]);
+    const aliveClass = 'game__grid-cell_alive';
+    if ($cell.hasClass(aliveClass)) {
+      $cell.removeClass(aliveClass);
+    } else {
+      $cell.addClass(aliveClass);
+    }
+  }
+
+  _setListeners() {
+    const self = this;
+    const cellUpdateNotify = function notifyObserversOnCellUpdate(event) {
+      const cellIndex = $(event.target).index();
+      self.cellUpdate.notify(cellIndex);
+    };
+
+    const notifyUpdateAndBindMouseover = function notifyUpdateAndSetMouseoverListener(event) {
+      cellUpdateNotify(event);
+      self._$grid.bind('mouseover', cellUpdateNotify);
+      return false;
+    };
+
+    const unbindMouseover = function unbindMouseoverUpdateCellListener() {
+      self._$grid.unbind('mouseover');
+    };
+
+    this._$grid
+      .mousedown(notifyUpdateAndBindMouseover)
+      .mouseup(unbindMouseover)
+      .mouseleave(unbindMouseover);
+  }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (Grid);
+
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
+
+/***/ }),
+/* 20 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__button_button__ = __webpack_require__(2);
+
+
+class ChangeableButton extends __WEBPACK_IMPORTED_MODULE_0__button_button__["a" /* default */] {
+  setText(buttonText) {
+    this._$button.text(buttonText);
+  }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (ChangeableButton);
+
+
+/***/ }),
+/* 21 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__ = __webpack_require__(1);
+
+
+class Input {
+  constructor(selector) {
+    this.blur = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */]();
+    this._$input = $(selector);
+    this._setListeners();
+  }
+
+  getValue() {
+    return this._$input.val();
+  }
+
+  isValid() {
+    return !this._$input.hasClass('game__input_invalid');
+  }
+
+  addInvalidModificator() {
+    this._$input.addClass('game__input_invalid');
+  }
+
+  removeInvalidModificator() {
+    this._$input.removeClass('game__input_invalid');
+  }
+
+  _setListeners() {
+    const self = this;
+    const blurNotify = function notifyObserversOnBlurEvent() {
+      self.blur.notify(self._$input.val());
+    };
+    this._$input.blur(blurNotify);
+  }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (Input);
+
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
+
+/***/ }),
+/* 22 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__constants__ = __webpack_require__(3);
 
 
 
 class Model {
   constructor() {
-    this.createGridMatrixEvent = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */](this);
-    this.updateCellEvent = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */](this);
-    this.endGameEvent = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */](this);
+    this.createGridMatrixEvent = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */]();
+    this.updateCellEvent = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */]();
+    this.endGameEvent = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */]();
   }
 
   createGridMatrix(cellsX, cellsY) {
@@ -10637,238 +10807,135 @@ class Model {
 
 
 /***/ }),
-/* 17 */
+/* 23 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-class ObservedEvent {
-  constructor() {
-    this._handlers = [];
-  }
-
-  attach(handler) {
-    this._handlers.push(handler);
-  }
-
-  detach(handler) {
-    this._handlers.splice(this._handlers.indexOf(handler), 1);
-  }
-
-  notify(...args) {
-    this._handlers.forEach((handler) => {
-      handler(...args);
-    });
-  }
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (ObservedEvent);
+/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants__ = __webpack_require__(3);
 
 
-/***/ }),
-/* 18 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-const constants = {
-  DEAD_CELL: 0,
-  ALIVE_CELL: 1,
-  MAX_ALIVE_NEIGHBOURS: 3,
-  MIN_ALIVE_NEIGHBOURS: 2,
-};
-
-/* harmony default export */ __webpack_exports__["a"] = (constants);
-
-
-/***/ }),
-/* 19 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function($) {class Controller {
+class Controller {
   constructor(model, view) {
-    this._view = view;
     this._model = model;
+    this._view = view;
+  }
+
+  init() {
+    this.observeModel().observeView();
+    this._model.createGridMatrix(__WEBPACK_IMPORTED_MODULE_0__constants__["a" /* default */].DEFAULT_WIDTH, __WEBPACK_IMPORTED_MODULE_0__constants__["a" /* default */].DEFAULT_HEIGHT);
     this._gameIsRunning = false;
     this._timerId = null;
+    this._delay = __WEBPACK_IMPORTED_MODULE_0__constants__["a" /* default */].DEFAULT_DELAY;
   }
 
   observeModel() {
-    this._model.createGridMatrixEvent.attach(this._view.createGrid);
-    this._model.updateCellEvent.attach(this.updateViewCell.bind(this));
+    this._model.createGridMatrixEvent.attach(this.createGrid.bind(this));
+    this._model.updateCellEvent.attach(this.updateGridCell.bind(this));
     this._model.endGameEvent.attach(this.stopGame.bind(this));
+    return this;
   }
 
-  updateViewCell(cellRow, cellCol) {
-    const updatableCell = $('.js-game__grid-cell')[(cellRow * this._model.cellsX) + cellCol];
-    this._view.updateCell(updatableCell);
+  observeView() {
+    this._view.grid.cellUpdate.attach(this.updateMatrixCell.bind(this));
+    this._view.startStop.click.attach(this.startOrStopGame.bind(this));
+    this._view.oneStep.click.attach(this.updateMatrix.bind(this));
+    this._view.clear.click.attach(this.clearMatrix.bind(this));
+    this._view.width.blur.attach(this.changeMatrixWidth.bind(this));
+    this._view.height.blur.attach(this.changeMatrixHeight.bind(this));
+    this._view.delay.blur.attach(this.changeDelay.bind(this));
+    return this;
   }
 
   startGame() {
-    const delayInput = $('.js-game__delay-input')[0];
-    if (this._view.inputValueIsValid(delayInput)) {
-      const delay = parseInt(this._view.getInputValue(delayInput), 10);
-      const calcNextGeneration = this._model.calculateNextGeneration.bind(this._model);
-      this._timerId = setInterval(calcNextGeneration, delay);
+    if (this._view.delay.isValid()) {
+      this._timerId = setInterval(this.updateMatrix.bind(this), this._delay);
       this._gameIsRunning = true;
-      this._view.replaceStartButton();
+      this._view.startStop.setText('Stop');
     }
   }
 
   stopGame() {
     clearInterval(this._timerId);
     this._gameIsRunning = false;
-    this._view.replaceStopButton();
+    this._view.startStop.setText('Start');
   }
 
-  setListeners() {
-    this._setGridListeners();
-    this._setButtonsListeners();
-    this._setInputListeners();
+  startOrStopGame() {
+    if (!this._gameIsRunning) {
+      this.startGame();
+    } else {
+      this.stopGame();
+    }
   }
 
-  _setGridListeners() {
-    const self = this;
-    const $grid = $('.js-game__grid');
-
-    const updateCell = function updateCellInModel(event) {
-      const cellIndex = self._view.getCellIndex(event.target);
-      const cellRow = Math.floor(cellIndex / self._model.cellsX);
-      const cellCol = cellIndex % self._model.cellsX;
-      self._model.updateCell(cellRow, cellCol);
-    };
-
-    const updateCellAndListenMouseover = function updateCellAndSetMouseoverListener(event) {
-      updateCell(event);
-      $grid.bind('mouseover', updateCell);
-      return false;
-    };
-
-    const unbindMouseover = function unbindMouseoverUpdateCellListener() {
-      $grid.unbind('mouseover');
-    };
-
-    $grid
-      .mousedown(updateCellAndListenMouseover)
-      .mouseup(unbindMouseover)
-      .mouseleave(unbindMouseover);
+  createGrid(cellsX, cellsY) {
+    this._view.grid.createGrid(cellsX, cellsY, __WEBPACK_IMPORTED_MODULE_0__constants__["a" /* default */].CELL_SIZE);
   }
 
-  _setButtonsListeners() {
-    const self = this;
-    const $startStopButton = $('.js-game__start-stop');
-    const $oneStepButton = $('.js-game__one-step');
-    const $clearButton = $('.js-game__clear');
+  updateGridCell(cellRow, cellCol) {
+    const gridCellIndex = (cellRow * this._model.cellsX) + cellCol;
+    this._view.grid.updateCell(gridCellIndex);
+  }
 
-    const startOrStopGame = function startOrStopGameRunning() {
-      if (!self._gameIsRunning) {
-        self.startGame();
-      } else {
-        self.stopGame();
+  updateMatrixCell(cellIndex) {
+    const cellRow = Math.floor(cellIndex / this._model.cellsX);
+    const cellCol = cellIndex % this._model.cellsX;
+    this._model.updateCell(cellRow, cellCol);
+  }
+
+  updateMatrix() {
+    this._model.calculateNextGeneration();
+  }
+
+  clearMatrix() {
+    this._model.createGridMatrix(this._model.cellsX, this._model.cellsY);
+  }
+
+  changeMatrixWidth(newCellsX) {
+    if (this._inputIsCorrect(newCellsX)) {
+      this._view.width.removeInvalidModificator();
+      const cellsX = parseInt(newCellsX, 10);
+      if (this._view.height.isValid() && cellsX !== this._model.cellsX) {
+        const cellsY = parseInt(this._view.height.getValue(), 10);
+        this._model.createGridMatrix(cellsX, cellsY);
       }
-    };
-    $startStopButton.click(startOrStopGame);
-
-    const clearGrid = function createAllZeroGridMatrix() {
-      self._model.createGridMatrix(self._model.cellsX, self._model.cellsY);
-    };
-    $clearButton.click(clearGrid);
-
-    const calcNextGeneration = self._model.calculateNextGeneration.bind(self._model);
-    $oneStepButton.click(calcNextGeneration);
+    } else {
+      this._view.width.addInvalidModificator();
+    }
   }
 
-  _setInputListeners() {
-    const self = this;
-
-    const validateInput = function addOrRemoveInvalidInputModificator(event) {
-      const value = self._view.getInputValue(event.target);
-      if ($.isNumeric(value) && (parseInt(value, 10) > 0)) {
-        self._view.removeInvalidModificator(event.target);
-      } else {
-        self._view.addInvalidModificator(event.target);
+  changeMatrixHeight(newCellsY) {
+    if (this._inputIsCorrect(newCellsY)) {
+      this._view.height.removeInvalidModificator();
+      const cellsY = parseInt(newCellsY, 10);
+      if (this._view.width.isValid() && cellsY !== this._model.cellsY) {
+        const cellsX = parseInt(this._view.width.getValue(), 10);
+        this._model.createGridMatrix(cellsX, cellsY);
       }
-    };
+    } else {
+      this._view.height.addInvalidModificator();
+    }
+  }
 
-    const valueHasBeenChanged = function checkIfInputValueHasBeenChanged(newValue, oldValue) {
-      return (newValue !== oldValue);
-    };
-
-    const setDelayListeners = function setListenersRelatedToDelayInput() {
-      const $delayInput = $('.js-game__delay-input');
-
-      let currentDelay;
-      const saveDelay = function saveCurrentDelayValueIfValid(event) {
-        if (self._view.inputValueIsValid(event.target)) {
-          currentDelay = parseInt(self._view.getInputValue(event.target), 10);
+  changeDelay(newDelay) {
+    if (this._inputIsCorrect(newDelay)) {
+      this._view.delay.removeInvalidModificator();
+      const delay = parseInt(newDelay, 10);
+      if (delay !== this._delay) {
+        this._delay = delay;
+        if (this._gameIsRunning) {
+          clearInterval(this._timerId);
+          this._timerId = setInterval(this.updateMatrix.bind(this), this._delay);
         }
-      };
-      $delayInput.focus(saveDelay);
+      }
+    } else {
+      this._view.delay.addInvalidModificator();
+    }
+  }
 
-      $delayInput.blur(validateInput);
-
-      const changeDelay = function changeGridNextGenerationCalculationDelay(event) {
-        if (self._view.inputValueIsValid(event.target)) {
-          const newDelay = parseInt(self._view.getInputValue(event.target), 10);
-          if (self._gameIsRunning && valueHasBeenChanged(newDelay, currentDelay)) {
-            clearInterval(self._timerId);
-            const calcNextGeneration = self._model.calculateNextGeneration.bind(self._model);
-            self._timerId = setInterval(calcNextGeneration, newDelay);
-          }
-        }
-      };
-      $delayInput.blur(changeDelay);
-    };
-
-    const setSizeListeners = function setListenersRelatedToSizeChanging() {
-      let currentWidth;
-      let currentHeight;
-      const $width = $('.js-game__width-input');
-      const widthInput = $width[0];
-      const $height = $('.js-game__height-input');
-      const heightInput = $height[0];
-      const $widthAndHeight = $('.js-game__width-input, .js-game__height-input');
-
-      const saveGridSize = function saveCurrentWidthAndHeightValue() {
-        if (self._view.inputValueIsValid(widthInput)) {
-          currentWidth = parseInt(self._view.getInputValue(widthInput), 10);
-        }
-        if (self._view.inputValueIsValid(heightInput)) {
-          currentHeight = parseInt(self._view.getInputValue(heightInput), 10);
-        }
-      };
-      $widthAndHeight.focus(saveGridSize);
-
-      $widthAndHeight.blur(validateInput);
-
-      const sizeInputsAreValid = function checkIfSizeInputsAreValid() {
-        const widthIsValid = self._view.inputValueIsValid(widthInput);
-        const heightIsValid = self._view.inputValueIsValid(heightInput);
-        return widthIsValid && heightIsValid;
-      };
-
-      const changeGridWidth = function createNewGridMatrixWidthUpdatedWidth(event) {
-        if (sizeInputsAreValid()) {
-          const newWidth = parseInt(self._view.getInputValue(event.target), 10);
-          if (valueHasBeenChanged(newWidth, currentWidth)) {
-            self._model.createGridMatrix(newWidth, currentHeight);
-          }
-        }
-      };
-      $width.blur(changeGridWidth);
-
-      const changeGridHeight = function createNewGridMatrixWidthUpdatedHeight(event) {
-        if (sizeInputsAreValid()) {
-          const newHeight = parseInt(self._view.getInputValue(event.target), 10);
-          if (valueHasBeenChanged(newHeight, currentHeight)) {
-            self._model.createGridMatrix(currentWidth, newHeight);
-          }
-        }
-      };
-      $height.blur(changeGridHeight);
-    };
-
-    setDelayListeners();
-    setSizeListeners();
+  _inputIsCorrect(stringValue) {
+    const parsedValue = parseFloat(stringValue, 10);
+    return $.isNumeric(stringValue) && parsedValue > 0 && Number.isInteger(parsedValue);
   }
 }
 
