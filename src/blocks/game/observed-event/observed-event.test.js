@@ -1,6 +1,6 @@
 /* global jest, test, describe, expect */
 
-import ObservedEvent from '../observed-event';
+import ObservedEvent from './observed-event';
 
 class Observable {
   constructor() {

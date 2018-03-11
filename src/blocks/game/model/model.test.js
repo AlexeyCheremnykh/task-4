@@ -1,6 +1,6 @@
 /* global describe, test, expect */
 
-import Model from '../model';
+import Model from './model';
 
 const model = new Model();
 

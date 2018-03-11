@@ -1,4 +1,4 @@
-import Input from '../input';
+import Input from './input';
 
 const $testInput = $('<input class="test-input" value="322"/>');
 const $body = $('body');

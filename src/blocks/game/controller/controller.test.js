@@ -1,8 +1,8 @@
 /* global test, describe, jest, expect */
 
-import Model from '../../model/model';
-import View from '../../view/view';
-import Controller from '../controller';
+import Model from '../model/model';
+import View from '../view/view';
+import Controller from './controller';
 
 const model = new Model();
 const view = new View(model);

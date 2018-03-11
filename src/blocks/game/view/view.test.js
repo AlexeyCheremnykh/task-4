@@ -1,6 +1,6 @@
 /* global describe, expect, test */
 
-import View from '../view';
+import View from './view';
 
 const view = new View();
 
