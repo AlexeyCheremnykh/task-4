@@ -1,25 +1,17 @@
-/* eslint no-param-reassign: 0 */
-import ObservedEvent from '../observed-event/observed-event';
+import Grid from './grid/grid';
+import Button from './button/button';
+import ChangeableButton from './changeable-button/changeable-button';
+import Input from './input/input';
 
 class View {
   constructor() {
-    this.startStopButtonClick = new ObservedEvent();
-    this.clearButtonClick = new ObservedEvent();
-    this.oneStepButtonClick = new ObservedEvent();
-    this.updateCellEvent = new ObservedEvent();
-    this._setListeners();
-  }
-
-  createGrid(cellsX, cellsY) {
-    const cellSize = 12;
-    const grid = document.querySelector('.js-game__grid');
-    grid.style.width = `${cellsX * cellSize}px`;
-    grid.innerHTML = '';
-    [...Array(cellsY * cellsX)].forEach(() => {
-      const cell = document.createElement('div');
-      cell.className = 'game__grid-cell js-game__grid-cell';
-      grid.appendChild(cell);
-    });
+    this.grid = new Grid('.js-game__grid');
+    this.startStop = new ChangeableButton('.js-game__start-stop');
+    this.oneStep = new Button('.js-game__one-step');
+    this.clear = new Button('.js-game__clear');
+    this.delay = new Input('.js-game__delay');
+    this.width = new Input('.js-game__width');
+    this.height = new Input('.js-game__height');
   }
 }
 

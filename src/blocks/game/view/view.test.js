@@ -1,45 +1,27 @@
-/* global describe, expect, test */
-
 import View from './view';
+
+const elements = [
+  '<div class="js-game__grid"></div>',
+  '<button class="js-game__start-stop"/>',
+  '<button class="js-game__one-step"/>',
+  '<button class="js-game__clear"/>',
+  '<input class="js-game__delay"/>',
+  '<input class="js-game__width"/>',
+  '<input class="js-game__height"/>',
+];
+const $body = $('body');
+$body.append([...elements]);
 
 const view = new View();
 
-const grid = document.createElement('div');
-grid.className = 'game__grid js-game__grid';
-document.body.appendChild(grid);
-view.createGrid(5, 5);
-const cells = grid.querySelectorAll('.js-game__grid-cell');
-
 describe('View tests', () => {
-  test('Grid has been created', () => {
-    expect(cells.length).toBe(25);
-  });
-
-  describe('Update cell', () => {
-    test('Set alive', () => {
-      view.updateCell(cells[0]);
-      expect(cells[0].className === 'game__grid-cell js-game__grid-cell game__grid-cell_alive').toBe(true);
-    });
-
-    test('Set dead', () => {
-      view.updateCell(cells[0]);
-      expect(cells[0].className === 'game__grid-cell js-game__grid-cell').toBe(true);
-    });
-  });
-
-  describe('Replace buttons', () => {
-    const startStopButton = document.createElement('div');
-    startStopButton.className = 'game__start-stop js-game__start-stop';
-    document.body.appendChild(startStopButton);
-
-    test('Replace start button', () => {
-      view.replaceStartButton();
-      expect(startStopButton.innerHTML).toBe('Stop');
-    });
-
-    test('Replace stop button', () => {
-      view.replaceStopButton();
-      expect(startStopButton.innerHTML).toBe('Start');
-    });
+  test('View instance has been created correctly', () => {
+    expect(view.grid).not.toBeUndefined();
+    expect(view.startStop).not.toBeUndefined();
+    expect(view.oneStep).not.toBeUndefined();
+    expect(view.clear).not.toBeUndefined();
+    expect(view.delay).not.toBeUndefined();
+    expect(view.width).not.toBeUndefined();
+    expect(view.height).not.toBeUndefined();
   });
 });
