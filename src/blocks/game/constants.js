@@ -3,6 +3,10 @@ const constants = {
   ALIVE_CELL: 1,
   MAX_ALIVE_NEIGHBOURS: 3,
   MIN_ALIVE_NEIGHBOURS: 2,
+  CELL_SIZE: 12,
+  DEFAULT_DELAY: 200,
+  DEFAULT_WIDTH: 30,
+  DEFAULT_HEIGHT: 20,
 };
 
 export default constants;
