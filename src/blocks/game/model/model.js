@@ -27,11 +27,9 @@ class Model {
   calculateNextGeneration() {
     const indexesToUpdate = [];
 
-    const cellWillLive = function checkIfDeadCellWillLive(aliveNeighbours) {
-      return aliveNeighbours === constants.MAX_ALIVE_NEIGHBOURS;
-    };
+    const cellWillLive = aliveNeighbours => aliveNeighbours === constants.MAX_ALIVE_NEIGHBOURS;
 
-    const cellWillDie = function checkIfAliveCellWillDie(aliveNeighbours) {
+    const cellWillDie = (aliveNeighbours) => {
       const tooFewNeighbours = aliveNeighbours < constants.MIN_ALIVE_NEIGHBOURS;
       const tooManyNeighbours = aliveNeighbours > constants.MAX_ALIVE_NEIGHBOURS;
       return tooFewNeighbours || tooManyNeighbours;

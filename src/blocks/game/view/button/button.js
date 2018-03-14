@@ -8,11 +8,7 @@ class Button {
   }
 
   _setListeners() {
-    const self = this;
-    const notifyClick = function notifyObserversOnButtonClick() {
-      self.click.notify();
-    };
-    this._$button.click(notifyClick);
+    this._$button.click(() => this.click.notify());
   }
 }
 

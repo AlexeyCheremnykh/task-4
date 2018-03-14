@@ -8,7 +8,7 @@ class Grid {
   }
 
   createGrid(cellsX, cellsY, cellSize) {
-    const inputIsInvalid = function checkIfInputParametersAreInvalid() {
+    const inputIsInvalid = () => {
       if (
         !Number.isInteger(cellsX) ||
         !Number.isInteger(cellsY) ||
@@ -41,26 +41,17 @@ class Grid {
   }
 
   _setListeners() {
-    const self = this;
-    const cellUpdateNotify = function notifyObserversOnCellUpdate(event) {
+    const cellUpdateNotify = (event) => {
       const cellIndex = $(event.target).index();
-      self.cellUpdate.notify(cellIndex);
-    };
-
-    const notifyUpdateAndBindMouseover = function notifyUpdateAndSetMouseoverListener(event) {
-      cellUpdateNotify(event);
-      self._$grid.bind('mouseover', cellUpdateNotify);
+      this.cellUpdate.notify(cellIndex);
       return false;
     };
 
-    const unbindMouseover = function unbindMouseoverUpdateCellListener() {
-      self._$grid.unbind('mouseover');
-    };
-
     this._$grid
-      .mousedown(notifyUpdateAndBindMouseover)
-      .mouseup(unbindMouseover)
-      .mouseleave(unbindMouseover);
+      .mousedown(cellUpdateNotify)
+      .mousedown(() => this._$grid.bind('mouseover', cellUpdateNotify))
+      .mouseup(() => this._$grid.unbind('mouseover'))
+      .mouseleave(() => this._$grid.unbind('mouseover'));
   }
 }
 

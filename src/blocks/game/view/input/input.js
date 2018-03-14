@@ -24,11 +24,7 @@ class Input {
   }
 
   _setListeners() {
-    const self = this;
-    const blurNotify = function notifyObserversOnBlurEvent() {
-      self.blur.notify(self._$input.val());
-    };
-    this._$input.blur(blurNotify);
+    this._$input.blur(() => this.blur.notify(this._$input.val()));
   }
 }
 
