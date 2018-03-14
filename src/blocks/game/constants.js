@@ -6,7 +6,7 @@ const constants = {
   CELL_SIZE: 12,
   DEFAULT_DELAY: 200,
   DEFAULT_WIDTH: 30,
-  DEFAULT_HEIGHT: 21,
+  DEFAULT_HEIGHT: 20,
 };
 
 export default constants;
