@@ -13,7 +13,7 @@
         ],
         "linebreak-style": [
             "error",
-            "windows"
+            "unix"
         ],
         "no-underscore-dangle": "off",
         "import/first": "off",
