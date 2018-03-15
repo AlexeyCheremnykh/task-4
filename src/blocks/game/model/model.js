@@ -1,18 +1,21 @@
 import ObservedEvent from '../observed-event/observed-event';
 import constants from '../constants';
+import lodash from 'lodash';
 
 class Model {
   constructor() {
-    this.createGridMatrixEvent = new ObservedEvent();
+    this.newGameEvent = new ObservedEvent();
     this.updateCellEvent = new ObservedEvent();
     this.endGameEvent = new ObservedEvent();
   }
 
   createGridMatrix(cellsX, cellsY) {
     this._gridMatrix = [...Array(cellsY)].map(() => Array(cellsX).fill(constants.DEAD_CELL));
+    this._generations = [];
+    this.gameIsFinished = false;
     this.cellsY = cellsY;
     this.cellsX = cellsX;
-    this.createGridMatrixEvent.notify(cellsX, cellsY);
+    this.newGameEvent.notify(cellsX, cellsY);
   }
 
   updateCell(cellRow, cellCol) {
@@ -35,6 +38,12 @@ class Model {
       return tooFewNeighbours || tooManyNeighbours;
     };
 
+    if (this._generations.find(item => lodash.isEqual(item, this._gridMatrix))) {
+      this.endGameEvent.notify();
+      return;
+    }
+    this._generations.push(this._gridMatrix.slice().map(row => row.slice()));
+
     this._gridMatrix.forEach((row, rowIndex) => {
       row.forEach((matrixElement, colIndex) => {
         const aliveNeighbours = this._countAliveNeighbours(rowIndex, colIndex);
@@ -47,8 +56,10 @@ class Model {
         }
       });
     });
+
     if (!indexesToUpdate.length) {
       this.endGameEvent.notify();
+      return;
     }
     indexesToUpdate.forEach((indexesPair) => {
       this.updateCell(indexesPair[0], indexesPair[1]);

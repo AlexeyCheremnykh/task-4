@@ -15,7 +15,7 @@ class Controller {
   }
 
   observeModel() {
-    this._model.createGridMatrixEvent.attach(this.createGrid.bind(this));
+    this._model.newGameEvent.attach(this.createGrid.bind(this));
     this._model.updateCellEvent.attach(this.updateGridCell.bind(this));
     this._model.endGameEvent.attach(this.stopGame.bind(this));
     return this;
