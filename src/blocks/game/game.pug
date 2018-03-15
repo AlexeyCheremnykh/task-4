@@ -1,13 +1,24 @@
-body.game
-    h1.game__title The Game of Life
-    .game__grid.js-game__grid
-    .game__buttons
-        button.game__button.game__start-stop.js-game__start-stop Start
-        button.game__button.game__one-step.js-game__one-step One step
-        button.game__button.game__clear.js-game__clear Clear grid
-    .game__settings
-        label.game__grid-size Grid size
-            input.game__input.game__width-input.js-game__width(type="text" value="30")
-            input.game__input.game__height-input.js-game__height(type="text" value="20")
-        label.game__delay Delay
-            input.game__input.game__delay-input.js-game__delay(type="text" value="200")
+mixin game
+    - const constants = require("../blocks/game/constants");
+    body.game
+        h1.game__title The Game of Life
+        .game__grid.js-game__grid
+        .game__buttons
+            button.game__button.game__start-stop.js-game__start-stop Start
+            button.game__button.game__one-step.js-game__one-step One step
+            button.game__button.game__clear.js-game__clear Clear grid
+        .game__settings
+            label.game__grid-size Grid size
+                input.game__input.game__width-input.js-game__width(
+                    type="text"
+                    value=`${constants.DEFAULT_WIDTH}`
+                )
+                input.game__input.game__height-input.js-game__height(
+                    type="text"
+                    value=`${constants.DEFAULT_HEIGHT}`
+                )
+            label.game__delay Delay
+                input.game__input.game__delay-input.js-game__delay(
+                    type="text"
+                    value=`${constants.DEFAULT_DELAY}`
+                )

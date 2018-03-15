@@ -24,7 +24,7 @@ class Grid {
     this._$grid.width(cellsX * cellSize);
     this._$grid.html('');
     [...Array(cellsY * cellsX)].forEach(() => {
-      const cell = '<div class="game__grid-cell js-game__grid-cell"></div>';
+      const cell = `<div class='game__grid-cell js-game__grid-cell' style='width: ${cellSize}px; height: ${cellSize}px;'></div>`;
       this._$grid.append(cell);
     });
   }

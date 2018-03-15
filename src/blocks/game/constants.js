@@ -9,4 +9,4 @@ const constants = {
   DEFAULT_HEIGHT: 20,
 };
 
-export default constants;
+module.exports = constants;
