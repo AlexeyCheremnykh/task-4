@@ -23,7 +23,7 @@ class Controller {
 
   observeView() {
     this._view.grid.cellUpdate.attach(this.updateMatrixCell.bind(this));
-    this._view.startStop.click.attach(this.startOrStopGame.bind(this));
+    this._view.startStop.click.attach(this.toggleGameStatus.bind(this));
     this._view.oneStep.click.attach(this.updateMatrix.bind(this));
     this._view.clear.click.attach(this.clearMatrix.bind(this));
     this._view.width.blur.attach(this.changeMatrixWidth.bind(this));
@@ -46,7 +46,7 @@ class Controller {
     this._view.startStop.setText('Start');
   }
 
-  startOrStopGame() {
+  toggleGameStatus() {
     if (!this._gameIsRunning) {
       this.startGame();
     } else {
