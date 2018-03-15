@@ -12,7 +12,6 @@ class Model {
   createGridMatrix(cellsX, cellsY) {
     this._gridMatrix = [...Array(cellsY)].map(() => Array(cellsX).fill(constants.DEAD_CELL));
     this._generations = [];
-    this.gameIsFinished = false;
     this.cellsY = cellsY;
     this.cellsX = cellsX;
     this.newGameEvent.notify(cellsX, cellsY);
