@@ -20,8 +20,6 @@ html {
 }
 .game__grid-cell {
   box-sizing: border-box;
-  height: 0.75rem;
-  width: 0.75rem;
   border: 0.0625rem solid #bbb;
 }
 .game__grid-cell_alive {
@@ -59,4 +57,13 @@ html {
   outline-color: #f00;
   background-color: rgba(255,0,0,0.1);
   border: 0.0625rem solid #f00;
+}
+.game__game-over {
+  border: 0.0625rem solid #25ed25;
+  background-color: rgba(0,255,0,0.1);
+  border-radius: 0.25rem;
+  margin-top: 0.9375rem;
+  padding: 0.3125rem;
+  width: 12.5rem;
+  text-align: center;
 }
