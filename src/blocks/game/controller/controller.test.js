@@ -4,9 +4,9 @@ import Controller from './controller';
 
 const elements = [
   '<div class="js-game__grid"></div>',
-  '<button class="js-game__start-stop"/>',
+  '<button class="js-game__play"/>',
   '<button class="js-game__one-step"/>',
-  '<button class="js-game__clear"/>',
+  '<button class="js-game__new-game"/>',
   '<input class="js-game__delay"/>',
   '<input class="js-game__width" value="30"/>',
   '<input class="js-game__height" value="20"/>',
@@ -42,7 +42,7 @@ describe('Controller tests', () => {
       expect(observeView).toHaveBeenCalled();
       expect(createGridMatrix).toHaveBeenCalled();
       expect(controller._timerId).toBe(null);
-      expect(controller._gameIsRunning).toBe(false);
+      expect(controller._isGameRunning).toBe(false);
       expect(controller._delay).not.toBeUndefined();
     });
   });
@@ -51,20 +51,20 @@ describe('Controller tests', () => {
     test('Game has been started if valid delay', () => {
       controller.startGame();
       expect(controller._timerId).not.toBe(null);
-      expect(controller._gameIsRunning).toBe(true);
+      expect(controller._isGameRunning).toBe(true);
     });
 
     test('Game has been stopped', () => {
       controller.stopGame();
       expect(clearInterval).toHaveBeenCalled();
-      expect(controller._gameIsRunning).toBe(false);
+      expect(controller._isGameRunning).toBe(false);
     });
 
     test('Game hasn`t been started if invalid delay', () => {
-      controller._view.delay.addInvalidModificator();
+      controller._view.delayInput.addInvalidModificator();
       controller.startGame();
-      expect(controller._gameIsRunning).toBe(false);
-      controller._view.delay.removeInvalidModificator();
+      expect(controller._isGameRunning).toBe(false);
+      controller._view.delayInput.removeInvalidModificator();
     });
   });
 
@@ -100,7 +100,7 @@ describe('Controller tests', () => {
       controller.changeMatrixWidth('12ss');
       expect(createGridMatrix).toHaveBeenCalledTimes(2);
 
-      view.width.removeInvalidModificator();
+      view.widthInput.removeInvalidModificator();
     });
 
     test('Matrix height has been changed if valid', () => {
@@ -114,7 +114,7 @@ describe('Controller tests', () => {
       controller.changeMatrixHeight('12ss');
       expect(createGridMatrix).toHaveBeenCalledTimes(3);
 
-      view.height.removeInvalidModificator();
+      view.heightInput.removeInvalidModificator();
     });
   });
 
@@ -122,7 +122,7 @@ describe('Controller tests', () => {
     let oldDelay = controller._delay;
 
     test('Delay has been changed if valid', () => {
-      controller._gameIsRunning = true;
+      controller._isGameRunning = true;
       expect(clearInterval).toHaveBeenCalledTimes(1);
       expect(setInterval).toHaveBeenCalledTimes(1);
 

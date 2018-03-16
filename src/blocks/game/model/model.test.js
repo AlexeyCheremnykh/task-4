@@ -7,7 +7,7 @@ describe('Model tests', () => {
   const cellsY = 3;
 
   test('Class instance has been created', () => {
-    expect(model.createGridMatrixEvent).not.toBeUndefined();
+    expect(model.newGameEvent).not.toBeUndefined();
     expect(model.updateCellEvent).not.toBeUndefined();
     expect(model.endGameEvent).not.toBeUndefined();
   });
