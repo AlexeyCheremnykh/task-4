@@ -60,7 +60,7 @@ class Controller {
 
   startGame = () => {
     if (this._view.delayInput.isValid()) {
-      this._timerId = setInterval(this.updateMatrix.bind(this), this._delay);
+      this._timerId = setInterval(this.updateMatrix, this._delay);
       this._isGameRunning = true;
       this._view.playButton.setRunningStatus(this._isGameRunning);
     }
@@ -124,7 +124,7 @@ class Controller {
         this._delay = delay;
         if (this._isGameRunning) {
           clearInterval(this._timerId);
-          this._timerId = setInterval(this.updateMatrix.bind(this), this._delay);
+          this._timerId = setInterval(this.updateMatrix, this._delay);
         }
       }
     } else {
