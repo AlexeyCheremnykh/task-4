@@ -9,7 +9,7 @@ class Controller {
   init() {
     this.observeModel().observeView();
     this._model.createGridMatrix(constants.DEFAULT_WIDTH, constants.DEFAULT_HEIGHT);
-    this._gameIsRunning = false;
+    this._isGameRunning = false;
     this._timerId = null;
     this._delay = constants.DEFAULT_DELAY;
   }
@@ -17,13 +17,13 @@ class Controller {
   observeModel() {
     this._model.newGameEvent.attach(this.createGrid.bind(this));
     this._model.updateCellEvent.attach(this.updateGridCell.bind(this));
-    this._model.endGameEvent.attach(this.stopGame.bind(this));
+    this._model.endGameEvent.attach(this.endGame.bind(this));
     return this;
   }
 
   observeView() {
     this._view.grid.cellUpdate.attach(this.updateMatrixCell.bind(this));
-    this._view.startStop.click.attach(this.toggleGameStatus.bind(this));
+    this._view.playButton.click.attach(this.toggleGameStatus.bind(this));
     this._view.oneStep.click.attach(this.updateMatrix.bind(this));
     this._view.clear.click.attach(this.clearMatrix.bind(this));
     this._view.width.blur.attach(this.changeMatrixWidth.bind(this));
@@ -35,19 +35,25 @@ class Controller {
   startGame() {
     if (this._view.delay.isValid()) {
       this._timerId = setInterval(this.updateMatrix.bind(this), this._delay);
-      this._gameIsRunning = true;
-      this._view.startStop.setText('Stop');
+      this._isGameRunning = true;
+      this._view.playButton.setRunningStatus(this._isGameRunning);
+      this._view.gameOver.hide();
     }
   }
 
   stopGame() {
     clearInterval(this._timerId);
-    this._gameIsRunning = false;
-    this._view.startStop.setText('Start');
+    this._isGameRunning = false;
+    this._view.playButton.setRunningStatus(this._isGameRunning);
+  }
+
+  endGame() {
+    this.stopGame();
+    this._view.gameOver.show();
   }
 
   toggleGameStatus() {
-    if (!this._gameIsRunning) {
+    if (!this._isGameRunning) {
       this.startGame();
     } else {
       this.stopGame();
@@ -56,6 +62,7 @@ class Controller {
 
   createGrid(cellsX, cellsY) {
     this._view.grid.createGrid(cellsX, cellsY, constants.CELL_SIZE);
+    this._view.gameOver.hide();
   }
 
   updateGridCell(cellRow, cellCol) {
@@ -74,6 +81,7 @@ class Controller {
   }
 
   clearMatrix() {
+    this.stopGame();
     this._model.createGridMatrix(this._model.cellsX, this._model.cellsY);
   }
 
@@ -109,7 +117,7 @@ class Controller {
       const delay = parseInt(newDelay, 10);
       if (delay !== this._delay) {
         this._delay = delay;
-        if (this._gameIsRunning) {
+        if (this._isGameRunning) {
           clearInterval(this._timerId);
           this._timerId = setInterval(this.updateMatrix.bind(this), this._delay);
         }
