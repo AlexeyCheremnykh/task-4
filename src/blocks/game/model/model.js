@@ -80,18 +80,26 @@ class Model {
   }
 
   _createMatrixOfNeighbors(cellRow, cellCol) {
-    const firstNeighboringRow = Math.max(0, cellRow - 1);
-    const lastNeighboringRow = Math.min(this.cellsY, cellRow + 1);
+    const calcTopNeighboringRow = () => (cellRow - 1 < 0 ? 0 : cellRow - 1);
 
-    const firstNeighboringCol = Math.max(0, cellCol - 1);
-    const lastNeighboringCol = Math.min(this.cellsX, cellCol + 1);
+    const calcBottomNeighboringRow = () => (cellRow + 1 > this.cellsY ? this.cellsY : cellRow + 1);
+
+    const calcLeftNeighboringCol = () => (cellCol - 1 < 0 ? 0 : cellCol - 1);
+
+    const calcRightNeighboringCol = () => (cellCol + 1 > this.cellsX ? this.cellsX : cellCol + 1);
+
+    const topNeighboringRow = calcTopNeighboringRow();
+    const bottomNeighboringRow = calcBottomNeighboringRow();
+
+    const leftNeighboringCol = calcLeftNeighboringCol();
+    const rightNeighboringCol = calcRightNeighboringCol();
 
     const matrixOfNeighbors = this._gridMatrix
-      .slice(firstNeighboringRow, lastNeighboringRow + 1)
-      .map(matrixRow => matrixRow.slice(firstNeighboringCol, lastNeighboringCol + 1));
+      .slice(topNeighboringRow, bottomNeighboringRow + 1)
+      .map(matrixRow => matrixRow.slice(leftNeighboringCol, rightNeighboringCol + 1));
 
     // убрать текущий элемент из матрицы с соседями
-    matrixOfNeighbors[cellRow - firstNeighboringRow].splice(cellCol - firstNeighboringCol, 1);
+    matrixOfNeighbors[cellRow - topNeighboringRow].splice(cellCol - leftNeighboringCol, 1);
 
     return matrixOfNeighbors;
   }
