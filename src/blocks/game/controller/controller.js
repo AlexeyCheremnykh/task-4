@@ -50,6 +50,8 @@ class Controller {
   endGame() {
     this.stopGame();
     this._view.gameOver.show();
+    this._view.playButton.disable();
+    this._view.oneStep.disable();
   }
 
   toggleGameStatus() {
@@ -82,6 +84,8 @@ class Controller {
 
   clearMatrix() {
     this.stopGame();
+    this._view.playButton.enable();
+    this._view.oneStep.enable();
     this._model.createGridMatrix(this._model.cellsX, this._model.cellsY);
   }
 

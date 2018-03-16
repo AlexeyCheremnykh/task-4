@@ -10,6 +10,14 @@ class Button {
   _setListeners() {
     this._$button.click(() => this.click.notify());
   }
+
+  disable() {
+    this._$button.prop('disabled', true);
+  }
+
+  enable() {
+    this._$button.prop('disabled', false);
+  }
 }
 
 export default Button;

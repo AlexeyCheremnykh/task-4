@@ -17,4 +17,14 @@ describe('Button class tests', () => {
     button._$button.trigger('click');
     expect(mockHandler).toHaveBeenCalled();
   });
+
+  test('Button has been disabled', () => {
+    button.disable();
+    expect(button._$button.prop('disabled')).toBe(true);
+  });
+
+  test('Button has been enabled', () => {
+    button.enable();
+    expect(button._$button.prop('disabled')).toBe(false);
+  });
 });
