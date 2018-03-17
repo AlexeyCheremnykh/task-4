@@ -17,12 +17,12 @@ class Observer {
 
   handler() {}
 
-  observe() {
-    this.observable.observedEvent.attach(this.handler.bind(this));
+  observe = () => {
+    this.observable.observedEvent.attach(this.handler);
   }
 
-  stopObserving() {
-    this.observable.observedEvent.detach(this.handler.bind(this));
+  stopObserving = () => {
+    this.observable.observedEvent.detach(this.handler);
   }
 }
 
