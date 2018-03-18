@@ -11,7 +11,7 @@ class Model {
 
   createGridMatrix(cellsX, cellsY) {
     this._gridMatrix = [...Array(cellsY)].map(() => Array(cellsX).fill(constants.DEAD_CELL));
-    this._generations = [];
+    this._pastGenerations = [];
     this.cellsY = cellsY;
     this.cellsX = cellsX;
     this.newGameEvent.notify(cellsX, cellsY);
@@ -37,11 +37,11 @@ class Model {
       return tooFewNeighbours || tooManyNeighbours;
     };
 
-    if (this._generations.find(item => lodash.isEqual(item, this._gridMatrix))) {
+    if (this._pastGenerations.find(item => lodash.isEqual(item, this._gridMatrix))) {
       this.endGameEvent.notify();
       return;
     }
-    this._generations.push(this._gridMatrix.slice().map(row => row.slice()));
+    this._pastGenerations.push(this._gridMatrix.map(row => row.slice()));
 
     this._gridMatrix.forEach((row, rowIndex) => {
       row.forEach((matrixElement, colIndex) => {
