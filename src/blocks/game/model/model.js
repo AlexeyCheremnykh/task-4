@@ -65,39 +65,35 @@ class Model {
   }
 
   _countAliveNeighbours(cellRow, cellCol) {
-    const matrixOfNeighbours = this._createMatrixOfNeighbours(cellRow, cellCol);
-
-    return lodash.flatten(matrixOfNeighbours).reduce((aliveNeighbours, elem) => (
-      elem === constants.ALIVE_CELL ? aliveNeighbours + 1 : aliveNeighbours
-    ), 0);
-  }
-
-  _createMatrixOfNeighbours(cellRow, cellCol) {
-    const calcFirstNeighboringIndex = (currentCellIndex) => {
-      if (currentCellIndex - 1 < 0) return 0;
-      return currentCellIndex - 1;
+    const calcStartingRowOrCol = (currentRowOrCol) => {
+      if (currentRowOrCol - 1 < 0) return 0;
+      return currentRowOrCol - 1;
     };
 
-    const calcLastNeighboringIndex = (currentCellIndex, maxIndex) => {
-      if (currentCellIndex + 1 > maxIndex) return maxIndex;
-      return currentCellIndex + 1;
+    const calcEndingRowOrCol = (currentRowOrCol, maxRowOrCol) => {
+      if (currentRowOrCol + 1 > maxRowOrCol) return maxRowOrCol;
+      return currentRowOrCol + 1;
     };
 
-    const topNeighboringRow = calcFirstNeighboringIndex(cellRow);
-    const bottomNeighboringRow = calcLastNeighboringIndex(cellRow, this.cellsY);
+    const topNeighboringRow = calcStartingRowOrCol(cellRow);
+    const bottomNeighboringRow = calcEndingRowOrCol(cellRow, this.cellsY - 1);
 
-    const leftNeighboringCol = calcFirstNeighboringIndex(cellCol);
-    const rightNeighboringCol = calcLastNeighboringIndex(cellCol, this.cellsX);
+    const leftNeighboringCol = calcStartingRowOrCol(cellCol);
+    const rightNeighboringCol = calcEndingRowOrCol(cellCol, this.cellsX - 1);
 
-    const matrixOfNeighbours = this._gridMatrix
-      .slice(topNeighboringRow, bottomNeighboringRow + 1)
-      .map(matrixRow => matrixRow.slice(leftNeighboringCol, rightNeighboringCol + 1));
+    const neighbourRows = lodash.range(topNeighboringRow, bottomNeighboringRow + 1);
+    const neighbourCols = lodash.range(leftNeighboringCol, rightNeighboringCol + 1);
 
-    const currentCellRow = cellRow - topNeighboringRow;
-    const currentCellCol = cellCol - leftNeighboringCol;
-    matrixOfNeighbours[currentCellRow].splice(currentCellCol, 1);
+    const aliveWithCurrentCell = neighbourRows.reduce((aliveInTotal, row) => {
+      const aliveInRow = neighbourCols.reduce((aliveCells, col) => (
+        this._gridMatrix[row][col] === constants.ALIVE_CELL ? aliveCells + 1 : aliveCells
+      ), 0);
+      return aliveInTotal + aliveInRow;
+    }, 0);
 
-    return matrixOfNeighbours;
+    const aliveWithoutCurrentCell = aliveWithCurrentCell - this._gridMatrix[cellRow][cellCol];
+
+    return aliveWithoutCurrentCell;
   }
 }
 
