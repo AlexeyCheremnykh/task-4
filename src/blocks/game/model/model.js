@@ -81,19 +81,21 @@ class Model {
     const leftNeighboringCol = calcStartingRowOrCol(cellCol);
     const rightNeighboringCol = calcEndingRowOrCol(cellCol, this.cellsX - 1);
 
-    const neighbourRows = lodash.range(topNeighboringRow, bottomNeighboringRow + 1);
-    const neighbourCols = lodash.range(leftNeighboringCol, rightNeighboringCol + 1);
+    const neighbouringRows = lodash.range(topNeighboringRow, bottomNeighboringRow + 1);
+    const neighbouringCols = lodash.range(leftNeighboringCol, rightNeighboringCol + 1);
 
-    const aliveWithCurrentCell = neighbourRows.reduce((aliveInTotal, row) => {
-      const aliveInRow = neighbourCols.reduce((aliveCells, col) => (
+    const aliveWithCurrentCell = neighbouringRows.reduce((aliveInTotal, row) => {
+      const aliveInRow = neighbouringCols.reduce((aliveCells, col) => (
         this._gridMatrix[row][col] === constants.ALIVE_CELL ? aliveCells + 1 : aliveCells
       ), 0);
       return aliveInTotal + aliveInRow;
     }, 0);
 
-    const aliveWithoutCurrentCell = aliveWithCurrentCell - this._gridMatrix[cellRow][cellCol];
-
-    return aliveWithoutCurrentCell;
+    let aliveNeighbours = aliveWithCurrentCell;
+    if (this._gridMatrix[cellRow][cellCol] === constants.ALIVE_CELL) {
+      aliveNeighbours -= 1;
+    }
+    return aliveNeighbours;
   }
 }
 
