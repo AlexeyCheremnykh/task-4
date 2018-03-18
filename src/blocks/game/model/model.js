@@ -27,8 +27,6 @@ class Model {
   }
 
   calculateNextGeneration() {
-    const indexesToUpdate = [];
-
     const cellWillLive = aliveNeighbours => aliveNeighbours === constants.MAX_ALIVE_NEIGHBOURS;
 
     const cellWillDie = (aliveNeighbours) => {
@@ -37,12 +35,13 @@ class Model {
       return tooFewNeighbours || tooManyNeighbours;
     };
 
-    if (this._pastGenerations.find(item => lodash.isEqual(item, this._gridMatrix))) {
+    if (this._pastGenerations.find(generation => lodash.isEqual(generation, this._gridMatrix))) {
       this.endGameEvent.notify();
       return;
     }
-    this._pastGenerations.push(this._gridMatrix.map(row => row.slice()));
+    this._pastGenerations.push(lodash.cloneDeep(this._gridMatrix));
 
+    const indexesToUpdate = [];
     this._gridMatrix.forEach((row, rowIndex) => {
       row.forEach((matrixElement, colIndex) => {
         const aliveNeighbours = this._countAliveNeighbours(rowIndex, colIndex);
@@ -66,20 +65,14 @@ class Model {
   }
 
   _countAliveNeighbours(cellRow, cellCol) {
-    let aliveNeighbours = 0;
-    const matrixOfNeighbors = this._createMatrixOfNeighbors(cellRow, cellCol);
+    const matrixOfNeighbours = this._createMatrixOfNeighbours(cellRow, cellCol);
 
-    matrixOfNeighbors.forEach((row) => {
-      row.forEach((matrixElement) => {
-        if (matrixElement === constants.ALIVE_CELL) {
-          aliveNeighbours += 1;
-        }
-      });
-    });
-    return aliveNeighbours;
+    return lodash.flatten(matrixOfNeighbours).reduce((aliveNeighbours, elem) => (
+      elem === constants.ALIVE_CELL ? aliveNeighbours + 1 : aliveNeighbours
+    ), 0);
   }
 
-  _createMatrixOfNeighbors(cellRow, cellCol) {
+  _createMatrixOfNeighbours(cellRow, cellCol) {
     const calcFirstNeighboringIndex = (currentCellIndex) => {
       if (currentCellIndex - 1 < 0) return 0;
       return currentCellIndex - 1;
@@ -96,15 +89,15 @@ class Model {
     const leftNeighboringCol = calcFirstNeighboringIndex(cellCol);
     const rightNeighboringCol = calcLastNeighboringIndex(cellCol, this.cellsX);
 
-    const matrixOfNeighbors = this._gridMatrix
+    const matrixOfNeighbours = this._gridMatrix
       .slice(topNeighboringRow, bottomNeighboringRow + 1)
       .map(matrixRow => matrixRow.slice(leftNeighboringCol, rightNeighboringCol + 1));
 
     const currentCellRow = cellRow - topNeighboringRow;
     const currentCellCol = cellCol - leftNeighboringCol;
-    matrixOfNeighbors[currentCellRow].splice(currentCellCol, 1);
+    matrixOfNeighbours[currentCellRow].splice(currentCellCol, 1);
 
-    return matrixOfNeighbors;
+    return matrixOfNeighbours;
   }
 }
 
