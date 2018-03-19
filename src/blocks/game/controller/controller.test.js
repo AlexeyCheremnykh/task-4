@@ -123,12 +123,12 @@ describe('Controller tests', () => {
 
     test('Delay has been changed if valid', () => {
       controller._isGameRunning = true;
-      expect(clearInterval).toHaveBeenCalledTimes(1);
+      expect(clearInterval).toHaveBeenCalledTimes(3);
       expect(setInterval).toHaveBeenCalledTimes(1);
 
       controller.changeDelay('1000');
       expect(oldDelay).not.toBe(controller._delay);
-      expect(clearInterval).toHaveBeenCalledTimes(2);
+      expect(clearInterval).toHaveBeenCalledTimes(4);
       expect(setInterval).toHaveBeenCalledTimes(2);
     });
 
@@ -138,7 +138,7 @@ describe('Controller tests', () => {
       controller.changeDelay('-5');
       controller.changeDelay('12sss');
       expect(oldDelay).toBe(controller._delay);
-      expect(clearInterval).toHaveBeenCalledTimes(2);
+      expect(clearInterval).toHaveBeenCalledTimes(4);
       expect(setInterval).toHaveBeenCalledTimes(2);
     });
   });

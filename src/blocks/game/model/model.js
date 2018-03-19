@@ -9,12 +9,12 @@ class Model {
     this.endGameEvent = new ObservedEvent();
   }
 
-  createGridMatrix(cellsX, cellsY) {
-    this._gridMatrix = [...Array(cellsY)].map(() => Array(cellsX).fill(constants.DEAD_CELL));
+  createGridMatrix(numOfCols, numOfRows) {
+    this._gridMatrix = [...Array(numOfRows)].map(() => Array(numOfCols).fill(constants.DEAD_CELL));
     this._pastGenerations = [];
-    this.cellsY = cellsY;
-    this.cellsX = cellsX;
-    this.newGameEvent.notify(cellsX, cellsY);
+    this.numOfRows = numOfRows;
+    this.numOfCols = numOfCols;
+    this.newGameEvent.notify(numOfCols, numOfRows);
   }
 
   updateCell(cellRow, cellCol) {
@@ -27,18 +27,21 @@ class Model {
   }
 
   calculateNextGeneration() {
-    if (this._pastGenerations.find(generation => lodash.isEqual(generation, this._gridMatrix))) {
+    const generationExistedBefore = generation => (
+      this._pastGenerations.find(pastGeneration => lodash.isEqual(pastGeneration, generation))
+    );
+    if (generationExistedBefore(this._gridMatrix)) {
       this.endGameEvent.notify();
       return;
     }
     this._pastGenerations.push(lodash.cloneDeep(this._gridMatrix));
 
-    const cellWillRevive = (cell, aliveNeighbours) => (
+    const willCellRevive = (cell, aliveNeighbours) => (
       cell === constants.DEAD_CELL &&
       aliveNeighbours === constants.MAX_ALIVE_NEIGHBOURS
     );
 
-    const cellWillDie = (cell, aliveNeighbours) => {
+    const willCellDie = (cell, aliveNeighbours) => {
       const tooFewNeighbours = aliveNeighbours < constants.MIN_ALIVE_NEIGHBOURS;
       const tooManyNeighbours = aliveNeighbours > constants.MAX_ALIVE_NEIGHBOURS;
 
@@ -52,39 +55,42 @@ class Model {
       row.forEach((matrixElement, colIndex) => {
         const aliveNeighbours = this._countAliveNeighbours(rowIndex, colIndex);
         if (
-          cellWillDie(matrixElement, aliveNeighbours) ||
-          cellWillRevive(matrixElement, aliveNeighbours)
+          willCellDie(matrixElement, aliveNeighbours) ||
+          willCellRevive(matrixElement, aliveNeighbours)
         ) {
           indexesToUpdate.push([rowIndex, colIndex]);
         }
       });
     });
 
-    if (!indexesToUpdate.length) {
+    if (indexesToUpdate.length === 0) {
       this.endGameEvent.notify();
       return;
     }
     indexesToUpdate.forEach((indexesPair) => {
-      this.updateCell(indexesPair[0], indexesPair[1]);
+      const [cellRow, cellCol] = indexesPair;
+      this.updateCell(cellRow, cellCol);
     });
   }
 
   _countAliveNeighbours(cellRow, cellCol) {
     const calcStartingRowOrCol = (currentRowOrCol) => {
-      if (currentRowOrCol - 1 < 0) return 0;
-      return currentRowOrCol - 1;
+      const isPreviousRowOrColOutOfBounds = currentRowOrCol - 1 < 0;
+      return isPreviousRowOrColOutOfBounds ? 0 : currentRowOrCol - 1;
     };
 
     const calcEndingRowOrCol = (currentRowOrCol, maxRowOrCol) => {
-      if (currentRowOrCol + 1 > maxRowOrCol) return maxRowOrCol;
-      return currentRowOrCol + 1;
+      const isNextRowOrColOutOfBounds = currentRowOrCol + 1 > maxRowOrCol;
+      return isNextRowOrColOutOfBounds ? maxRowOrCol : currentRowOrCol + 1;
     };
 
+    const lastRowIndex = this.numOfRows - 1;
     const topNeighboringRow = calcStartingRowOrCol(cellRow);
-    const bottomNeighboringRow = calcEndingRowOrCol(cellRow, this.cellsY - 1);
+    const bottomNeighboringRow = calcEndingRowOrCol(cellRow, lastRowIndex);
 
+    const lastColIndex = this.numOfCols - 1;
     const leftNeighboringCol = calcStartingRowOrCol(cellCol);
-    const rightNeighboringCol = calcEndingRowOrCol(cellCol, this.cellsX - 1);
+    const rightNeighboringCol = calcEndingRowOrCol(cellCol, lastColIndex);
 
     const neighbouringRows = lodash.range(topNeighboringRow, bottomNeighboringRow + 1);
     const neighbouringCols = lodash.range(leftNeighboringCol, rightNeighboringCol + 1);

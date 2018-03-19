@@ -3,8 +3,8 @@ import Model from './model';
 const model = new Model();
 
 describe('Model tests', () => {
-  const cellsX = 3;
-  const cellsY = 3;
+  const numOfCols = 3;
+  const numOfRows = 3;
 
   test('Class instance has been created', () => {
     expect(model.newGameEvent).not.toBeUndefined();
@@ -13,9 +13,9 @@ describe('Model tests', () => {
   });
 
   test('Grid matrix has been created', () => {
-    model.createGridMatrix(cellsX, cellsY);
-    expect(model.cellsY === cellsY).toBe(true);
-    expect(model.cellsX === cellsX).toBe(true);
+    model.createGridMatrix(numOfCols, numOfRows);
+    expect(model.numOfRows === numOfRows).toBe(true);
+    expect(model.numOfCols === numOfCols).toBe(true);
   });
 
   describe('Update matrix cell', () => {

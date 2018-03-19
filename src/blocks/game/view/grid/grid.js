@@ -7,26 +7,24 @@ class Grid {
     this._setListeners();
   }
 
-  createGrid(cellsX, cellsY, cellSize) {
-    const inputIsInvalid = () => {
-      if (
-        !Number.isInteger(cellsX) ||
-        !Number.isInteger(cellsY) ||
-        !$.isNumeric(cellSize) ||
-        cellsX <= 0 ||
-        cellsY <= 0 ||
-        cellSize <= 0
-      ) return true;
-      return false;
-    };
+  createGrid(numOfCols, numOfRows, cellSize) {
+    const isInputValid = (
+      Number.isInteger(numOfCols)
+      && Number.isInteger(numOfRows)
+      && $.isNumeric(cellSize)
+      && numOfCols > 0
+      && numOfRows > 0
+      && cellSize > 0
+    );
 
-    if (inputIsInvalid()) return;
-    this._$grid.width(cellsX * cellSize);
-    this._$grid.html('');
-    [...Array(cellsY * cellsX)].forEach(() => {
-      const cell = `<div class='game__grid-cell js-game__grid-cell' style='width: ${cellSize}px; height: ${cellSize}px;'></div>`;
-      this._$grid.append(cell);
-    });
+    if (isInputValid) {
+      this._$grid.width(numOfCols * cellSize);
+      this._$grid.html('');
+      [...Array(numOfRows * numOfCols)].forEach(() => {
+        const cell = `<div class='game__grid-cell js-game__grid-cell' style='width: ${cellSize}px; height: ${cellSize}px;'></div>`;
+        this._$grid.append(cell);
+      });
+    }
   }
 
   updateCell(cellIndex) {

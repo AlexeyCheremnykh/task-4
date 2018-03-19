@@ -32,35 +32,35 @@ describe('Grid class tests', () => {
   });
 
   describe('Grid methods tests', () => {
-    let cellsX = 5;
-    let cellsY = 5;
+    let numOfCols = 5;
+    let numOfRows = 5;
     let cellSize = 12;
     let $gridCells;
 
     test('Grid has been created', () => {
-      grid.createGrid(cellsX, cellsY, cellSize);
+      grid.createGrid(numOfCols, numOfRows, cellSize);
       $gridCells = grid._$grid.children('.js-game__grid-cell');
       expect($gridCells.length).toBe(25);
 
-      cellsX = 6;
-      cellsY = 12;
-      grid.createGrid(cellsX, cellsY, cellSize);
+      numOfCols = 6;
+      numOfRows = 12;
+      grid.createGrid(numOfCols, numOfRows, cellSize);
       $gridCells = grid._$grid.children('.js-game__grid-cell');
       expect($gridCells.length).toBe(72);
     });
 
     test('Invalid grid creation values are handled correctly', () => {
-      cellsX = -5;
-      cellsY = 3;
+      numOfCols = -5;
+      numOfRows = 3;
       cellSize = -322;
-      grid.createGrid(cellsX, cellsY, cellSize);
+      grid.createGrid(numOfCols, numOfRows, cellSize);
       $gridCells = grid._$grid.children('.js-game__grid-cell');
       expect($gridCells.length).toBe(72);
 
-      cellsX = 'cellsX';
-      cellsY = 22.2;
+      numOfCols = 'numOfCols';
+      numOfRows = 22.2;
       cellSize = -15;
-      grid.createGrid(cellsX, cellsY, cellSize);
+      grid.createGrid(numOfCols, numOfRows, cellSize);
       $gridCells = grid._$grid.children('.js-game__grid-cell');
       expect($gridCells.length).toBe(72);
     });

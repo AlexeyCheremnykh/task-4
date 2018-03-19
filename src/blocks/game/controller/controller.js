@@ -17,7 +17,7 @@ class Controller {
   observeModel() {
     this._model.newGameEvent.attach(this.initNewGameView);
     this._model.updateCellEvent.attach(this.updateGridCell);
-    this._model.endGameEvent.attach(this.endGame);
+    this._model.endGameEvent.attach(this.finishGame);
     return this;
   }
 
@@ -32,21 +32,21 @@ class Controller {
     return this;
   }
 
-  initNewGameView = (cellsX, cellsY) => {
-    this._view.grid.createGrid(cellsX, cellsY, constants.CELL_SIZE);
+  initNewGameView = (numOfCols, numOfRows) => {
+    this._view.grid.createGrid(numOfCols, numOfRows, constants.CELL_SIZE);
     this._view.playButton.enable();
     this._view.oneStepButton.enable();
     this._view.gameOverMessage.hide();
   }
 
   updateGridCell = (cellRow, cellCol) => {
-    const gridCellIndex = (cellRow * this._model.cellsX) + cellCol;
+    const gridCellIndex = (cellRow * this._model.numOfCols) + cellCol;
     this._view.grid.updateCell(gridCellIndex);
   }
 
   updateMatrixCell = (cellIndex) => {
-    const cellRow = Math.floor(cellIndex / this._model.cellsX);
-    const cellCol = cellIndex % this._model.cellsX;
+    const cellRow = Math.floor(cellIndex / this._model.numOfCols);
+    const cellCol = cellIndex % this._model.numOfCols;
     this._model.updateCell(cellRow, cellCol);
   }
 
@@ -72,7 +72,7 @@ class Controller {
     this._view.playButton.setRunningStatus(this._isGameRunning);
   }
 
-  endGame = () => {
+  finishGame = () => {
     this.stopGame();
     this._view.gameOverMessage.show();
     this._view.playButton.disable();
@@ -85,31 +85,31 @@ class Controller {
 
   clearGrid = () => {
     this.stopGame();
-    this._model.createGridMatrix(this._model.cellsX, this._model.cellsY);
+    this._model.createGridMatrix(this._model.numOfCols, this._model.numOfRows);
   }
 
-  changeMatrixWidth = (newCellsX) => {
-    if (this._inputIsCorrect(newCellsX)) {
+  changeMatrixWidth = (newnumOfCols) => {
+    if (this._isInputCorrect(newnumOfCols)) {
       this._view.widthInput.removeInvalidModificator();
-      const cellsX = parseInt(newCellsX, 10);
-      if (this._view.heightInput.isValid() && cellsX !== this._model.cellsX) {
-        const cellsY = parseInt(this._view.heightInput.getValue(), 10);
+      const numOfCols = parseInt(newnumOfCols, 10);
+      if (this._view.heightInput.isValid() && numOfCols !== this._model.numOfCols) {
+        const numOfRows = parseInt(this._view.heightInput.getValue(), 10);
         this.stopGame();
-        this._model.createGridMatrix(cellsX, cellsY);
+        this._model.createGridMatrix(numOfCols, numOfRows);
       }
     } else {
       this._view.widthInput.addInvalidModificator();
     }
   }
 
-  changeMatrixHeight = (newCellsY) => {
-    if (this._inputIsCorrect(newCellsY)) {
+  changeMatrixHeight = (newnumOfRows) => {
+    if (this._isInputCorrect(newnumOfRows)) {
       this._view.heightInput.removeInvalidModificator();
-      const cellsY = parseInt(newCellsY, 10);
-      if (this._view.widthInput.isValid() && cellsY !== this._model.cellsY) {
-        const cellsX = parseInt(this._view.widthInput.getValue(), 10);
+      const numOfRows = parseInt(newnumOfRows, 10);
+      if (this._view.widthInput.isValid() && numOfRows !== this._model.numOfRows) {
+        const numOfCols = parseInt(this._view.widthInput.getValue(), 10);
         this.stopGame();
-        this._model.createGridMatrix(cellsX, cellsY);
+        this._model.createGridMatrix(numOfCols, numOfRows);
       }
     } else {
       this._view.heightInput.addInvalidModificator();
@@ -117,7 +117,7 @@ class Controller {
   }
 
   changeDelay = (newDelay) => {
-    if (this._inputIsCorrect(newDelay)) {
+    if (this._isInputCorrect(newDelay)) {
       this._view.delayInput.removeInvalidModificator();
       const delay = parseInt(newDelay, 10);
       if (delay !== this._delay) {
@@ -132,7 +132,7 @@ class Controller {
     }
   }
 
-  _inputIsCorrect = (stringValue) => {
+  _isInputCorrect = (stringValue) => {
     const parsedValue = parseFloat(stringValue, 10);
     return $.isNumeric(stringValue) && parsedValue > 0 && Number.isInteger(parsedValue);
   }
