@@ -90,10 +90,10 @@ class Controller {
     this._model.createGridMatrix(this._model.numOfCols, this._model.numOfRows);
   }
 
-  changeMatrixWidth = (newnumOfCols) => {
-    if (this._isInputCorrect(newnumOfCols)) {
+  changeMatrixWidth = (widthInputValue) => {
+    if (this._isInputValueValid(widthInputValue)) {
       this._view.widthInput.removeInvalidModificator();
-      const numOfCols = parseInt(newnumOfCols, 10);
+      const numOfCols = parseInt(widthInputValue, 10);
       if (this._view.heightInput.isValid() && numOfCols !== this._model.numOfCols) {
         const numOfRows = parseInt(this._view.heightInput.getValue(), 10);
         this.stopGame();
@@ -104,10 +104,10 @@ class Controller {
     }
   }
 
-  changeMatrixHeight = (newnumOfRows) => {
-    if (this._isInputCorrect(newnumOfRows)) {
+  changeMatrixHeight = (heightInputValue) => {
+    if (this._isInputValueValid(heightInputValue)) {
       this._view.heightInput.removeInvalidModificator();
-      const numOfRows = parseInt(newnumOfRows, 10);
+      const numOfRows = parseInt(heightInputValue, 10);
       if (this._view.widthInput.isValid() && numOfRows !== this._model.numOfRows) {
         const numOfCols = parseInt(this._view.widthInput.getValue(), 10);
         this.stopGame();
@@ -119,7 +119,7 @@ class Controller {
   }
 
   changeDelay = (newDelay) => {
-    if (this._isInputCorrect(newDelay)) {
+    if (this._isInputValueValid(newDelay)) {
       this._view.delayInput.removeInvalidModificator();
       const delay = parseInt(newDelay, 10);
       if (delay !== this._delay) {
@@ -134,7 +134,7 @@ class Controller {
     }
   }
 
-  _isInputCorrect = (stringValue) => {
+  _isInputValueValid = (stringValue) => {
     const parsedValue = parseFloat(stringValue, 10);
     return $.isNumeric(stringValue) && parsedValue > 0 && Number.isInteger(parsedValue);
   }
