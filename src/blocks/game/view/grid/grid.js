@@ -9,14 +9,13 @@ class Grid {
   }
 
   createGrid(numOfCols, numOfRows, cellSize) {
-    const isInputValid = (
+    const isInputValid =
       Number.isInteger(numOfCols)
       && Number.isInteger(numOfRows)
       && $.isNumeric(cellSize)
       && numOfCols > 0
       && numOfRows > 0
-      && cellSize > 0
-    );
+      && cellSize > 0;
 
     if (isInputValid) {
       this._$grid.width(numOfCols * cellSize);

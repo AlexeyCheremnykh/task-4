@@ -27,10 +27,10 @@ class Model {
   }
 
   calculateNextGeneration() {
-    const generationExistedBefore = generation => (
+    const isGenerationRepeated = generation => (
       this._pastGenerations.find(pastGeneration => lodash.isEqual(pastGeneration, generation))
     );
-    if (generationExistedBefore(this._gridMatrix)) {
+    if (isGenerationRepeated(this._gridMatrix)) {
       this.endGameEvent.notify();
       return;
     }
