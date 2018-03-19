@@ -10325,69 +10325,119 @@ return jQuery;
 
 /***/ }),
 /* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-class ObservedEvent {
-  constructor() {
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ObservedEvent = function () {
+  function ObservedEvent() {
+    _classCallCheck(this, ObservedEvent);
+
     this._handlers = [];
   }
 
-  attach(handler) {
-    this._handlers.push(handler);
-  }
+  _createClass(ObservedEvent, [{
+    key: "attach",
+    value: function attach(handler) {
+      this._handlers.push(handler);
+    }
+  }, {
+    key: "detach",
+    value: function detach(handler) {
+      this._handlers.splice(this._handlers.indexOf(handler), 1);
+    }
+  }, {
+    key: "notify",
+    value: function notify() {
+      for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
 
-  detach(handler) {
-    this._handlers.splice(this._handlers.indexOf(handler), 1);
-  }
+      this._handlers.forEach(function (handler) {
+        handler.apply(undefined, args);
+      });
+    }
+  }]);
 
-  notify(...args) {
-    this._handlers.forEach((handler) => {
-      handler(...args);
-    });
-  }
-}
+  return ObservedEvent;
+}();
 
-/* harmony default export */ __webpack_exports__["a"] = (ObservedEvent);
-
+exports.default = ObservedEvent;
 
 /***/ }),
 /* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__ = __webpack_require__(1);
+/* WEBPACK VAR INJECTION */(function($) {
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-class Button {
-  constructor(selector) {
-    this.click = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */]();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _observedEvent = __webpack_require__(1);
+
+var _observedEvent2 = _interopRequireDefault(_observedEvent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Button = function () {
+  function Button(selector) {
+    _classCallCheck(this, Button);
+
+    this.click = new _observedEvent2.default();
     this._$button = $(selector);
     this._setListeners();
   }
 
-  _setListeners() {
-    this._$button.click(() => this.click.notify());
-  }
+  _createClass(Button, [{
+    key: '_setListeners',
+    value: function _setListeners() {
+      var _this = this;
 
-  disable() {
-    this._$button.prop('disabled', true);
-  }
+      this._$button.click(function () {
+        return _this.click.notify();
+      });
+    }
+  }, {
+    key: 'disable',
+    value: function disable() {
+      this._$button.prop('disabled', true);
+    }
+  }, {
+    key: 'enable',
+    value: function enable() {
+      this._$button.prop('disabled', false);
+    }
+  }]);
 
-  enable() {
-    this._$button.prop('disabled', false);
-  }
-}
+  return Button;
+}();
 
-/* harmony default export */ __webpack_exports__["a"] = (Button);
-
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
+exports.default = Button;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-const constants = {
+"use strict";
+
+
+var constants = {
   DEAD_CELL: 0,
   ALIVE_CELL: 1,
   MAX_ALIVE_NEIGHBOURS: 3,
@@ -10395,38 +10445,35 @@ const constants = {
   CELL_SIZE: 12,
   DEFAULT_DELAY: 200,
   DEFAULT_WIDTH: 30,
-  DEFAULT_HEIGHT: 20,
+  DEFAULT_HEIGHT: 20
 };
 
 module.exports = constants;
 
-
 /***/ }),
 /* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__favicons_favicons__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__favicons_favicons___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__favicons_favicons__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_index_styl__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_index_styl___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__pages_index_styl__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blocks_game_game_styl__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blocks_game_game_styl___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__blocks_game_game_styl__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__blocks_game_app_app__ = __webpack_require__(17);
 
 
+__webpack_require__(5);
 
+__webpack_require__(15);
 
+__webpack_require__(16);
 
+__webpack_require__(17);
 
 /***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const faviconsContext = __webpack_require__(6);
-faviconsContext.keys().forEach(faviconsContext);
+"use strict";
 
+
+var faviconsContext = __webpack_require__(6);
+faviconsContext.keys().forEach(faviconsContext);
 
 /***/ }),
 /* 6 */
@@ -10520,336 +10567,496 @@ module.exports = __webpack_require__.p + "favicons/safari-pinned-tab.svg";
 
 /***/ }),
 /* 17 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view_view__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__model_model__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__controller_controller__ = __webpack_require__(27);
 
 
+var _view = __webpack_require__(18);
 
+var _view2 = _interopRequireDefault(_view);
 
-class App {
-  constructor() {
-    this._model = new __WEBPACK_IMPORTED_MODULE_1__model_model__["a" /* default */]();
-    this._view = new __WEBPACK_IMPORTED_MODULE_0__view_view__["a" /* default */]();
-    this._controller = new __WEBPACK_IMPORTED_MODULE_2__controller_controller__["a" /* default */](this._model, this._view);
-    this._controller.init();
-  }
-}
+var _model = __webpack_require__(23);
 
-const app = new App();
+var _model2 = _interopRequireDefault(_model);
 
+var _controller = __webpack_require__(27);
+
+var _controller2 = _interopRequireDefault(_controller);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var App = function App() {
+  _classCallCheck(this, App);
+
+  this._model = new _model2.default();
+  this._view = new _view2.default();
+  this._controller = new _controller2.default(this._model, this._view);
+  this._controller.init();
+};
+
+var app = new App();
 
 /***/ }),
 /* 18 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__grid_grid__ = __webpack_require__(19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__button_button__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__play_button_play_button__ = __webpack_require__(20);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__input_input__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__message_message__ = __webpack_require__(22);
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
+var _grid = __webpack_require__(19);
 
+var _grid2 = _interopRequireDefault(_grid);
 
+var _button = __webpack_require__(2);
 
-class View {
-  constructor() {
-    this.grid = new __WEBPACK_IMPORTED_MODULE_0__grid_grid__["a" /* default */]('.js-game__grid');
-    this.playButton = new __WEBPACK_IMPORTED_MODULE_2__play_button_play_button__["a" /* default */]('.js-game__play');
-    this.oneStepButton = new __WEBPACK_IMPORTED_MODULE_1__button_button__["a" /* default */]('.js-game__one-step');
-    this.newGameButton = new __WEBPACK_IMPORTED_MODULE_1__button_button__["a" /* default */]('.js-game__new-game');
-    this.delayInput = new __WEBPACK_IMPORTED_MODULE_3__input_input__["a" /* default */]('.js-game__delay');
-    this.widthInput = new __WEBPACK_IMPORTED_MODULE_3__input_input__["a" /* default */]('.js-game__width');
-    this.heightInput = new __WEBPACK_IMPORTED_MODULE_3__input_input__["a" /* default */]('.js-game__height');
-    this.gameOverMessage = new __WEBPACK_IMPORTED_MODULE_4__message_message__["a" /* default */]('.js-game__game-over');
-  }
-}
+var _button2 = _interopRequireDefault(_button);
 
-/* harmony default export */ __webpack_exports__["a"] = (View);
+var _playButton = __webpack_require__(20);
 
+var _playButton2 = _interopRequireDefault(_playButton);
+
+var _input = __webpack_require__(21);
+
+var _input2 = _interopRequireDefault(_input);
+
+var _message = __webpack_require__(22);
+
+var _message2 = _interopRequireDefault(_message);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var View = function View() {
+  _classCallCheck(this, View);
+
+  this.grid = new _grid2.default('.js-game__grid');
+  this.playButton = new _playButton2.default('.js-game__play');
+  this.oneStepButton = new _button2.default('.js-game__one-step');
+  this.newGameButton = new _button2.default('.js-game__new-game');
+  this.delayInput = new _input2.default('.js-game__delay');
+  this.widthInput = new _input2.default('.js-game__width');
+  this.heightInput = new _input2.default('.js-game__height');
+  this.gameOverMessage = new _message2.default('.js-game__game-over');
+};
+
+exports.default = View;
 
 /***/ }),
 /* 19 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__ = __webpack_require__(1);
+/* WEBPACK VAR INJECTION */(function($) {
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-class Grid {
-  constructor(selector) {
-    this.cellUpdate = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */]();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _observedEvent = __webpack_require__(1);
+
+var _observedEvent2 = _interopRequireDefault(_observedEvent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Grid = function () {
+  function Grid(selector) {
+    _classCallCheck(this, Grid);
+
+    this.cellUpdate = new _observedEvent2.default();
     this._$grid = $(selector);
     this._setListeners();
   }
 
-  createGrid(cellsX, cellsY, cellSize) {
-    const inputIsInvalid = () => {
-      if (
-        !Number.isInteger(cellsX) ||
-        !Number.isInteger(cellsY) ||
-        !$.isNumeric(cellSize) ||
-        cellsX <= 0 ||
-        cellsY <= 0 ||
-        cellSize <= 0
-      ) return true;
-      return false;
-    };
+  _createClass(Grid, [{
+    key: 'createGrid',
+    value: function createGrid(numOfCols, numOfRows, cellSize) {
+      var _this = this;
 
-    if (inputIsInvalid()) return;
-    this._$grid.width(cellsX * cellSize);
-    this._$grid.html('');
-    [...Array(cellsY * cellsX)].forEach(() => {
-      const cell = `<div class='game__grid-cell js-game__grid-cell' style='width: ${cellSize}px; height: ${cellSize}px;'></div>`;
-      this._$grid.append(cell);
-    });
-  }
+      var isInputValid = Number.isInteger(numOfCols) && Number.isInteger(numOfRows) && $.isNumeric(cellSize) && numOfCols > 0 && numOfRows > 0 && cellSize > 0;
 
-  updateCell(cellIndex) {
-    if (!Number.isInteger(cellIndex) || cellIndex < 0) return;
-    const $cell = $($('.js-game__grid-cell')[cellIndex]);
-    const aliveClass = 'game__grid-cell_alive';
-    if ($cell.hasClass(aliveClass)) {
-      $cell.removeClass(aliveClass);
-    } else {
-      $cell.addClass(aliveClass);
+      if (isInputValid) {
+        this._$grid.width(numOfCols * cellSize);
+        this._$grid.html('');
+        [].concat(_toConsumableArray(Array(numOfRows * numOfCols))).forEach(function () {
+          var cell = '<div class=\'game__grid-cell js-game__grid-cell\' style=\'width: ' + cellSize + 'px; height: ' + cellSize + 'px;\'></div>';
+          _this._$grid.append(cell);
+        });
+      }
     }
-  }
+  }, {
+    key: 'updateCell',
+    value: function updateCell(cellIndex) {
+      if (!Number.isInteger(cellIndex) || cellIndex < 0) return;
+      var $cell = $($('.js-game__grid-cell')[cellIndex]);
+      var aliveClass = 'game__grid-cell_alive';
+      if ($cell.hasClass(aliveClass)) {
+        $cell.removeClass(aliveClass);
+      } else {
+        $cell.addClass(aliveClass);
+      }
+    }
+  }, {
+    key: '_setListeners',
+    value: function _setListeners() {
+      var _this2 = this;
 
-  _setListeners() {
-    const cellUpdateNotify = (event) => {
-      const cellIndex = $(event.target).index();
-      this.cellUpdate.notify(cellIndex);
-      return false;
-    };
+      var cellUpdateNotify = function cellUpdateNotify(event) {
+        var cellIndex = $(event.target).index();
+        _this2.cellUpdate.notify(cellIndex);
+        return false;
+      };
 
-    this._$grid
-      .mousedown(cellUpdateNotify)
-      .mousedown(() => this._$grid.bind('mouseover', cellUpdateNotify))
-      .mouseup(() => this._$grid.unbind('mouseover'))
-      .mouseleave(() => this._$grid.unbind('mouseover'));
-  }
-}
+      this._$grid.mousedown(cellUpdateNotify).mousedown(function () {
+        return _this2._$grid.bind('mouseover', cellUpdateNotify);
+      }).mouseup(function () {
+        return _this2._$grid.unbind('mouseover');
+      }).mouseleave(function () {
+        return _this2._$grid.unbind('mouseover');
+      });
+    }
+  }]);
 
-/* harmony default export */ __webpack_exports__["a"] = (Grid);
+  return Grid;
+}();
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
+exports.default = Grid;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 20 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__button_button__ = __webpack_require__(2);
 
 
-class PlayButton extends __WEBPACK_IMPORTED_MODULE_0__button_button__["a" /* default */] {
-  setRunningStatus(isGameRunning) {
-    if (isGameRunning) {
-      this._$button.text('Stop');
-    } else {
-      this._$button.text('Start');
-    }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _button = __webpack_require__(2);
+
+var _button2 = _interopRequireDefault(_button);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var PlayButton = function (_Button) {
+  _inherits(PlayButton, _Button);
+
+  function PlayButton() {
+    _classCallCheck(this, PlayButton);
+
+    return _possibleConstructorReturn(this, (PlayButton.__proto__ || Object.getPrototypeOf(PlayButton)).apply(this, arguments));
   }
-}
 
-/* harmony default export */ __webpack_exports__["a"] = (PlayButton);
+  _createClass(PlayButton, [{
+    key: 'setRunningStatus',
+    value: function setRunningStatus(isGameRunning) {
+      if (isGameRunning) {
+        this._$button.text('Stop');
+      } else {
+        this._$button.text('Start');
+      }
+    }
+  }]);
 
+  return PlayButton;
+}(_button2.default);
+
+exports.default = PlayButton;
 
 /***/ }),
 /* 21 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__ = __webpack_require__(1);
+/* WEBPACK VAR INJECTION */(function($) {
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-class Input {
-  constructor(selector) {
-    this.blur = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */]();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _observedEvent = __webpack_require__(1);
+
+var _observedEvent2 = _interopRequireDefault(_observedEvent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Input = function () {
+  function Input(selector) {
+    _classCallCheck(this, Input);
+
+    this.blur = new _observedEvent2.default();
     this._$input = $(selector);
     this._setListeners();
   }
 
-  getValue() {
-    return this._$input.val();
-  }
+  _createClass(Input, [{
+    key: 'getValue',
+    value: function getValue() {
+      return this._$input.val();
+    }
+  }, {
+    key: 'isValid',
+    value: function isValid() {
+      return !this._$input.hasClass('game__input_invalid');
+    }
+  }, {
+    key: 'addInvalidModificator',
+    value: function addInvalidModificator() {
+      this._$input.addClass('game__input_invalid');
+    }
+  }, {
+    key: 'removeInvalidModificator',
+    value: function removeInvalidModificator() {
+      this._$input.removeClass('game__input_invalid');
+    }
+  }, {
+    key: '_setListeners',
+    value: function _setListeners() {
+      var _this = this;
 
-  isValid() {
-    return !this._$input.hasClass('game__input_invalid');
-  }
+      this._$input.blur(function () {
+        return _this.blur.notify(_this._$input.val());
+      });
+    }
+  }]);
 
-  addInvalidModificator() {
-    this._$input.addClass('game__input_invalid');
-  }
+  return Input;
+}();
 
-  removeInvalidModificator() {
-    this._$input.removeClass('game__input_invalid');
-  }
-
-  _setListeners() {
-    this._$input.blur(() => this.blur.notify(this._$input.val()));
-  }
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (Input);
-
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
+exports.default = Input;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 22 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__ = __webpack_require__(1);
+/* WEBPACK VAR INJECTION */(function($) {
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-class Message {
-  constructor(selector) {
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _observedEvent = __webpack_require__(1);
+
+var _observedEvent2 = _interopRequireDefault(_observedEvent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Message = function () {
+  function Message(selector) {
+    _classCallCheck(this, Message);
+
     this._$message = $(selector);
   }
 
-  show() {
-    this._$message.fadeIn(500);
-  }
+  _createClass(Message, [{
+    key: 'show',
+    value: function show() {
+      this._$message.fadeIn(500);
+    }
+  }, {
+    key: 'hide',
+    value: function hide() {
+      this._$message.hide();
+    }
+  }]);
 
-  hide() {
-    this._$message.hide();
-  }
-}
+  return Message;
+}();
 
-/* harmony default export */ __webpack_exports__["a"] = (Message);
-
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
+exports.default = Message;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 23 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__constants__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__constants___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__constants__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash__);
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-class Model {
-  constructor() {
-    this.newGameEvent = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */]();
-    this.updateCellEvent = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */]();
-    this.endGameEvent = new __WEBPACK_IMPORTED_MODULE_0__observed_event_observed_event__["a" /* default */]();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _observedEvent = __webpack_require__(1);
+
+var _observedEvent2 = _interopRequireDefault(_observedEvent);
+
+var _constants = __webpack_require__(3);
+
+var _constants2 = _interopRequireDefault(_constants);
+
+var _lodash = __webpack_require__(24);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Model = function () {
+  function Model() {
+    _classCallCheck(this, Model);
+
+    this.newGameEvent = new _observedEvent2.default();
+    this.updateCellEvent = new _observedEvent2.default();
+    this.endGameEvent = new _observedEvent2.default();
   }
 
-  createGridMatrix(cellsX, cellsY) {
-    this._gridMatrix = [...Array(cellsY)].map(() => Array(cellsX).fill(__WEBPACK_IMPORTED_MODULE_1__constants___default.a.DEAD_CELL));
-    this._generations = [];
-    this.cellsY = cellsY;
-    this.cellsX = cellsX;
-    this.newGameEvent.notify(cellsX, cellsY);
-  }
-
-  updateCell(cellRow, cellCol) {
-    if (this._gridMatrix[cellRow][cellCol] === __WEBPACK_IMPORTED_MODULE_1__constants___default.a.DEAD_CELL) {
-      this._gridMatrix[cellRow][cellCol] = __WEBPACK_IMPORTED_MODULE_1__constants___default.a.ALIVE_CELL;
-    } else {
-      this._gridMatrix[cellRow][cellCol] = __WEBPACK_IMPORTED_MODULE_1__constants___default.a.DEAD_CELL;
+  _createClass(Model, [{
+    key: 'createGridMatrix',
+    value: function createGridMatrix(numOfCols, numOfRows) {
+      this._gridMatrix = [].concat(_toConsumableArray(Array(numOfRows))).map(function () {
+        return Array(numOfCols).fill(_constants2.default.DEAD_CELL);
+      });
+      this._pastGenerations = [];
+      this.numOfRows = numOfRows;
+      this.numOfCols = numOfCols;
+      this.newGameEvent.notify(numOfCols, numOfRows);
     }
-    this.updateCellEvent.notify(cellRow, cellCol);
-  }
-
-  calculateNextGeneration() {
-    const indexesToUpdate = [];
-
-    const cellWillLive = aliveNeighbours => aliveNeighbours === __WEBPACK_IMPORTED_MODULE_1__constants___default.a.MAX_ALIVE_NEIGHBOURS;
-
-    const cellWillDie = (aliveNeighbours) => {
-      const tooFewNeighbours = aliveNeighbours < __WEBPACK_IMPORTED_MODULE_1__constants___default.a.MIN_ALIVE_NEIGHBOURS;
-      const tooManyNeighbours = aliveNeighbours > __WEBPACK_IMPORTED_MODULE_1__constants___default.a.MAX_ALIVE_NEIGHBOURS;
-      return tooFewNeighbours || tooManyNeighbours;
-    };
-
-    if (this._generations.find(item => __WEBPACK_IMPORTED_MODULE_2_lodash___default.a.isEqual(item, this._gridMatrix))) {
-      this.endGameEvent.notify();
-      return;
+  }, {
+    key: 'updateCell',
+    value: function updateCell(cellRow, cellCol) {
+      if (this._gridMatrix[cellRow][cellCol] === _constants2.default.DEAD_CELL) {
+        this._gridMatrix[cellRow][cellCol] = _constants2.default.ALIVE_CELL;
+      } else {
+        this._gridMatrix[cellRow][cellCol] = _constants2.default.DEAD_CELL;
+      }
+      this.updateCellEvent.notify(cellRow, cellCol);
     }
-    this._generations.push(this._gridMatrix.slice().map(row => row.slice()));
+  }, {
+    key: 'calculateNextGeneration',
+    value: function calculateNextGeneration() {
+      var _this = this;
 
-    this._gridMatrix.forEach((row, rowIndex) => {
-      row.forEach((matrixElement, colIndex) => {
-        const aliveNeighbours = this._countAliveNeighbours(rowIndex, colIndex);
-        if (matrixElement === __WEBPACK_IMPORTED_MODULE_1__constants___default.a.DEAD_CELL) {
-          if (cellWillLive(aliveNeighbours)) {
+      var generationExistedBefore = function generationExistedBefore(generation) {
+        return _this._pastGenerations.find(function (pastGeneration) {
+          return _lodash2.default.isEqual(pastGeneration, generation);
+        });
+      };
+      if (generationExistedBefore(this._gridMatrix)) {
+        this.endGameEvent.notify();
+        return;
+      }
+      this._pastGenerations.push(_lodash2.default.cloneDeep(this._gridMatrix));
+
+      var willCellRevive = function willCellRevive(cell, aliveNeighbours) {
+        return cell === _constants2.default.DEAD_CELL && aliveNeighbours === _constants2.default.MAX_ALIVE_NEIGHBOURS;
+      };
+
+      var willCellDie = function willCellDie(cell, aliveNeighbours) {
+        var tooFewNeighbours = aliveNeighbours < _constants2.default.MIN_ALIVE_NEIGHBOURS;
+        var tooManyNeighbours = aliveNeighbours > _constants2.default.MAX_ALIVE_NEIGHBOURS;
+
+        return cell === _constants2.default.ALIVE_CELL && (tooFewNeighbours || tooManyNeighbours);
+      };
+
+      var indexesToUpdate = [];
+
+      this._gridMatrix.forEach(function (row, rowIndex) {
+        row.forEach(function (matrixElement, colIndex) {
+          var aliveNeighbours = _this._countAliveNeighbours(rowIndex, colIndex);
+          if (willCellDie(matrixElement, aliveNeighbours) || willCellRevive(matrixElement, aliveNeighbours)) {
             indexesToUpdate.push([rowIndex, colIndex]);
           }
-        } else if (cellWillDie(aliveNeighbours)) {
-          indexesToUpdate.push([rowIndex, colIndex]);
-        }
+        });
       });
-    });
 
-    if (!indexesToUpdate.length) {
-      this.endGameEvent.notify();
-      return;
+      if (indexesToUpdate.length === 0) {
+        this.endGameEvent.notify();
+        return;
+      }
+      indexesToUpdate.forEach(function (indexesPair) {
+        var _indexesPair = _slicedToArray(indexesPair, 2),
+            cellRow = _indexesPair[0],
+            cellCol = _indexesPair[1];
+
+        _this.updateCell(cellRow, cellCol);
+      });
     }
-    indexesToUpdate.forEach((indexesPair) => {
-      this.updateCell(indexesPair[0], indexesPair[1]);
-    });
-  }
+  }, {
+    key: '_countAliveNeighbours',
+    value: function _countAliveNeighbours(cellRow, cellCol) {
+      var _this2 = this;
 
-  _countAliveNeighbours(cellRow, cellCol) {
-    let aliveNeighbours = 0;
-    const matrixOfNeighbors = this._createMatrixOfNeighbors(cellRow, cellCol);
+      var calcStartingRowOrCol = function calcStartingRowOrCol(currentRowOrCol) {
+        var isPreviousRowOrColOutOfBounds = currentRowOrCol - 1 < 0;
+        return isPreviousRowOrColOutOfBounds ? 0 : currentRowOrCol - 1;
+      };
 
-    matrixOfNeighbors.forEach((row) => {
-      row.forEach((matrixElement) => {
-        if (matrixElement === __WEBPACK_IMPORTED_MODULE_1__constants___default.a.ALIVE_CELL) {
-          aliveNeighbours += 1;
-        }
-      });
-    });
-    return aliveNeighbours;
-  }
+      var calcEndingRowOrCol = function calcEndingRowOrCol(currentRowOrCol, maxRowOrCol) {
+        var isNextRowOrColOutOfBounds = currentRowOrCol + 1 > maxRowOrCol;
+        return isNextRowOrColOutOfBounds ? maxRowOrCol : currentRowOrCol + 1;
+      };
 
-  _createMatrixOfNeighbors(cellRow, cellCol) {
-    const calcFirstNeighboringIndex = (currentCellIndex) => {
-      if (currentCellIndex - 1 < 0) return 0;
-      return currentCellIndex - 1;
-    };
+      var lastRowIndex = this.numOfRows - 1;
+      var topNeighboringRow = calcStartingRowOrCol(cellRow);
+      var bottomNeighboringRow = calcEndingRowOrCol(cellRow, lastRowIndex);
 
-    const calcLastNeighboringIndex = (currentCellIndex, maxIndex) => {
-      if (currentCellIndex + 1 > maxIndex) return maxIndex;
-      return currentCellIndex + 1;
-    };
+      var lastColIndex = this.numOfCols - 1;
+      var leftNeighboringCol = calcStartingRowOrCol(cellCol);
+      var rightNeighboringCol = calcEndingRowOrCol(cellCol, lastColIndex);
 
-    const topNeighboringRow = calcFirstNeighboringIndex(cellRow);
-    const bottomNeighboringRow = calcLastNeighboringIndex(cellRow, this.cellsY);
+      var neighbouringRows = _lodash2.default.range(topNeighboringRow, bottomNeighboringRow + 1);
+      var neighbouringCols = _lodash2.default.range(leftNeighboringCol, rightNeighboringCol + 1);
 
-    const leftNeighboringCol = calcFirstNeighboringIndex(cellCol);
-    const rightNeighboringCol = calcLastNeighboringIndex(cellCol, this.cellsX);
+      var aliveWithCurrentCell = neighbouringRows.reduce(function (aliveInTotal, row) {
+        var aliveInRow = neighbouringCols.reduce(function (aliveCells, col) {
+          return _this2._gridMatrix[row][col] === _constants2.default.ALIVE_CELL ? aliveCells + 1 : aliveCells;
+        }, 0);
+        return aliveInTotal + aliveInRow;
+      }, 0);
 
-    const matrixOfNeighbors = this._gridMatrix
-      .slice(topNeighboringRow, bottomNeighboringRow + 1)
-      .map(matrixRow => matrixRow.slice(leftNeighboringCol, rightNeighboringCol + 1));
+      var aliveNeighbours = aliveWithCurrentCell;
+      if (this._gridMatrix[cellRow][cellCol] === _constants2.default.ALIVE_CELL) {
+        aliveNeighbours -= 1;
+      }
+      return aliveNeighbours;
+    }
+  }]);
 
-    const currentCellRow = cellRow - topNeighboringRow;
-    const currentCellCol = cellCol - leftNeighboringCol;
-    matrixOfNeighbors[currentCellRow].splice(currentCellCol, 1);
+  return Model;
+}();
 
-    return matrixOfNeighbors;
-  }
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (Model);
-
+exports.default = Model;
 
 /***/ }),
 /* 24 */
@@ -28013,152 +28220,176 @@ module.exports = function(module) {
 
 /***/ }),
 /* 27 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__constants__);
+/* WEBPACK VAR INJECTION */(function($) {
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-class Controller {
-  constructor(model, view) {
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _constants = __webpack_require__(3);
+
+var _constants2 = _interopRequireDefault(_constants);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Controller = function () {
+  function Controller(model, view) {
+    var _this = this;
+
+    _classCallCheck(this, Controller);
+
+    this.initNewGameView = function (numOfCols, numOfRows) {
+      _this._view.grid.createGrid(numOfCols, numOfRows, _constants2.default.CELL_SIZE);
+      _this._view.playButton.enable();
+      _this._view.oneStepButton.enable();
+      _this._view.gameOverMessage.hide();
+    };
+
+    this.updateGridCell = function (cellRow, cellCol) {
+      var gridCellIndex = cellRow * _this._model.numOfCols + cellCol;
+      _this._view.grid.updateCell(gridCellIndex);
+    };
+
+    this.updateMatrixCell = function (cellIndex) {
+      var cellRow = Math.floor(cellIndex / _this._model.numOfCols);
+      var cellCol = cellIndex % _this._model.numOfCols;
+      _this._model.updateCell(cellRow, cellCol);
+    };
+
+    this.toggleGameStatus = function () {
+      if (!_this._isGameRunning) {
+        _this.startGame();
+      } else {
+        _this.stopGame();
+      }
+    };
+
+    this.startGame = function () {
+      if (_this._view.delayInput.isValid()) {
+        _this._timerId = setInterval(_this.updateMatrix, _this._delay);
+        _this._isGameRunning = true;
+        _this._view.playButton.setRunningStatus(_this._isGameRunning);
+      }
+    };
+
+    this.stopGame = function () {
+      clearInterval(_this._timerId);
+      _this._isGameRunning = false;
+      _this._view.playButton.setRunningStatus(_this._isGameRunning);
+    };
+
+    this.finishGame = function () {
+      _this.stopGame();
+      _this._view.gameOverMessage.show();
+      _this._view.playButton.disable();
+      _this._view.oneStepButton.disable();
+    };
+
+    this.updateMatrix = function () {
+      _this._model.calculateNextGeneration();
+    };
+
+    this.clearGrid = function () {
+      _this.stopGame();
+      _this._model.createGridMatrix(_this._model.numOfCols, _this._model.numOfRows);
+    };
+
+    this.changeMatrixWidth = function (newnumOfCols) {
+      if (_this._isInputCorrect(newnumOfCols)) {
+        _this._view.widthInput.removeInvalidModificator();
+        var numOfCols = parseInt(newnumOfCols, 10);
+        if (_this._view.heightInput.isValid() && numOfCols !== _this._model.numOfCols) {
+          var numOfRows = parseInt(_this._view.heightInput.getValue(), 10);
+          _this.stopGame();
+          _this._model.createGridMatrix(numOfCols, numOfRows);
+        }
+      } else {
+        _this._view.widthInput.addInvalidModificator();
+      }
+    };
+
+    this.changeMatrixHeight = function (newnumOfRows) {
+      if (_this._isInputCorrect(newnumOfRows)) {
+        _this._view.heightInput.removeInvalidModificator();
+        var numOfRows = parseInt(newnumOfRows, 10);
+        if (_this._view.widthInput.isValid() && numOfRows !== _this._model.numOfRows) {
+          var numOfCols = parseInt(_this._view.widthInput.getValue(), 10);
+          _this.stopGame();
+          _this._model.createGridMatrix(numOfCols, numOfRows);
+        }
+      } else {
+        _this._view.heightInput.addInvalidModificator();
+      }
+    };
+
+    this.changeDelay = function (newDelay) {
+      if (_this._isInputCorrect(newDelay)) {
+        _this._view.delayInput.removeInvalidModificator();
+        var delay = parseInt(newDelay, 10);
+        if (delay !== _this._delay) {
+          _this._delay = delay;
+          if (_this._isGameRunning) {
+            clearInterval(_this._timerId);
+            _this._timerId = setInterval(_this.updateMatrix, _this._delay);
+          }
+        }
+      } else {
+        _this._view.delayInput.addInvalidModificator();
+      }
+    };
+
+    this._isInputCorrect = function (stringValue) {
+      var parsedValue = parseFloat(stringValue, 10);
+      return $.isNumeric(stringValue) && parsedValue > 0 && Number.isInteger(parsedValue);
+    };
+
     this._model = model;
     this._view = view;
   }
 
-  init() {
-    this.observeModel().observeView();
-    this._model.createGridMatrix(__WEBPACK_IMPORTED_MODULE_0__constants___default.a.DEFAULT_WIDTH, __WEBPACK_IMPORTED_MODULE_0__constants___default.a.DEFAULT_HEIGHT);
-    this._isGameRunning = false;
-    this._timerId = null;
-    this._delay = __WEBPACK_IMPORTED_MODULE_0__constants___default.a.DEFAULT_DELAY;
-  }
-
-  observeModel() {
-    this._model.newGameEvent.attach(this.initNewGameView.bind(this));
-    this._model.updateCellEvent.attach(this.updateGridCell.bind(this));
-    this._model.endGameEvent.attach(this.endGame.bind(this));
-    return this;
-  }
-
-  observeView() {
-    this._view.grid.cellUpdate.attach(this.updateMatrixCell.bind(this));
-    this._view.playButton.click.attach(this.toggleGameStatus.bind(this));
-    this._view.oneStepButton.click.attach(this.updateMatrix.bind(this));
-    this._view.newGameButton.click.attach(this.clearGrid.bind(this));
-    this._view.widthInput.blur.attach(this.changeMatrixWidth.bind(this));
-    this._view.heightInput.blur.attach(this.changeMatrixHeight.bind(this));
-    this._view.delayInput.blur.attach(this.changeDelay.bind(this));
-    return this;
-  }
-
-  initNewGameView(cellsX, cellsY) {
-    this._view.grid.createGrid(cellsX, cellsY, __WEBPACK_IMPORTED_MODULE_0__constants___default.a.CELL_SIZE);
-    this._view.playButton.enable();
-    this._view.oneStepButton.enable();
-    this._view.gameOverMessage.hide();
-  }
-
-  updateGridCell(cellRow, cellCol) {
-    const gridCellIndex = (cellRow * this._model.cellsX) + cellCol;
-    this._view.grid.updateCell(gridCellIndex);
-  }
-
-  updateMatrixCell(cellIndex) {
-    const cellRow = Math.floor(cellIndex / this._model.cellsX);
-    const cellCol = cellIndex % this._model.cellsX;
-    this._model.updateCell(cellRow, cellCol);
-  }
-
-  toggleGameStatus() {
-    if (!this._isGameRunning) {
-      this.startGame();
-    } else {
-      this.stopGame();
+  _createClass(Controller, [{
+    key: 'init',
+    value: function init() {
+      this.observeModel().observeView();
+      this._model.createGridMatrix(_constants2.default.DEFAULT_WIDTH, _constants2.default.DEFAULT_HEIGHT);
+      this._isGameRunning = false;
+      this._timerId = null;
+      this._delay = _constants2.default.DEFAULT_DELAY;
     }
-  }
-
-  startGame() {
-    if (this._view.delayInput.isValid()) {
-      this._timerId = setInterval(this.updateMatrix.bind(this), this._delay);
-      this._isGameRunning = true;
-      this._view.playButton.setRunningStatus(this._isGameRunning);
+  }, {
+    key: 'observeModel',
+    value: function observeModel() {
+      this._model.newGameEvent.attach(this.initNewGameView);
+      this._model.updateCellEvent.attach(this.updateGridCell);
+      this._model.endGameEvent.attach(this.finishGame);
+      return this;
     }
-  }
-
-  stopGame() {
-    clearInterval(this._timerId);
-    this._isGameRunning = false;
-    this._view.playButton.setRunningStatus(this._isGameRunning);
-  }
-
-  endGame() {
-    this.stopGame();
-    this._view.gameOverMessage.show();
-    this._view.playButton.disable();
-    this._view.oneStepButton.disable();
-  }
-
-  updateMatrix() {
-    this._model.calculateNextGeneration();
-  }
-
-  clearGrid() {
-    this.stopGame();
-    this._model.createGridMatrix(this._model.cellsX, this._model.cellsY);
-  }
-
-  changeMatrixWidth(newCellsX) {
-    if (this._inputIsCorrect(newCellsX)) {
-      this._view.widthInput.removeInvalidModificator();
-      const cellsX = parseInt(newCellsX, 10);
-      if (this._view.heightInput.isValid() && cellsX !== this._model.cellsX) {
-        const cellsY = parseInt(this._view.heightInput.getValue(), 10);
-        this._model.createGridMatrix(cellsX, cellsY);
-      }
-    } else {
-      this._view.widthInput.addInvalidModificator();
+  }, {
+    key: 'observeView',
+    value: function observeView() {
+      this._view.grid.cellUpdate.attach(this.updateMatrixCell);
+      this._view.playButton.click.attach(this.toggleGameStatus);
+      this._view.oneStepButton.click.attach(this.updateMatrix);
+      this._view.newGameButton.click.attach(this.clearGrid);
+      this._view.widthInput.blur.attach(this.changeMatrixWidth);
+      this._view.heightInput.blur.attach(this.changeMatrixHeight);
+      this._view.delayInput.blur.attach(this.changeDelay);
+      return this;
     }
-  }
+  }]);
 
-  changeMatrixHeight(newCellsY) {
-    if (this._inputIsCorrect(newCellsY)) {
-      this._view.heightInput.removeInvalidModificator();
-      const cellsY = parseInt(newCellsY, 10);
-      if (this._view.widthInput.isValid() && cellsY !== this._model.cellsY) {
-        const cellsX = parseInt(this._view.widthInput.getValue(), 10);
-        this._model.createGridMatrix(cellsX, cellsY);
-      }
-    } else {
-      this._view.heightInput.addInvalidModificator();
-    }
-  }
+  return Controller;
+}();
 
-  changeDelay(newDelay) {
-    if (this._inputIsCorrect(newDelay)) {
-      this._view.delayInput.removeInvalidModificator();
-      const delay = parseInt(newDelay, 10);
-      if (delay !== this._delay) {
-        this._delay = delay;
-        if (this._isGameRunning) {
-          clearInterval(this._timerId);
-          this._timerId = setInterval(this.updateMatrix.bind(this), this._delay);
-        }
-      }
-    } else {
-      this._view.delayInput.addInvalidModificator();
-    }
-  }
-
-  _inputIsCorrect(stringValue) {
-    const parsedValue = parseFloat(stringValue, 10);
-    return $.isNumeric(stringValue) && parsedValue > 0 && Number.isInteger(parsedValue);
-  }
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (Controller);
-
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
+exports.default = Controller;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ })
 /******/ ]);
