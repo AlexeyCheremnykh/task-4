@@ -18,6 +18,9 @@ html {
   box-shadow: 0 0 0.625rem 0rem rgba(0,0,0,0.5);
   cursor: pointer;
 }
+.game__grid_disabled {
+  background-color: #efefef;
+}
 .game__grid-cell {
   box-sizing: border-box;
   border: 0.0625rem solid #bbb;
