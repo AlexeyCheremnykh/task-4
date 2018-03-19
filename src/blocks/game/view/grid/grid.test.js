@@ -89,5 +89,19 @@ describe('Grid class tests', () => {
       aliveCellsAfterUpdate = grid._$grid.children('game__grid-cell_alive').length;
       expect(aliveCellsBeforeUpdate).toBe(aliveCellsAfterUpdate);
     });
+
+    test('Grid has been disabled', () => {
+      grid.disable();
+      expect(grid._$grid.hasClass('game__grid_disabled')).toBe(true);
+      grid._$grid.trigger('mousedown');
+      expect(mockHandler).toHaveBeenCalledTimes(3);
+    });
+
+    test('Grid has been enabled', () => {
+      grid.enable();
+      expect(grid._$grid.hasClass('game__grid_disabled')).toBe(false);
+      grid._$grid.trigger('mousedown');
+      expect(mockHandler).toHaveBeenCalledTimes(4);
+    });
   });
 });

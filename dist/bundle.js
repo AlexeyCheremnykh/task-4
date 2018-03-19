@@ -10678,6 +10678,7 @@ var Grid = function () {
 
     this.cellUpdate = new _observedEvent2.default();
     this._$grid = $(selector);
+    this._isDisabled = false;
     this._setListeners();
   }
 
@@ -10707,6 +10708,22 @@ var Grid = function () {
         $cell.removeClass(aliveClass);
       } else {
         $cell.addClass(aliveClass);
+      }
+    }
+  }, {
+    key: 'disable',
+    value: function disable() {
+      this._isDisabled = true;
+      this._$grid.unbind();
+      this._$grid.addClass('game__grid_disabled');
+    }
+  }, {
+    key: 'enable',
+    value: function enable() {
+      if (this._isDisabled) {
+        this._setListeners();
+        this._isDisabled = false;
+        this._$grid.removeClass('game__grid_disabled');
       }
     }
   }, {
@@ -28249,6 +28266,7 @@ var Controller = function () {
       _this._view.grid.createGrid(numOfCols, numOfRows, _constants2.default.CELL_SIZE);
       _this._view.playButton.enable();
       _this._view.oneStepButton.enable();
+      _this._view.grid.enable();
       _this._view.gameOverMessage.hide();
     };
 
@@ -28287,9 +28305,10 @@ var Controller = function () {
 
     this.finishGame = function () {
       _this.stopGame();
-      _this._view.gameOverMessage.show();
       _this._view.playButton.disable();
       _this._view.oneStepButton.disable();
+      _this._view.grid.disable();
+      _this._view.gameOverMessage.show();
     };
 
     this.updateMatrix = function () {
