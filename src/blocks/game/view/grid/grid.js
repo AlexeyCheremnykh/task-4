@@ -4,6 +4,7 @@ class Grid {
   constructor(selector) {
     this.cellUpdate = new ObservedEvent();
     this._$grid = $(selector);
+    this._isDisabled = false;
     this._setListeners();
   }
 
@@ -35,6 +36,20 @@ class Grid {
       $cell.removeClass(aliveClass);
     } else {
       $cell.addClass(aliveClass);
+    }
+  }
+
+  disable() {
+    this._isDisabled = true;
+    this._$grid.unbind();
+    this._$grid.addClass('game__grid_disabled');
+  }
+
+  enable() {
+    if (this._isDisabled) {
+      this._setListeners();
+      this._isDisabled = false;
+      this._$grid.removeClass('game__grid_disabled');
     }
   }
 

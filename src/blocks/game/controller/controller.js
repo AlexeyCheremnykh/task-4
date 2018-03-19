@@ -36,6 +36,7 @@ class Controller {
     this._view.grid.createGrid(numOfCols, numOfRows, constants.CELL_SIZE);
     this._view.playButton.enable();
     this._view.oneStepButton.enable();
+    this._view.grid.enable();
     this._view.gameOverMessage.hide();
   }
 
@@ -74,9 +75,10 @@ class Controller {
 
   finishGame = () => {
     this.stopGame();
-    this._view.gameOverMessage.show();
     this._view.playButton.disable();
     this._view.oneStepButton.disable();
+    this._view.grid.disable();
+    this._view.gameOverMessage.show();
   }
 
   updateMatrix = () => {
