@@ -12,6 +12,7 @@
             "error",
             2
         ],
+        "consistent-return": "off",
         "no-underscore-dangle": "off",
         "import/first": "off",
         "class-methods-use-this": "off",
