@@ -23,7 +23,7 @@ const observeView = jest.spyOn(controller, 'observeView');
 const observeModel = jest.spyOn(controller, 'observeModel');
 const createGridMatrix = jest.spyOn(model, 'createGridMatrix');
 const startGame = jest.spyOn(controller, 'startGame');
-const updateViewCell = jest.spyOn(view.grid, 'updateCell');
+const updateViewCell = jest.spyOn(view, 'updateCell');
 const updateModelCell = jest.spyOn(model, 'updateCell');
 
 
@@ -61,10 +61,10 @@ describe('Controller tests', () => {
     });
 
     test('Game hasn`t been started if invalid delay', () => {
-      controller._view.delayInput.addInvalidModificator();
+      controller._view.setInvalidInputStatus('delay');
       controller.startGame();
       expect(controller._isGameRunning).toBe(false);
-      controller._view.delayInput.removeInvalidModificator();
+      controller._view.setValidInputStatus('delay');
     });
   });
 
@@ -100,7 +100,7 @@ describe('Controller tests', () => {
       controller.changeMatrixWidth('12ss');
       expect(createGridMatrix).toHaveBeenCalledTimes(2);
 
-      view.widthInput.removeInvalidModificator();
+      view.setValidInputStatus('width');
     });
 
     test('Matrix height has been changed if valid', () => {
@@ -114,7 +114,7 @@ describe('Controller tests', () => {
       controller.changeMatrixHeight('12ss');
       expect(createGridMatrix).toHaveBeenCalledTimes(3);
 
-      view.heightInput.removeInvalidModificator();
+      view.setValidInputStatus('height');
     });
   });
 
