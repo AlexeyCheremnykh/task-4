@@ -22,13 +22,13 @@ class Controller {
   }
 
   observeView() {
-    this._view.grid.cellUpdate.attach(this.updateMatrixCell);
-    this._view.playButton.click.attach(this.toggleGameStatus);
-    this._view.oneStepButton.click.attach(this.updateMatrix);
-    this._view.newGameButton.click.attach(this.clearGrid);
-    this._view.widthInput.blur.attach(this.changeMatrixWidth);
-    this._view.heightInput.blur.attach(this.changeMatrixHeight);
-    this._view.delayInput.blur.attach(this.changeDelay);
+    this._view.updateCellEvent.attach(this.updateMatrixCell);
+    this._view.changeGameStatusEvent.attach(this.toggleGameStatus);
+    this._view.skipGenerationEvent.attach(this.updateMatrix);
+    this._view.newGameEvent.attach(this.clearGrid);
+    this._view.changeWidthEvent.attach(this.changeMatrixWidth);
+    this._view.changeHeightEvent.attach(this.changeMatrixHeight);
+    this._view.changeDelayEvent.attach(this.changeDelay);
     return this;
   }
 
